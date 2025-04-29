@@ -65,7 +65,7 @@ const continueBrowseGigs = ref([
   {
     id: 8,
     imgSrc:
-      'https://img.freepik.com/premium-vector/responsive-website-design-with-desktop-computer-screen-tablet-computer-illustration_47012-80.jpg',
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRbZZlXQVXuIrHX_ccOfNbksUwVqBYOrvBh2FmqUOvcFeVTfpJDpu6XpqAcNHU-e2-tnR4&usqp=CAU',
     sellerName: 'Emily Sharpe',
     description: 'UI/UX mockups for apps.',
     price: 160.0,
@@ -73,15 +73,15 @@ const continueBrowseGigs = ref([
   {
     id: 9,
     imgSrc:
-      'https://img.freepik.com/premium-vector/responsive-website-design-with-desktop-computer-screen-tablet-computer-illustration_47012-80.jpg',
+      'https://images.ctfassets.net/wowgx05xsdrr/78tynwsztqlpgZaqK4cN9D/f865d194ae7e2647313a6ffb39fce142/product-photography-hero-1.jpg?fm=webp&w=3840&q=75',
     sellerName: 'Alfredo Ugarte',
-    description: 'UI/UX mockups for apps.',
+    description: 'Photographs Products for e-commerce',
     price: 260.0,
   },
   {
     id: 10,
     imgSrc:
-      'https://img.freepik.com/premium-vector/responsive-website-design-with-desktop-computer-screen-tablet-computer-illustration_47012-80.jpg',
+      'https://fiverr-res.cloudinary.com/images/q_auto,f_auto/gigs/265996558/original/93d12aadf061a5264507d79a77e29aaff7972133/translate-any-technical-document-from-english-to-spanish.png',
     sellerName: 'Noah Simmons',
     description: 'Technical document translation to Spanish.',
     price: 89.0,
