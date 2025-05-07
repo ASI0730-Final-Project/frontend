@@ -118,7 +118,7 @@ const continueBrowseGigs = ref([
           :seller-name="gig.sellerName"
           :description="gig.description"
           :price="gig.price"
-          currency="s/."
+          currency="S/."
         />
       </div>
     </section>

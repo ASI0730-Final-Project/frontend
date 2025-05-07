@@ -9,7 +9,7 @@ const props = defineProps({
   currency: {
     // Prop con valor por defecto
     type: String,
-    default: 's/.',
+    default: 'S/.',
   },
 })
 </script>
