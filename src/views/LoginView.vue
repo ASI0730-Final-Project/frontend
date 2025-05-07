@@ -1,34 +1,29 @@
 <template>
-  <div class="container">
-    <div class="login-box">
-      <h1 class="title">Login</h1>
-      <form @submit.prevent="login" class="form">
-        <div>
-          <label class="label">Email</label>
-          <input v-model="email" type="email" class="input" />
-        </div>
+  <div class="login-container">
+    <h1 class="title">Login</h1>
+    <form @submit.prevent="login" class="form">
+      <div>
+        <label class="label">Email</label>
+        <input v-model="email" type="email" class="input" />
+      </div>
 
-        <div>
-          <label class="label">Password</label>
-          <input v-model="password" type="password" class="input" />
-        </div>
+      <div>
+        <label class="label">Password</label>
+        <input v-model="password" type="password" class="input" />
+      </div>
 
-        <div class="options">
-          <label class="checkbox-label">
-            <input type="checkbox" class="checkbox" />
-            Remember me
-          </label>
-          <a href="#" class="link">Forgot password?</a>
-        </div>
+      <div class="checkbox-wrapper">
+        <input type="checkbox" class="checkbox" id="remember" />
+        <label for="remember" class="checkbox-label">Remember me</label>
+      </div>
 
-        <button type="submit" class="btn">Login</button>
+      <button type="submit" class="btn">Login</button>
 
-        <p class="footer-text">
-          No account?
-          <a href="/register" class="link-bold">Sign up here</a>
-        </p>
-      </form>
-    </div>
+      <p class="footer-text">
+        Don't have an account?
+        <a href="/register" class="link">Sign up</a>
+      </p>
+    </form>
   </div>
 </template>
 
@@ -37,101 +32,96 @@ import { ref } from 'vue'
 const email = ref('')
 const password = ref('')
 const login = () => {
-  alert(`Iniciaste sesión con: ${email.value}`)
+  alert(`Logged in with: ${email.value}`)
 }
 </script>
 
 <style scoped>
-.container {
+.login-container {
   min-height: 100vh;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: #f3f4f6;
+  background-color: #F7F7F7;
   padding: 1rem;
 }
-.login-box {
-  background-color: white;
-  padding: 2.5rem;
-  border-radius: 1rem;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+
+.title {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #0F2C32;
+  margin-bottom: 2rem;
+}
+
+.form {
   width: 100%;
   max-width: 400px;
-}
-.title {
-  font-size: 1.875rem;
-  font-weight: 700;
-  margin-bottom: 2rem;
-  text-align: center;
-  color: #1f2937;
-}
-.form {
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
 }
+
 .label {
-  display: block;
-  font-size: 0.875rem;
+  font-size: 0.95rem;
   margin-bottom: 0.25rem;
-  color: #374151;
+  color: #0F2C32;
 }
+
 .input {
   width: 100%;
-  padding: 0.5rem 1rem;
-  border: 1px solid #d1d5db;
-  border-radius: 0.5rem;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid #939393;
+  background-color: #FFFFFF;
+  border-radius: 8px;
+  font-size: 1rem;
   outline: none;
 }
+
 .input:focus {
   border-color: #60a5fa;
   box-shadow: 0 0 0 2px #bfdbfe;
 }
-.options {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.875rem;
-  color: #6b7280;
-}
-.checkbox-label {
+
+.checkbox-wrapper {
   display: flex;
   align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
 }
+
 .checkbox {
-  margin-right: 0.5rem;
+  width: 16px;
+  height: 16px;
 }
-.link {
-  color: #6b7280;
-  text-decoration: none;
-}
-.link:hover {
-  text-decoration: underline;
-}
+
 .btn {
   width: 100%;
-  background-color: #000;
-  color: #fff;
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-  font-weight: 600;
+  background-color: #0f2f2f;
+  color: white;
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 0.6rem;
   border: none;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.3s;
 }
+
 .btn:hover {
-  background-color: #1f2937;
+  background-color: #103838;
 }
+
 .footer-text {
   text-align: center;
-  font-size: 0.875rem;
-  color: #6b7280;
-}
-.link-bold {
-  font-weight: 600;
+  margin-top: 1rem;
+  font-size: 0.9rem;
   color: #000;
-  text-decoration: none;
 }
-.link-bold:hover {
+
+.link {
+  color: #000;
+  font-weight: 500;
   text-decoration: underline;
+  margin-left: 0.25rem;
 }
 </style>
