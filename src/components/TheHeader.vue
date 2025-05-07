@@ -1,16 +1,4 @@
-<script setup>
-import { useRouter } from 'vue-router'
-
-const router = useRouter()
-
-function goToLogin() {
-  router.push('/login')
-}
-
-function goToRegister() {
-  router.push('/register')
-}
-</script>
+<script setup></script>
 
 <template>
   <header class="app-header">
@@ -18,8 +6,6 @@ function goToRegister() {
       <div class="left-section">
         <img src="/src/components/icons/logo.png" alt="Logo" class="logo" />
       </div>
-
-   
 
       <div class="right-section">
         <i class="pi pi-heart icon"></i>
@@ -30,19 +16,18 @@ function goToRegister() {
           <div class="dot"></div>
         </div>
       </div>
-      
     </div>
     <div class="container-links">
       <nav class="main-nav">
-          <a href="#">Programming & Tech</a>
-          <a href="#">Graphics & Design</a>
-          <a href="#">Writing & Translation</a>
-          <a href="#">Digital Marketing</a>
-          <a href="#">Video & Animation</a>
-          <a href="#">Music & Audio</a>
-          <a href="#">Photography</a>
-          <a href="#">Business</a>
-        </nav>
+        <a href="#">Programming & Tech</a>
+        <a href="#">Graphics & Design</a>
+        <a href="#">Writing & Translation</a>
+        <a href="#">Digital Marketing</a>
+        <a href="#">Video & Animation</a>
+        <a href="#">Music & Audio</a>
+        <a href="#">Photography</a>
+        <a href="#">Business</a>
+      </nav>
     </div>
   </header>
 </template>
@@ -52,7 +37,7 @@ function goToRegister() {
   background-color: #fff;
   border-bottom: 1px solid #eee;
   padding: 10px 0;
-  font-family: "Helvetica Neue", sans-serif;
+  font-family: 'Helvetica Neue', sans-serif;
   font-size: 14px;
 }
 .container {
@@ -62,7 +47,7 @@ function goToRegister() {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  
+
   border-bottom: 1px solid #eee;
 }
 .container-links {
@@ -72,8 +57,6 @@ function goToRegister() {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  
-  
 }
 .left-section {
   display: flex;
@@ -99,7 +82,7 @@ function goToRegister() {
   transition: color 0.2s;
 }
 .main-nav a:hover {
-  color: #5ACAE6;
+  color: #5acae6;
 }
 .right-section {
   display: flex;
