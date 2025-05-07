@@ -10,13 +10,17 @@ function goToLogin() {
 function goToRegister() {
   router.push('/register')
 }
+
+function goToHome() {
+  router.push('/')
+}
 </script>
 
 <template>
   <header class="app-header">
     <div class="container">
       <div class="left-section">
-        <img src="/src/components/icons/logo.png" alt="Logo" class="logo" />
+        <img src="/src/components/icons/logo.png" alt="Logo" class="logo" @click="goToHome" />
       </div>
 
       <div class="right-section">
@@ -25,8 +29,8 @@ function goToRegister() {
         <i class="pi pi-envelope icon"></i>
         <a href="#" class="orders-link">Orders</a>
         <div class="actions">
-          <button class="auth-button login" @click="goToLogin">Iniciar sesión</button>
-          <button class="auth-button register" @click="goToRegister">Registrarse</button>
+          <button-l class="log-button login" @click="goToLogin">Login</button-l>
+          <button class="auth-button register" @click="goToRegister">Sign up</button>
         </div>
         <div class="avatar">
           <div class="dot"></div>
@@ -55,10 +59,12 @@ function goToRegister() {
   padding: 10px 0;
   font-family: 'Helvetica Neue', sans-serif;
   font-size: 14px;
+  
 }
 .container {
-  max-width: 1400px;
-  margin: 0 auto;
+ 
+  height: 40px;
+  margin: 0;
   padding: 0 15px;
   display: flex;
   align-items: center;
@@ -67,7 +73,7 @@ function goToRegister() {
   border-bottom: 1px solid #eee;
 }
 .container-links {
-  max-width: 1400px;
+ 
   margin-top: 10px;
   padding: 0 15px;
   display: flex;
@@ -83,13 +89,24 @@ function goToRegister() {
 .actions button {
   margin-left: 15px;
   text-decoration: none;
-  color: #333;
+  color: #ffffff;
 }
 .actions button {
   padding: 8px 15px;
-  border: 1px solid #5bbce2;
-  border-radius: 4px;
-  background-color: #5cd4f1;
+  border-radius: 10px;
+  background-color: #5ACAE6;
+  cursor: pointer;
+}
+.actions button-l{
+  color: #666;
+  text-decoration: none; 
+  transition: color 0.2s;
+  padding: 8px 15px;
+  cursor: pointer;
+}
+.actions button-l:hover {
+  color: #5acae6;
+  padding: 8px 15px;
   cursor: pointer;
 }
 .actions button.signup {
@@ -149,4 +166,9 @@ function goToRegister() {
   bottom: 2px;
   right: 2px;
 }
+
+log-button{
+  background-color: #1dbf73;
+}
+
 </style>
