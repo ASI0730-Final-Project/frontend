@@ -89,13 +89,13 @@ function goToRegister() {
   padding: 8px 15px;
   border: 1px solid #5bbce2;
   border-radius: 4px;
-  background-color: #5ff197;
+  background-color: #5cd4f1;
   cursor: pointer;
 }
 .actions button.signup {
-  background-color: #1dbf73; /* Color similar al de la imagen */
-  color: rgb(72, 235, 140);
-  border-color: #1dbf73;
+  background-color: #4ebfec; /* Color similar al de la imagen */
+  color: rgb(72, 224, 235);
+  border-color: #63deee;
 }
 .logo {
   height: 30px;
