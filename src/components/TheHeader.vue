@@ -1,5 +1,15 @@
 <script setup>
-// Lógica del header (ej. manejar menú móvil, estado de login) irá aquí
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+function goToLogin() {
+  router.push('/login')
+}
+
+function goToRegister() {
+  router.push('/register')
+}
 </script>
 
 <template>
@@ -13,8 +23,8 @@
       <div class="actions">
         <input type="search" placeholder="Search..." class="header-search" />
         <a href="#">Orders</a>
-        <button>Login</button>
-        <button class="signup">Sign Up</button>
+        <button @click="goToLogin">Login</button>
+        <button class="signup" @click="goToRegister">Sign Up</button>
       </div>
     </div>
   </header>
