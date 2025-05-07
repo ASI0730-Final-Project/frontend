@@ -15,17 +15,34 @@ function goToRegister() {
 <template>
   <header class="app-header">
     <div class="container">
-      <div class="logo">Gigs U</div>
-      <nav class="main-nav">
-        <a href="#">Programming & Tech</a>
-        <a href="#">Graphics & Design</a>
-      </nav>
-      <div class="actions">
-        <input type="search" placeholder="Search..." class="header-search" />
-        <a href="#">Orders</a>
-        <button @click="goToLogin">Login</button>
-        <button class="signup" @click="goToRegister">Sign Up</button>
+      <div class="left-section">
+        <img src="/src/components/icons/logo.png" alt="Logo" class="logo" />
       </div>
+
+   
+
+      <div class="right-section">
+        <i class="pi pi-heart icon"></i>
+        <i class="pi pi-bell icon"></i>
+        <i class="pi pi-envelope icon"></i>
+        <a href="#" class="orders-link">Orders</a>
+        <div class="avatar">
+          <div class="dot"></div>
+        </div>
+      </div>
+      
+    </div>
+    <div class="container-links">
+      <nav class="main-nav">
+          <a href="#">Programming & Tech</a>
+          <a href="#">Graphics & Design</a>
+          <a href="#">Writing & Translation</a>
+          <a href="#">Digital Marketing</a>
+          <a href="#">Video & Animation</a>
+          <a href="#">Music & Audio</a>
+          <a href="#">Photography</a>
+          <a href="#">Business</a>
+        </nav>
     </div>
   </header>
 </template>
@@ -34,45 +51,84 @@ function goToRegister() {
 .app-header {
   background-color: #fff;
   border-bottom: 1px solid #eee;
-  padding: 15px 0;
+  padding: 10px 0;
+  font-family: "Helvetica Neue", sans-serif;
+  font-size: 14px;
 }
 .container {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 0 15px;
   display: flex;
+  align-items: center;
   justify-content: space-between;
+  
+  border-bottom: 1px solid #eee;
+}
+.container-links {
+  max-width: 1400px;
+  margin-top: 10px;
+  padding: 0 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  
+  
+}
+.left-section {
+  display: flex;
   align-items: center;
 }
 .logo {
+  height: 30px;
+  margin-right: 8px;
+}
+.brand-name {
   font-weight: bold;
-  font-size: 1.5rem;
-  color: aqua;
+  font-size: 1.4rem;
 }
-.main-nav a,
-.actions a,
-.actions button {
-  margin-left: 15px;
+.main-nav {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+}
+.main-nav a {
+  color: #666;
   text-decoration: none;
-  color: #333;
+  transition: color 0.2s;
 }
-.actions button {
-  padding: 8px 15px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background-color: #f8f8f8;
+.main-nav a:hover {
+  color: #5ACAE6;
+}
+.right-section {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+.icon {
+  font-size: 1.2rem;
   cursor: pointer;
+  color: #444;
 }
-.actions button.signup {
-  background-color: #1dbf73; /* Color similar al de la imagen */
-  color: white;
-  border-color: #1dbf73;
+.orders-link {
+  text-decoration: none;
+  color: #555;
 }
-.header-search {
-  padding: 8px 10px;
-  border: 1px solid #928f8f;
-  border-radius: 4px;
-  min-width: 200px; /* Ajusta según necesites */
+.avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: #c0c0c0;
+  position: relative;
 }
-/* Añade más estilos para hacerlo responsive, etc. */
+.dot {
+  width: 6px;
+  height: 6px;
+  background-color: #1dbf73;
+  border-radius: 50%;
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+}
 </style>

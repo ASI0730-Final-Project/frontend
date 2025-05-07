@@ -1,63 +1,118 @@
 <script setup>
-// Puede tener lógica para el buscador en el futuro
+// Lógica futura para el buscador
+import 'primeicons/primeicons.css'
 </script>
 
 <template>
   <section class="hero-section">
     <div class="container">
-      <h1>Looking for innovation? You've come to the right place.</h1>
+      <h1>
+        Searching for <span class="highlight">Gigs</span> U<br />
+        are in the right place
+      </h1>
       <div class="search-box">
         <input type="search" placeholder="What service are you looking for today?" />
-        <button type="submit">Search</button>
+        <button type="submit">
+          <i class="pi pi-search" style="font-size: 1rem; color: #ffff"></i>
+        </button>
       </div>
-      <p class="freelancer-count">#1892 Freelancers</p>
+      <p class="freelancer-count">
+        <span class="number">#1892</span> Freelancers
+      </p>
     </div>
   </section>
 </template>
 
 <style scoped>
+
+@font-face {
+  font-family: 'JacquesFrancois';
+  src: url('@/assets/fonts/JacquesFrancois-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'InriaSerif';
+  src: url('@/assets/fonts/InriaSerif-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'KonkhmerSleokchher';
+  src: url('@/assets/fonts/KonkhmerSleokchher-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 .hero-section {
-  background-color: #092431; /* O el color de fondo de la imagen */
-  padding: 60px 0;
+  background-color: #ffffff;
+  padding: 100px 0;
   text-align: center;
-  /* Podrías añadir una imagen de fondo aquí */
+  color: #ffffff;
 }
+
 .container {
-  max-width: 800px; /* Contenedor más estrecho para el hero */
+  max-width: 85%;
+  border-radius: 25px;
   margin: 0 auto;
-  padding: 0 15px;
-  color: rgb(250, 250, 247);
+  padding: 50px 20px;
+  background-color: #1B2A2E;
 }
+
 h1 {
-  font-size: 2.5rem; /* Tamaño grande */
-  margin-bottom: 20px;
+  font-size: 64px;
+  line-height: 1.4;
+  margin-bottom: 30px;
+  color: #ffffff;
+  font-family: 'InriaSerif', serif;
 }
+
+.highlight {
+  color: #51c2e5;
+  font-family: 'JacquesFrancois', serif;
+}
+
 .search-box {
   display: flex;
-  max-width: 600px;
+  justify-content: center;
+  max-width: 700px;
   margin: 0 auto 20px auto;
-  color: rgb(2, 2, 2);
-  background-color: rgb(255, 255, 255);
+  background-color: #ffffff;
+  border-radius: 4px 20px 20px 4px ;
 }
+
+
 .search-box input {
   flex-grow: 1;
   padding: 15px 20px;
-  border: 1px solid #e9e8e8;
-  border-radius: 4px 0 0 4px;
-  font-size: 1rem;
-}
-.search-box button {
-  padding: 15px 25px;
   border: none;
-  background-color: #1dbf73; /* Color del botón */
-  color: white;
   font-size: 1rem;
+  outline: none;
+  color: #222325;
+}
+
+.search-box button {
+  background-color: #222325;
+  padding: 0 20px;
   border-radius: 0 4px 4px 0;
   cursor: pointer;
-}
-.freelancer-count {
+  display: flex;
+  align-items: center;
   font-size: 1.2rem;
-  font-weight: bold;
-  color: #fafafa;
+}
+
+.freelancer-count {
+  margin-top: 20px;
+  font-size: 32px;
+  color: #ffffff;
+  font-family: 'InriaSerif', serif;
+}
+
+.freelancer-count .number {
+  font-size: 48px;
+  font-weight: Regular;
+  font-family: 'KonkhmerSleokchher';
 }
 </style>
