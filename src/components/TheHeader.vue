@@ -1,4 +1,16 @@
-<script setup></script>
+<script setup>
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+function goToLogin() {
+  router.push('/login')
+}
+
+function goToRegister() {
+  router.push('/register')
+}
+</script>
 
 <template>
   <header class="app-header">
@@ -12,6 +24,10 @@
         <i class="pi pi-bell icon"></i>
         <i class="pi pi-envelope icon"></i>
         <a href="#" class="orders-link">Orders</a>
+        <div class="actions">
+          <button class="auth-button login" @click="goToLogin">Iniciar sesión</button>
+          <button class="auth-button register" @click="goToRegister">Registrarse</button>
+        </div>
         <div class="avatar">
           <div class="dot"></div>
         </div>
@@ -61,6 +77,25 @@
 .left-section {
   display: flex;
   align-items: center;
+}
+.main-nav a,
+.actions a,
+.actions button {
+  margin-left: 15px;
+  text-decoration: none;
+  color: #333;
+}
+.actions button {
+  padding: 8px 15px;
+  border: 1px solid #5bbce2;
+  border-radius: 4px;
+  background-color: #5ff197;
+  cursor: pointer;
+}
+.actions button.signup {
+  background-color: #1dbf73; /* Color similar al de la imagen */
+  color: rgb(72, 235, 140);
+  border-color: #1dbf73;
 }
 .logo {
   height: 30px;
