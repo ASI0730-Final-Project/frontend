@@ -155,7 +155,7 @@ const continueBrowseGigs = ref([
 .gig-list {
   display: grid;
   /* Crea 5 columnas en pantallas grandes, ajusta según necesites */
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 20px; /* Espacio entre las tarjetas */
 }
 

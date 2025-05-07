@@ -37,6 +37,7 @@
 .logo {
   font-weight: bold;
   font-size: 1.5rem;
+  color: aqua;
 }
 .main-nav a,
 .actions a,
@@ -59,7 +60,7 @@
 }
 .header-search {
   padding: 8px 10px;
-  border: 1px solid #ccc;
+  border: 1px solid #928f8f;
   border-radius: 4px;
   min-width: 200px; /* Ajusta según necesites */
 }

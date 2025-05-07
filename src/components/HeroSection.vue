@@ -5,7 +5,7 @@
 <template>
   <section class="hero-section">
     <div class="container">
-      <h1>Searching for Gigs U are in the right place</h1>
+      <h1>Looking for innovation? You've come to the right place.</h1>
       <div class="search-box">
         <input type="search" placeholder="What service are you looking for today?" />
         <button type="submit">Search</button>
@@ -17,7 +17,7 @@
 
 <style scoped>
 .hero-section {
-  background-color: #4abcf1; /* O el color de fondo de la imagen */
+  background-color: #092431; /* O el color de fondo de la imagen */
   padding: 60px 0;
   text-align: center;
   /* Podrías añadir una imagen de fondo aquí */
@@ -26,6 +26,7 @@
   max-width: 800px; /* Contenedor más estrecho para el hero */
   margin: 0 auto;
   padding: 0 15px;
+  color: rgb(250, 250, 247);
 }
 h1 {
   font-size: 2.5rem; /* Tamaño grande */
@@ -35,6 +36,8 @@ h1 {
   display: flex;
   max-width: 600px;
   margin: 0 auto 20px auto;
+  color: rgb(2, 2, 2);
+  background-color: rgb(255, 255, 255);
 }
 .search-box input {
   flex-grow: 1;
@@ -55,6 +58,6 @@ h1 {
 .freelancer-count {
   font-size: 1.2rem;
   font-weight: bold;
-  color: #2b2a2a;
+  color: #fafafa;
 }
 </style>
