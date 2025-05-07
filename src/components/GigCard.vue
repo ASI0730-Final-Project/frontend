@@ -34,7 +34,7 @@ const props = defineProps({
   transition: box-shadow 0.3s ease;
 }
 .gig-card:hover {
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 50px 60px rgba(7, 11, 219, 0.1);
 }
 .gig-image {
   width: 100%;
@@ -63,7 +63,7 @@ const props = defineProps({
   font-weight: bold;
   color: #0e0d0d;
   text-align: right;
-  border-top: 1px solid #eee;
+  border-top: 1px solid #07bdf5;
   padding-top: 10px;
   margin-top: 10px;
 }
