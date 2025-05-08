@@ -39,7 +39,8 @@ const router = useRouter()
 const login = () => {
   const storedUser = JSON.parse(localStorage.getItem('user'))
   if (storedUser && storedUser.email === email.value && storedUser.password === password.value) {
-    localStorage.setItem('loggedInUser', JSON.stringify(storedUser))
+    // Guardar el usuario autenticado bajo la misma clave que el header usa
+    localStorage.setItem('user', JSON.stringify(storedUser))
     alert('Login successful!')
     router.push('/')
   } else {

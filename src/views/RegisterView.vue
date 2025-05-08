@@ -85,7 +85,9 @@ const register = () => {
   }
 
   localStorage.setItem('user', JSON.stringify(user))
-  alert('Account created successfully!')
+  alert('Account created successfully!') // si deseas conservarlo
+  localStorage.setItem('loggedInUser', JSON.stringify(user)) // <-- cambia 'user' por 'loggedInUser'
+
   router.push('/login')
 }
 </script>

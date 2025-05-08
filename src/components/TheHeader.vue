@@ -1,9 +1,11 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
-const userImage = ref(null)
+
+const user = ref(null)
+const isLoggedIn = ref(false)
 
 function goToLogin() {
   router.push('/login')
@@ -17,12 +19,32 @@ function goToHome() {
   router.push('/')
 }
 
+function logout() {
+  localStorage.removeItem('loggedInUser') // <- usamos esta clave ahora
+  isLoggedIn.value = false
+  user.value = null
+  router.push('/login')
+}
+
+// Cargar usuario al montar
 onMounted(() => {
-  const user = JSON.parse(localStorage.getItem('user'))
-  if (user && user.image) {
-    userImage.value = user.image
+  const storedUser = JSON.parse(localStorage.getItem('loggedInUser'))
+  if (storedUser) {
+    user.value = storedUser
+    isLoggedIn.value = true
   }
 })
+
+// Reactividad: escuchamos los cambios en el localStorage
+watch(
+  () => localStorage.getItem('loggedInUser'),
+  (newValue) => {
+    const updatedUser = newValue ? JSON.parse(newValue) : null
+    user.value = updatedUser
+    isLoggedIn.value = !!updatedUser
+  },
+  { immediate: true }, // Ejecutar inmediatamente para el primer renderizado
+)
 </script>
 
 <template>
@@ -38,12 +60,17 @@ onMounted(() => {
         <i class="pi pi-envelope icon"></i>
         <a href="#" class="orders-link">Orders</a>
         <div class="actions">
-          <button-l class="log-button login" @click="goToLogin">Login</button-l>
-          <button class="auth-button register" @click="goToRegister">Sign up</button>
-        </div>
-        <div class="avatar">
-          <img v-if="userImage" :src="userImage" alt="User" class="avatar-image" />
-          <div class="dot"></div>
+          <template v-if="isLoggedIn">
+            <div class="user-info">
+              <img :src="user.image" alt="Avatar" class="avatar-img" />
+              <span class="user-name">{{ user.firstName }}</span>
+              <button class="auth-button logout" @click="logout">Cerrar sesión</button>
+            </div>
+          </template>
+          <template v-else>
+            <button class="auth-button login" @click="goToLogin">Login</button>
+            <button class="auth-button register" @click="goToRegister">Sign up</button>
+          </template>
         </div>
       </div>
     </div>
@@ -62,7 +89,6 @@ onMounted(() => {
     </div>
   </header>
 </template>
-
 <style scoped>
 .app-header {
   background-color: #fff;
@@ -73,7 +99,6 @@ onMounted(() => {
 }
 .container {
   height: 40px;
-  margin: 0;
   padding: 0 15px;
   display: flex;
   align-items: center;
@@ -91,55 +116,10 @@ onMounted(() => {
   display: flex;
   align-items: center;
 }
-.main-nav a,
-.actions a,
-.actions button {
-  margin-left: 15px;
-  text-decoration: none;
-  color: #ffffff;
-}
-.actions button {
-  padding: 8px 15px;
-  border-radius: 10px;
-  background-color: #5acae6;
-  cursor: pointer;
-}
-.actions button-l {
-  color: #666;
-  text-decoration: none;
-  transition: color 0.2s;
-  padding: 8px 15px;
-  cursor: pointer;
-}
-.actions button-l:hover {
-  color: #5acae6;
-}
-.actions button.signup {
-  background-color: #4ebfec;
-  color: rgb(72, 224, 235);
-  border-color: #63deee;
-}
 .logo {
   height: 30px;
   margin-right: 8px;
-}
-.brand-name {
-  font-weight: bold;
-  font-size: 1.4rem;
-}
-.main-nav {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  gap: 18px;
-}
-.main-nav a {
-  color: #666;
-  text-decoration: none;
-  transition: color 0.2s;
-}
-.main-nav a:hover {
-  color: #5acae6;
+  cursor: pointer;
 }
 .right-section {
   display: flex;
@@ -155,30 +135,57 @@ onMounted(() => {
   text-decoration: none;
   color: #555;
 }
-.avatar {
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.auth-button {
+  padding: 8px 15px;
+  border-radius: 10px;
+  background-color: #5acae6;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+}
+.auth-button.login {
+  background-color: #1dbf73;
+}
+.auth-button.register {
+  background-color: #4ebfec;
+}
+.auth-button.logout {
+  background-color: #f56565;
+}
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.avatar-img {
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background-color: #c0c0c0;
-  position: relative;
-  overflow: hidden;
-}
-.avatar-image {
-  width: 100%;
-  height: 100%;
   object-fit: cover;
-  border-radius: 50%;
+  border: 1px solid #ccc;
 }
-.dot {
-  width: 6px;
-  height: 6px;
-  background-color: #1dbf73;
-  border-radius: 50%;
-  position: absolute;
-  bottom: 2px;
-  right: 2px;
+.user-name {
+  font-weight: 500;
+  color: #333;
 }
-log-button {
-  background-color: #1dbf73;
+.main-nav {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+}
+.main-nav a {
+  color: #666;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.main-nav a:hover {
+  color: #5acae6;
 }
 </style>
