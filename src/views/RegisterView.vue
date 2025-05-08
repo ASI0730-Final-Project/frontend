@@ -8,6 +8,11 @@
       </div>
 
       <div>
+        <label class="label">Last Name</label>
+        <input v-model="name" type="text" class="input" />
+      </div>
+
+      <div>
         <label class="label">Email</label>
         <input v-model="email" type="email" class="input" />
       </div>
@@ -17,6 +22,15 @@
         <input v-model="password" type="password" class="input" />
       </div>
 
+      <div>
+        <label class="label">Confrim Password</label>
+        <input v-model="password" type="password" class="input" />
+      </div>
+
+      <div class="checkbox-wrapper">
+        <input type="checkbox" class="checkbox" id="terms" />
+      <label for="terms" class="checkbox-label">Terms and Conditions</label>
+      </div>
       <button type="submit" class="btn">Create Account</button>
 
       <p class="footer-text">
@@ -34,7 +48,11 @@ const email = ref('')
 const password = ref('')
 const register = () => {
   alert(`Account created: ${name.value}, ${email.value}`)
+  router.push('/login')
 }
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 </script>
 
 <style scoped>
@@ -64,9 +82,9 @@ const register = () => {
 }
 
 .label {
-  font-size: 0.95rem;
+  font-size: 1rem;
   margin-bottom: 0.25rem;
-  color: #0F2C32;
+  color: #252525;
 }
 
 .input {
@@ -112,5 +130,16 @@ const register = () => {
   font-weight: 500;
   text-decoration: underline;
   margin-left: 0.25rem;
+}
+.checkbox-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.checkbox {
+  width: 16px;
+  height: 16px;
 }
 </style>
