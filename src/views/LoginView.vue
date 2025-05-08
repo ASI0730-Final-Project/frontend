@@ -14,14 +14,15 @@
 
       <div class="checkbox-wrapper">
         <input type="checkbox" class="checkbox" id="remember" />
-        <label for="remember" class="checkbox-label">Remember me</label>
+        <label for="remember" class="checkbox-label">Remember me</label> <a href="/forgot" class="link2">Forgot your Password?</a>
       </div>
 
       <button type="submit" class="btn">Login</button>
+      
 
       <p class="footer-text">
-        Don't have an account?
-        <a href="/register" class="link">Sign up</a>
+        No account?
+        <a href="/register" class="link">Sign up here</a>
       </p>
     </form>
   </div>
@@ -33,7 +34,13 @@ const email = ref('')
 const password = ref('')
 const login = () => {
   alert(`Logged in with: ${email.value}`)
+  router.push('/')
 }
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+
 </script>
 
 <style scoped>
@@ -120,6 +127,13 @@ const login = () => {
 
 .link {
   color: #000;
+  font-weight: 500;
+  text-decoration: underline;
+  margin-left: 0.25rem;
+}
+
+.link2 {
+  color: #BCBCBC;
   font-weight: 500;
   text-decoration: underline;
   margin-left: 0.25rem;
