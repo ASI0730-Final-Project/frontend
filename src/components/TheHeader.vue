@@ -1,7 +1,9 @@
 <script setup>
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
+const userImage = ref(null)
 
 function goToLogin() {
   router.push('/login')
@@ -14,6 +16,13 @@ function goToRegister() {
 function goToHome() {
   router.push('/')
 }
+
+onMounted(() => {
+  const user = JSON.parse(localStorage.getItem('user'))
+  if (user && user.image) {
+    userImage.value = user.image
+  }
+})
 </script>
 
 <template>
@@ -33,10 +42,12 @@ function goToHome() {
           <button class="auth-button register" @click="goToRegister">Sign up</button>
         </div>
         <div class="avatar">
+          <img v-if="userImage" :src="userImage" alt="User" class="avatar-image" />
           <div class="dot"></div>
         </div>
       </div>
     </div>
+
     <div class="container-links">
       <nav class="main-nav">
         <a href="#">Programming & Tech</a>
@@ -59,21 +70,17 @@ function goToHome() {
   padding: 10px 0;
   font-family: 'Helvetica Neue', sans-serif;
   font-size: 14px;
-  
 }
 .container {
- 
   height: 40px;
   margin: 0;
   padding: 0 15px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-
   border-bottom: 1px solid #eee;
 }
 .container-links {
- 
   margin-top: 10px;
   padding: 0 15px;
   display: flex;
@@ -94,23 +101,21 @@ function goToHome() {
 .actions button {
   padding: 8px 15px;
   border-radius: 10px;
-  background-color: #5ACAE6;
+  background-color: #5acae6;
   cursor: pointer;
 }
-.actions button-l{
+.actions button-l {
   color: #666;
-  text-decoration: none; 
+  text-decoration: none;
   transition: color 0.2s;
   padding: 8px 15px;
   cursor: pointer;
 }
 .actions button-l:hover {
   color: #5acae6;
-  padding: 8px 15px;
-  cursor: pointer;
 }
 .actions button.signup {
-  background-color: #4ebfec; /* Color similar al de la imagen */
+  background-color: #4ebfec;
   color: rgb(72, 224, 235);
   border-color: #63deee;
 }
@@ -156,6 +161,13 @@ function goToHome() {
   border-radius: 50%;
   background-color: #c0c0c0;
   position: relative;
+  overflow: hidden;
+}
+.avatar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
 }
 .dot {
   width: 6px;
@@ -166,9 +178,7 @@ function goToHome() {
   bottom: 2px;
   right: 2px;
 }
-
-log-button{
+log-button {
   background-color: #1dbf73;
 }
-
 </style>

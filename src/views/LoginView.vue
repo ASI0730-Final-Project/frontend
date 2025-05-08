@@ -4,21 +4,21 @@
     <form @submit.prevent="login" class="form">
       <div>
         <label class="label">Email</label>
-        <input v-model="email" type="email" class="input" />
+        <input v-model="email" type="email" class="input" required />
       </div>
 
       <div>
         <label class="label">Password</label>
-        <input v-model="password" type="password" class="input" />
+        <input v-model="password" type="password" class="input" required />
       </div>
 
       <div class="checkbox-wrapper">
         <input type="checkbox" class="checkbox" id="remember" />
-        <label for="remember" class="checkbox-label">Remember me</label> <a href="/forgot" class="link2">Forgot your Password?</a>
+        <label for="remember" class="checkbox-label">Remember me</label>
+        <a href="/forgot" class="link2">Forgot your Password?</a>
       </div>
 
       <button type="submit" class="btn">Login</button>
-      
 
       <p class="footer-text">
         No account?
@@ -30,17 +30,22 @@
 
 <script setup>
 import { ref } from 'vue'
-const email = ref('')
-const password = ref('')
-const login = () => {
-  alert(`Logged in with: ${email.value}`)
-  router.push('/')
-}
 import { useRouter } from 'vue-router'
 
+const email = ref('')
+const password = ref('')
 const router = useRouter()
 
-
+const login = () => {
+  const storedUser = JSON.parse(localStorage.getItem('user'))
+  if (storedUser && storedUser.email === email.value && storedUser.password === password.value) {
+    localStorage.setItem('loggedInUser', JSON.stringify(storedUser))
+    alert('Login successful!')
+    router.push('/')
+  } else {
+    alert('Invalid credentials.')
+  }
+}
 </script>
 
 <style scoped>
@@ -50,14 +55,14 @@ const router = useRouter()
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: #F7F7F7;
+  background-color: #f7f7f7;
   padding: 1rem;
 }
 
 .title {
   font-size: 3rem;
   font-weight: bold;
-  color: #0F2C32;
+  color: #0f2c32;
   margin-bottom: 2rem;
 }
 
@@ -72,14 +77,14 @@ const router = useRouter()
 .label {
   font-size: 0.95rem;
   margin-bottom: 0.25rem;
-  color: #0F2C32;
+  color: #0f2c32;
 }
 
 .input {
   width: 100%;
   padding: 0.6rem 0.75rem;
   border: 1px solid #939393;
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   border-radius: 8px;
   font-size: 1rem;
   outline: none;
@@ -133,7 +138,7 @@ const router = useRouter()
 }
 
 .link2 {
-  color: #BCBCBC;
+  color: #bcbcbc;
   font-weight: 500;
   text-decoration: underline;
   margin-left: 0.25rem;

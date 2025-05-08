@@ -1,9 +1,20 @@
 <script setup>
-import HeroSection from '@/components/HeroSection.vue' // Usamos '@' como alias para 'src/'
+import HeroSection from '@/components/HeroSection.vue'
 import GigCard from '@/components/GigCard.vue'
-import { ref } from 'vue' // Para crear datos reactivos
+import { ref, onMounted } from 'vue'
 
-// Datos de ejemplo estáticos (en un proyecto real vendrían de una API)
+// Usuario actual desde localStorage
+const currentUser = ref(null)
+
+// Cargar datos del usuario al montar el componente
+onMounted(() => {
+  const userData = localStorage.getItem('loggedUser')
+  if (userData) {
+    currentUser.value = JSON.parse(userData)
+  }
+})
+
+// Datos de ejemplo para gigs
 const popularGigs = ref([
   {
     id: 1,
@@ -27,7 +38,6 @@ const popularGigs = ref([
     description: 'Creates corporate PowerPoint presentations.',
     price: 89.0,
   },
-  // Añade más gigs si quieres, copiando la estructura de la imagen
   {
     id: 4,
     imgSrc: 'https://influencermarketinghub.com/wp-content/uploads/2019/04/Template.jpg',
@@ -45,7 +55,6 @@ const popularGigs = ref([
   },
 ])
 
-// Podrías tener más listas para "Continue Browse", "Verified Pros", etc.
 const continueBrowseGigs = ref([
   {
     id: 6,
@@ -86,7 +95,6 @@ const continueBrowseGigs = ref([
     description: 'Technical document translation to Spanish.',
     price: 89.0,
   },
-  // ... más gigs
 ])
 </script>
 
@@ -94,6 +102,16 @@ const continueBrowseGigs = ref([
   <HeroSection />
 
   <div class="main-content container">
+    <!-- Perfil del usuario -->
+    <div v-if="currentUser" class="user-profile">
+      <img :src="currentUser.profileImage" alt="Foto de perfil" class="profile-img" />
+      <div class="user-info">
+        <h3>Bienvenido, {{ currentUser.firstName }} {{ currentUser.lastName }}</h3>
+        <p>{{ currentUser.email }}</p>
+      </div>
+    </div>
+
+    <!-- Gigs: Continue Browse -->
     <section class="gig-section">
       <h2>Continue Browse <a href="#">&rarr;</a></h2>
       <div class="gig-list">
@@ -108,6 +126,7 @@ const continueBrowseGigs = ref([
       </div>
     </section>
 
+    <!-- Gigs: Populares -->
     <section class="gig-section">
       <h2>Popular Tech Gigs</h2>
       <div class="gig-list">
@@ -132,7 +151,7 @@ const continueBrowseGigs = ref([
   padding: 0 15px;
 }
 .main-content {
-  padding-top: 40px; /* Espacio después del Hero */
+  padding-top: 40px;
 }
 .gig-section {
   margin-bottom: 40px;
@@ -149,17 +168,13 @@ const continueBrowseGigs = ref([
 .gig-section h2 a {
   font-size: 0.8em;
   text-decoration: none;
-  color: #0073bb; /* Color de enlace */
+  color: #0073bb;
 }
-
 .gig-list {
   display: grid;
-  /* Crea 5 columnas en pantallas grandes, ajusta según necesites */
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 20px; /* Espacio entre las tarjetas */
+  gap: 20px;
 }
-
-/* Adapta las columnas para pantallas más pequeñas (responsive) */
 @media (max-width: 1200px) {
   .gig-list {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -172,8 +187,31 @@ const continueBrowseGigs = ref([
 }
 @media (max-width: 480px) {
   .gig-list {
-    /* Una columna en móviles muy pequeños */
     grid-template-columns: 1fr;
   }
+}
+
+/* Estilo de perfil */
+.user-profile {
+  display: flex;
+  align-items: center;
+  margin-bottom: 30px;
+  background: #f9f9f9;
+  padding: 15px;
+  border-radius: 10px;
+}
+.profile-img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin-right: 20px;
+}
+.user-info h3 {
+  margin: 0;
+}
+.user-info p {
+  margin: 5px 0 0;
+  color: #666;
 }
 </style>

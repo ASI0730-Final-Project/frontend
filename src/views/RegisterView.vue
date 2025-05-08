@@ -4,33 +4,39 @@
     <form @submit.prevent="register" class="form">
       <div>
         <label class="label">Name</label>
-        <input v-model="name" type="text" class="input" />
+        <input v-model="firstName" type="text" class="input" required />
       </div>
 
       <div>
         <label class="label">Last Name</label>
-        <input v-model="name" type="text" class="input" />
+        <input v-model="lastName" type="text" class="input" required />
       </div>
 
       <div>
         <label class="label">Email</label>
-        <input v-model="email" type="email" class="input" />
+        <input v-model="email" type="email" class="input" required />
       </div>
 
       <div>
         <label class="label">Password</label>
-        <input v-model="password" type="password" class="input" />
+        <input v-model="password" type="password" class="input" required />
       </div>
 
       <div>
-        <label class="label">Confrim Password</label>
-        <input v-model="password" type="password" class="input" />
+        <label class="label">Confirm Password</label>
+        <input v-model="confirmPassword" type="password" class="input" required />
+      </div>
+
+      <div>
+        <label class="label">Profile Image</label>
+        <input type="file" @change="onFileChange" class="input" accept="image/*" />
       </div>
 
       <div class="checkbox-wrapper">
-        <input type="checkbox" class="checkbox" id="terms" />
-      <label for="terms" class="checkbox-label">Terms and Conditions</label>
+        <input type="checkbox" class="checkbox" id="terms" required />
+        <label for="terms" class="checkbox-label">Terms and Conditions</label>
       </div>
+
       <button type="submit" class="btn">Create Account</button>
 
       <p class="footer-text">
@@ -43,16 +49,45 @@
 
 <script setup>
 import { ref } from 'vue'
-const name = ref('')
-const email = ref('')
-const password = ref('')
-const register = () => {
-  alert(`Account created: ${name.value}, ${email.value}`)
-  router.push('/login')
-}
 import { useRouter } from 'vue-router'
 
+const firstName = ref('')
+const lastName = ref('')
+const email = ref('')
+const password = ref('')
+const confirmPassword = ref('')
+const imageBase64 = ref('')
 const router = useRouter()
+
+const onFileChange = (e) => {
+  const file = e.target.files[0]
+  if (file) {
+    const reader = new FileReader()
+    reader.onload = () => {
+      imageBase64.value = reader.result
+    }
+    reader.readAsDataURL(file)
+  }
+}
+
+const register = () => {
+  if (password.value !== confirmPassword.value) {
+    alert('Passwords do not match.')
+    return
+  }
+
+  const user = {
+    firstName: firstName.value,
+    lastName: lastName.value,
+    email: email.value,
+    password: password.value,
+    image: imageBase64.value,
+  }
+
+  localStorage.setItem('user', JSON.stringify(user))
+  alert('Account created successfully!')
+  router.push('/login')
+}
 </script>
 
 <style scoped>
@@ -62,14 +97,14 @@ const router = useRouter()
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: #F7F7F7;
+  background-color: #f7f7f7;
   padding: 1rem;
 }
 
 .title {
   font-size: 3rem;
   font-weight: bold;
-  color: #0F2C32;
+  color: #0f2c32;
   margin-bottom: 2rem;
 }
 
@@ -91,7 +126,7 @@ const router = useRouter()
   width: 100%;
   padding: 0.6rem 0.75rem;
   border: 1px solid #939393;
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   border-radius: 8px;
   font-size: 1rem;
   outline: none;
@@ -104,7 +139,7 @@ const router = useRouter()
 
 .btn {
   width: 100%;
-  background-color: #0F2C32;
+  background-color: #0f2c32;
   color: white;
   font-size: 1rem;
   font-weight: 500;
