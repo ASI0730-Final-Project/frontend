@@ -35,7 +35,7 @@ if (email && email.includes('@')) {
 }
 
 const goToForgot = () => {
-  router.push('/login')
+  router.push('/forgot')
 }
 </script>
 
