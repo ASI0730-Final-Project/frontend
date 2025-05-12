@@ -6,6 +6,7 @@ import ForgotView from '@/views/ForgotView.vue'
 import HomeSellersView from '@/views/HomeSellersView.vue'
 import WannaSellView from '@/views/WannaSellView.vue'
 import EmailVerificationSent from '@/views/VerificationLoginView.vue'
+import VerificationPasswordView from '@/views/VerificationPasswordView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -26,8 +27,8 @@ const router = createRouter({
       component: LoginView,
     },
     {
-      path: '/email-verification-sent',
-      name: 'email-verification-sent',
+      path: '/email-verification-login',
+      name: 'email-verification-login',
       component: EmailVerificationSent,
     },
     {
@@ -39,6 +40,11 @@ const router = createRouter({
       path: '/forgot',
       name: 'forgot',
       component: ForgotView,
+    },
+    {
+      path: '/email-verification-password',
+      name: 'email-verification-password',
+      component: () => import('@/views/VerificationPasswordView.vue'),
     },
     {
       path: '/sellers',

@@ -2,12 +2,12 @@
   <div class="verification-container">
     <div class="card">
       <svg class="check-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <circle cx="12" cy="12" r="10" stroke-width="1" />
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 12l2 2l4 -4" />
+        <circle cx="12" cy="12" r="10" stroke-width="1" /> <!-- Línea más delgada -->
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 12l2 2l4 -4" /> <!-- Línea más delgada -->
       </svg>
 
       <p class="message">
-        We sent an email to <span class="email">{{ obfuscatedEmail }}</span>. Go to the link in the email to verify this account.
+        We sent an email to <span class="email">{{ obfuscatedEmail }}</span>. Go to the link to reset your password.
       </p>
 
       <button class="btn" @click="goToForgot">Log In</button>
@@ -23,20 +23,14 @@ const router = useRouter()
 
 const email = route.query.email || ''
 
-let obfuscatedEmail = 'Invalid email'
-
-if (email && email.includes('@')) {
-  const [username, domain] = email.split('@')
-  if (username.length > 2) {
-    obfuscatedEmail = `${username.substring(0, 2)}${'*'.repeat(Math.min(username.length - 2, 5))}@${domain}`
-  } else {
-    obfuscatedEmail = `${username.substring(0, 1)}${'*'.repeat(Math.min(username.length - 1, 3))}@${domain}`
-  }
-}
+const obfuscatedEmail = email
+  ? email.replace(/(.{0,2})(.*)(@.*)/, (_, a, b, c) => `${'*'.repeat(a.length + b.length)}${c}`)
+  : ''
 
 const goToForgot = () => {
   router.push('/login')
 }
+
 </script>
 
 <style scoped>
@@ -60,8 +54,8 @@ const goToForgot = () => {
 }
 
 .check-icon {
-  width: 120px;
-  height: 120px;
+  width: 120px; /* Aumenta el tamaño aquí */
+  height: 120px; /* Aumenta el tamaño aquí */
   stroke: #000;
   margin: 0 auto 1rem;
 }

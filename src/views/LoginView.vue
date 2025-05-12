@@ -15,7 +15,7 @@
       <div class="checkbox-wrapper">
         <input type="checkbox" class="checkbox" id="remember" />
         <label for="remember" class="checkbox-label">Remember me</label>
-        <a href="#" class="link2" @click.prevent="goToVerification">Forgot your Password?</a>
+        <a href="#" class="link2" @click.prevent="goToVerificationLogin">Forgot your Password?</a>
       </div>
 
       <button type="submit" class="btn">Login</button>
@@ -39,7 +39,6 @@ const router = useRouter()
 const login = () => {
   const storedUser = JSON.parse(localStorage.getItem('user'))
   if (storedUser && storedUser.email === email.value && storedUser.password === password.value) {
-    // Guardar el usuario autenticado bajo la misma clave que el header usa
     localStorage.setItem('user', JSON.stringify(storedUser))
     alert('Login successful!')
     router.push('/')
@@ -47,16 +46,24 @@ const login = () => {
     alert('Invalid credentials.')
   }
 }
-const goToVerification = () => {
+
+const goToVerificationLogin = () => {
   if (!email.value) {
-    alert('Please enter your email first.')
+    alert('Please enter your email address before proceeding.')
     return
   }
 
-  // Redirige a la vista de verificación con el correo como query param
-  router.push({ name: 'email-verification-sent', query: { email: email.value } })
-}
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  if (!emailRegex.test(email.value)) {
+    alert('Please enter a valid email address.')
+    return
+  }
 
+  router.push({
+    name: 'email-verification-login',
+    query: { email: email.value }
+  })
+}
 </script>
 
 <style scoped>
@@ -155,3 +162,4 @@ const goToVerification = () => {
   margin-left: 0.25rem;
 }
 </style>
+
