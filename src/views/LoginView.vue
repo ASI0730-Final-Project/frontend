@@ -15,7 +15,7 @@
       <div class="checkbox-wrapper">
         <input type="checkbox" class="checkbox" id="remember" />
         <label for="remember" class="checkbox-label">Remember me</label>
-        <a href="/forgot" class="link2">Forgot your Password?</a>
+        <a href="#" class="link2" @click.prevent="goToVerification">Forgot your Password?</a>
       </div>
 
       <button type="submit" class="btn">Login</button>
@@ -47,6 +47,16 @@ const login = () => {
     alert('Invalid credentials.')
   }
 }
+const goToVerification = () => {
+  if (!email.value) {
+    alert('Please enter your email first.')
+    return
+  }
+
+  // Redirige a la vista de verificación con el correo como query param
+  router.push({ name: 'email-verification-sent', query: { email: email.value } })
+}
+
 </script>
 
 <style scoped>

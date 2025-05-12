@@ -5,6 +5,7 @@ import RegisterView from '@/views/RegisterView.vue'
 import ForgotView from '@/views/ForgotView.vue'
 import HomeSellersView from '@/views/HomeSellersView.vue'
 import WannaSellView from '@/views/WannaSellView.vue'
+import EmailVerificationSent from '@/views/VerificationLoginView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -23,6 +24,11 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: LoginView,
+    },
+    {
+      path: '/email-verification-sent',
+      name: 'email-verification-sent',
+      component: EmailVerificationSent,
     },
     {
       path: '/register',
