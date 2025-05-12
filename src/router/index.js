@@ -7,6 +7,7 @@ import HomeSellersView from '@/views/HomeSellersView.vue'
 import WannaSellView from '@/views/WannaSellView.vue'
 import EmailVerificationSent from '@/views/VerificationLoginView.vue'
 import VerificationPasswordView from '@/views/VerificationPasswordView.vue'
+import ServiceOverviewView from "@/views/ServiceOverviewView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -55,6 +56,12 @@ const router = createRouter({
       path: '/wannasell',
       name: 'wannasell',
       component: WannaSellView,
+    },
+    {
+      path: "/service/:serviceId",
+      name: "ServiceOverview",
+      component: ServiceOverviewView,
+      props: true
     },
   ],
 })
