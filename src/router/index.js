@@ -6,6 +6,7 @@ import ForgotView from '@/views/ForgotView.vue'
 import HomeSellersView from '@/views/HomeSellersView.vue'
 import WannaSellView from '@/views/WannaSellView.vue'
 import EmailVerificationSent from '@/views/VerificationLoginView.vue'
+import DetailsView from '@/views/DetailsView.vue'
 import VerificationPasswordView from '@/views/VerificationPasswordView.vue'
 
 const router = createRouter({
@@ -50,6 +51,11 @@ const router = createRouter({
       path: '/sellers',
       name: 'sellers',
       component: HomeSellersView,
+    },
+    {
+      path: '/details',
+      name: 'details',
+      component: DetailsView,
     },
     {
       path: '/wannasell',
