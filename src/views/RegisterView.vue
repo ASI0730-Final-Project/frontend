@@ -1,7 +1,7 @@
 <template>
   <div class="signup-container">
     <h1 class="title">Sign Up</h1>
-    <form @submit.prevent="register" class="form">
+    <form @submit.prevent="handleRegister" class="form">
       <div>
         <label class="label">Name</label>
         <input v-model="firstName" type="text" class="input" required />
@@ -19,7 +19,7 @@
 
       <div>
         <label class="label">Password</label>
-        <input v-model="password" type="password" class="input" required />
+        <input v-model="password" type="password" class="input" required minlength="6" />
       </div>
 
       <div>
@@ -32,12 +32,24 @@
         <input type="file" @change="onFileChange" class="input" accept="image/*" />
       </div>
 
+      <div>
+        <label class="label">Role</label>
+        <select v-model="role" class="input" required>
+          <option value="Buyer">Buyer</option>
+          <option value="Seller">Seller</option>
+        </select>
+      </div>
+
       <div class="checkbox-wrapper">
         <input type="checkbox" class="checkbox" id="terms" required />
         <label for="terms" class="checkbox-label">Terms and Conditions</label>
       </div>
 
-      <button type="submit" class="btn">Create Account</button>
+      <button type="submit" class="btn" :disabled="loading">
+        {{ loading ? 'Creating account...' : 'Create Account' }}
+      </button>
+
+      <p v-if="error" class="error-message">{{ error }}</p>
 
       <p class="footer-text">
         Already have an account?
@@ -50,14 +62,19 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useUserStore } from '@/stores/userStore'
 
 const firstName = ref('')
 const lastName = ref('')
 const email = ref('')
 const password = ref('')
 const confirmPassword = ref('')
+const role = ref('Buyer')
 const imageBase64 = ref('')
+const error = ref('')
+const loading = ref(false)
 const router = useRouter()
+const userStore = useUserStore()
 
 const onFileChange = (e) => {
   const file = e.target.files[0]
@@ -70,29 +87,59 @@ const onFileChange = (e) => {
   }
 }
 
-const register = () => {
-  if (password.value !== confirmPassword.value) {
-    alert('Passwords do not match.')
-    return
+const handleRegister = async () => {
+  error.value = ''
+  loading.value = true
+  
+  try {
+    // Validaciones
+    if (!firstName.value.trim() || !lastName.value.trim() || 
+        !email.value.trim() || !password.value.trim() || 
+        !confirmPassword.value.trim()) {
+      throw new Error('Please fill in all required fields')
+    }
+
+    if (password.value !== confirmPassword.value) {
+      throw new Error('Passwords do not match')
+    }
+
+    if (password.value.length < 6) {
+      throw new Error('Password must be at least 6 characters')
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email.value)) {
+      throw new Error('Please enter a valid email address')
+    }
+
+    const userData = {
+      Name: firstName.value.trim(),
+      LastName: lastName.value.trim(),
+      Email: email.value.trim(),
+      Password: password.value,
+      Rol: role.value,
+      Image: imageBase64.value
+    }
+
+    await userStore.registerUser(userData)
+    router.push(userStore.user.Rol === 'Seller' ? '/sellers' : '/')
+  } catch (err) {
+    error.value = err.message || 'Registration failed. Please try again.'
+    console.error('Registration error details:', err)
+  } finally {
+    loading.value = false
   }
-
-  const user = {
-    firstName: firstName.value,
-    lastName: lastName.value,
-    email: email.value,
-    password: password.value,
-    image: imageBase64.value,
-  }
-
-  localStorage.setItem('user', JSON.stringify(user))
-  alert('Account created successfully!') // si deseas conservarlo
-  localStorage.setItem('loggedInUser', JSON.stringify(user)) // <-- cambia 'user' por 'loggedInUser'
-
-  router.push('/login')
 }
 </script>
 
 <style scoped>
+.error-message {
+  color: red;
+  margin-top: 1rem;
+  text-align: center;
+}
+
+
 .signup-container {
   min-height: 100vh;
   display: flex;

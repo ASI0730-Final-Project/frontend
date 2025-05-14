@@ -1,17 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
-import LoginView from '@/views/LoginView.vue'
-import RegisterView from '@/views/RegisterView.vue'
-import ForgotView from '@/views/ForgotView.vue'
-import HomeSellersView from '@/views/HomeSellersView.vue'
-import WannaSellView from '@/views/WannaSellView.vue'
-import EmailVerificationSent from '@/views/VerificationLoginView.vue'
-import DetailsView from '@/views/DetailsView.vue'
-import VerificationPasswordView from '@/views/VerificationPasswordView.vue'
-import ServiceOverviewView from "@/views/ServiceOverviewView.vue";
-import createGigView from '@/views/CreateGigView.vue'
-
-
+import { useUserStore } from '@/stores/userStore'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -19,72 +7,133 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomeView,
+      component: () => import('@/views/HomeView.vue'),
+      meta: { requiresAuth: false }
     },
     {
       path: '/about',
       name: 'about',
-      component: () => import('../views/AboutView.vue'),
+      component: () => import('@/views/AboutView.vue'),
+      meta: { requiresAuth: false }
     },
     {
       path: '/login',
       name: 'login',
-      component: LoginView,
+      component: () => import('@/views/LoginView.vue'),
+      meta: { requiresAuth: false, hideIfLoggedIn: true }
     },
     {
       path: '/email-verification-login',
       name: 'email-verification-login',
-      component: EmailVerificationSent,
+      component: () => import('@/views/VerificationLoginView.vue'),
+      meta: { requiresAuth: false }
     },
     {
       path: '/register',
       name: 'register',
-      component: RegisterView,
+      component: () => import('@/views/RegisterView.vue'),
+      meta: { requiresAuth: false, hideIfLoggedIn: true }
     },
     {
       path: '/forgot',
       name: 'forgot',
-      component: ForgotView,
+      component: () => import('@/views/ForgotView.vue'),
+      meta: { requiresAuth: false }
     },
     {
       path: '/email-verification-password',
       name: 'email-verification-password',
       component: () => import('@/views/VerificationPasswordView.vue'),
+      meta: { requiresAuth: false }
     },
     {
       path: '/sellers',
       name: 'sellers',
-      component: HomeSellersView,
+      component: () => import('@/views/HomeSellersView.vue'),
+      meta: { requiresAuth: true, roles: ['Seller'] }
     },
     {
       path: '/details',
       name: 'details',
-      component: DetailsView,
+      component: () => import('@/views/DetailsView.vue'),
+      meta: { requiresAuth: true }
     },
     {
       path: '/wannasell',
       name: 'wannasell',
-      component: WannaSellView,
+      component: () => import('@/views/WannaSellView.vue'),
+      meta: { requiresAuth: true }
     },
     {
-      path: "/service/:serviceId",
-      name: "ServiceOverview",
-      component: ServiceOverviewView,
+      path: '/service/:serviceId',
+      name: 'ServiceOverview',
+      component: () => import('@/views/ServiceOverviewView.vue'),
       props: true,
+      meta: { requiresAuth: true }
     },
     {
       path: '/createGigView',
       name: 'createGigView',
-      component: createGigView,
-
+      component: () => import('@/views/CreateGigView.vue'),
+      meta: { requiresAuth: true, roles: ['Seller'] }
     },
     {
       path: '/VVV',
       name: 'VVVV',
-      component: VerificationPasswordView,
-
+      component: () => import('@/views/VerificationPasswordView.vue'),
+      meta: { requiresAuth: false }
     },
-  ],
+    // Ruta para manejar accesos no autorizados
+    {
+      path: '/unauthorized',
+      name: 'unauthorized',
+      component: () => import('@/views/UnauthorizedView.vue'),
+      meta: { requiresAuth: false }
+    },
+    // Ruta de catch-all para 404
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'not-found',
+      component: () => import('@/views/NotFoundView.vue'),
+      meta: { requiresAuth: false }
+    }
+  ]
+})
+
+// Guard global de navegación
+router.beforeEach(async (to, from, next) => {
+  const userStore = useUserStore()
+  
+  // Inicializar el usuario si no está cargado pero hay datos en localStorage
+  if (!userStore.user && localStorage.getItem('user')) {
+    userStore.initializeUser()
+  }
+
+  // Verificar si la ruta requiere autenticación
+  if (to.meta.requiresAuth) {
+    if (userStore.isLoggedIn) {
+      // Verificar roles si están definidos en la ruta
+      if (to.meta.roles && !to.meta.roles.includes(userStore.user.Rol)) {
+        next('/unauthorized') // Redirigir si no tiene el rol necesario
+      } else {
+        next() // Permitir acceso
+      }
+    } else {
+      // Redirigir a login con la ruta original como query parameter
+      next({
+        path: '/login',
+        query: { redirect: to.fullPath }
+      })
+    }
+  } 
+  // Evitar que usuarios logueados accedan a login/register
+  else if (to.meta.hideIfLoggedIn && userStore.isLoggedIn) {
+    next('/') // Redirigir a home
+  } 
+  // Permitir acceso a rutas públicas
+  else {
+    next()
+  }
 })
 
 export default router
