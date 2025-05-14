@@ -12,8 +12,9 @@ const { t } = useI18n()
         Searching for <span class="highlight">Gigs</span> U<br />
         are in the right place
       </h1>
+
       <div class="search-box">
-        <input type="search" placeholder="What service are you looking for today?" />
+        <input type="search" :placeholder="t('hero.searchPlaceholder')" />
         <button type="submit">
           <i class="pi pi-search" style="font-size: 1rem; color: #ffff"></i>
         </button>
