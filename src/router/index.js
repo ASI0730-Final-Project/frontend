@@ -8,6 +8,8 @@ import WannaSellView from '@/views/WannaSellView.vue'
 import EmailVerificationSent from '@/views/VerificationLoginView.vue'
 import DetailsView from '@/views/DetailsView.vue'
 import VerificationPasswordView from '@/views/VerificationPasswordView.vue'
+import createGigView from '@/views/CreateGigView.vue'
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -61,6 +63,11 @@ const router = createRouter({
       path: '/wannasell',
       name: 'wannasell',
       component: WannaSellView,
+    },
+    {
+      path: '/createGigView',
+      name: 'createGigView',
+      component: createGigView
     },
   ],
 })
