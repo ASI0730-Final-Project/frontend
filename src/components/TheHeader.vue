@@ -1,11 +1,15 @@
 <script setup>
 import { ref, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import { useUserStore } from '@/stores/userStore'
 
 const router = useRouter()
+const userStore = useUserStore()
 
-const user = ref(null)
-const isLoggedIn = ref(false)
+// Initialize user from store
+onMounted(() => {
+  userStore.initializeUser()
+})
 
 function goToLogin() {
   router.push('/login')
@@ -20,31 +24,8 @@ function goToHome() {
 }
 
 function logout() {
-  localStorage.removeItem('loggedInUser') // <- usamos esta clave ahora
-  isLoggedIn.value = false
-  user.value = null
-  router.push('/login')
+  userStore.logoutUser()
 }
-
-// Cargar usuario al montar
-onMounted(() => {
-  const storedUser = JSON.parse(localStorage.getItem('loggedInUser'))
-  if (storedUser) {
-    user.value = storedUser
-    isLoggedIn.value = true
-  }
-})
-
-// Reactividad: escuchamos los cambios en el localStorage
-watch(
-  () => localStorage.getItem('loggedInUser'),
-  (newValue) => {
-    const updatedUser = newValue ? JSON.parse(newValue) : null
-    user.value = updatedUser
-    isLoggedIn.value = !!updatedUser
-  },
-  { immediate: true }, // Ejecutar inmediatamente para el primer renderizado
-)
 </script>
 
 <template>
@@ -58,20 +39,26 @@ watch(
         <i class="pi pi-heart icon"></i>
         <i class="pi pi-bell icon"></i>
         <i class="pi pi-envelope icon"></i>
-        <a href="#" class="orders-link">Orders</a>
-        <div class="actions">
-          <template v-if="isLoggedIn">
-            <div class="user-info">
-              <img :src="user.image" alt="Avatar" class="avatar-img" />
-              <span class="user-name">{{ user.firstName }}</span>
-              <button class="auth-button logout" @click="logout">Cerrar sesión</button>
-            </div>
-          </template>
-          <template v-else>
-            <button class="auth-button login" @click="goToLogin">Login</button>
-            <button class="auth-button register" @click="goToRegister">Sign up</button>
-          </template>
-        </div>
+        
+        <!-- Show different links based on role -->
+        <template v-if="userStore.isLoggedIn">
+          <a v-if="userStore.user.Rol === 'Buyer'" href="#" class="orders-link">My Orders</a>
+          <a v-if="userStore.user.Rol === 'Seller'" href="/createGigView" class="orders-link">Create Gig</a>
+          
+          <div class="user-info">
+            <img 
+              :src="userStore.user.Image || 'https://via.placeholder.com/40'" 
+              alt="Avatar" 
+              class="avatar-img" 
+            />
+            <span class="user-name">{{ userStore.user.Name }}</span>
+            <button class="auth-button logout" @click="logout">Logout</button>
+          </div>
+        </template>
+        <template v-else>
+          <button class="auth-button login" @click="goToLogin">Login</button>
+          <button class="auth-button register" @click="goToRegister">Sign up</button>
+        </template>
       </div>
     </div>
 
@@ -89,6 +76,7 @@ watch(
     </div>
   </header>
 </template>
+
 <style scoped>
 .app-header {
   background-color: #fff;
