@@ -29,6 +29,12 @@ const router = createRouter({
       meta: { requiresAuth: false, hideIfLoggedIn: true }
     },
     {
+      path: '/PullFreelancer',
+      name: 'PullFreelancer',
+      component: () => import('@/views/PullFreelancerView.vue'),
+      meta: { requiresAuth: false, hideIfLoggedIn: true }
+    },
+    {
       path: '/email-verification-login',
       name: 'email-verification-login',
       component: () => import('@/views/VerificationLoginView.vue'),
