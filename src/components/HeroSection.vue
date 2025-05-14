@@ -1,6 +1,8 @@
 <script setup>
-// Lógica futura para el buscador
+import { useI18n } from 'vue-i18n'
 import 'primeicons/primeicons.css'
+
+const { t } = useI18n()
 </script>
 
 <template>
@@ -16,15 +18,13 @@ import 'primeicons/primeicons.css'
           <i class="pi pi-search" style="font-size: 1rem; color: #ffff"></i>
         </button>
       </div>
-      <p class="freelancer-count">
-        <span class="number">#1892</span> Freelancers
-      </p>
+
+      <p class="freelancer-count"><span class="number">#1892</span> {{ t('hero.freelancers') }}</p>
     </div>
   </section>
 </template>
 
 <style scoped>
-
 @font-face {
   font-family: 'JacquesFrancois';
   src: url('@/assets/fonts/JacquesFrancois-Regular.ttf') format('truetype');
@@ -58,7 +58,7 @@ import 'primeicons/primeicons.css'
   border-radius: 25px;
   margin: 0 auto;
   padding: 50px 20px;
-  background-color: #1B2A2E;
+  background-color: #1b2a2e;
 }
 
 h1 {
@@ -80,9 +80,8 @@ h1 {
   max-width: 700px;
   margin: 0 auto 20px auto;
   background-color: #ffffff;
-  border-radius: 4px 20px 20px 4px ;
+  border-radius: 4px 20px 20px 4px;
 }
-
 
 .search-box input {
   flex-grow: 1;

@@ -1,8 +1,10 @@
 <script setup>
 import { ref, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 
 const router = useRouter()
+const { locale } = useI18n()
 
 const user = ref(null)
 const isLoggedIn = ref(false)
@@ -20,22 +22,28 @@ function goToHome() {
 }
 
 function logout() {
-  localStorage.removeItem('loggedInUser') // <- usamos esta clave ahora
+  localStorage.removeItem('loggedInUser')
   isLoggedIn.value = false
   user.value = null
   router.push('/login')
 }
 
-// Cargar usuario al montar
+function changeLanguage(lang) {
+  locale.value = lang
+  localStorage.setItem('selectedLang', lang)
+}
+
 onMounted(() => {
   const storedUser = JSON.parse(localStorage.getItem('loggedInUser'))
   if (storedUser) {
     user.value = storedUser
     isLoggedIn.value = true
   }
+
+  const savedLang = localStorage.getItem('selectedLang')
+  if (savedLang) locale.value = savedLang
 })
 
-// Reactividad: escuchamos los cambios en el localStorage
 watch(
   () => localStorage.getItem('loggedInUser'),
   (newValue) => {
@@ -43,7 +51,7 @@ watch(
     user.value = updatedUser
     isLoggedIn.value = !!updatedUser
   },
-  { immediate: true }, // Ejecutar inmediatamente para el primer renderizado
+  { immediate: true },
 )
 </script>
 
@@ -58,18 +66,26 @@ watch(
         <i class="pi pi-heart icon"></i>
         <i class="pi pi-bell icon"></i>
         <i class="pi pi-envelope icon"></i>
-        <a href="#" class="orders-link">Orders</a>
+        <a href="#" class="orders-link">{{ $t('header.orders') }}</a>
+
+        <select class="language-select" v-model="locale" @change="changeLanguage(locale)">
+          <option value="en">🇬🇧 English</option>
+          <option value="es">🇪🇸 Español</option>
+        </select>
+
         <div class="actions">
           <template v-if="isLoggedIn">
             <div class="user-info">
               <img :src="user.image" alt="Avatar" class="avatar-img" />
               <span class="user-name">{{ user.firstName }}</span>
-              <button class="auth-button logout" @click="logout">Cerrar sesión</button>
+              <button class="auth-button logout" @click="logout">{{ $t('header.logout') }}</button>
             </div>
           </template>
           <template v-else>
-            <button class="auth-button login" @click="goToLogin">Login</button>
-            <button class="auth-button register" @click="goToRegister">Sign up</button>
+            <button class="auth-button login" @click="goToLogin">{{ $t('header.login') }}</button>
+            <button class="auth-button register" @click="goToRegister">
+              {{ $t('header.register') }}
+            </button>
           </template>
         </div>
       </div>
@@ -77,18 +93,19 @@ watch(
 
     <div class="container-links">
       <nav class="main-nav">
-        <a href="#">Programming & Tech</a>
-        <a href="#">Graphics & Design</a>
-        <a href="#">Writing & Translation</a>
-        <a href="#">Digital Marketing</a>
-        <a href="#">Video & Animation</a>
-        <a href="#">Music & Audio</a>
-        <a href="#">Photography</a>
-        <a href="#">Business</a>
+        <a href="#">{{ $t('categories.programming') }}</a>
+        <a href="#">{{ $t('categories.design') }}</a>
+        <a href="#">{{ $t('categories.writing') }}</a>
+        <a href="#">{{ $t('categories.marketing') }}</a>
+        <a href="#">{{ $t('categories.video') }}</a>
+        <a href="#">{{ $t('categories.music') }}</a>
+        <a href="#">{{ $t('categories.photo') }}</a>
+        <a href="#">{{ $t('categories.business') }}</a>
       </nav>
     </div>
   </header>
 </template>
+
 <style scoped>
 .app-header {
   background-color: #fff;
@@ -187,5 +204,13 @@ watch(
 }
 .main-nav a:hover {
   color: #5acae6;
+}
+.language-select {
+  padding: 5px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background: #fff;
+  font-size: 14px;
+  cursor: pointer;
 }
 </style>

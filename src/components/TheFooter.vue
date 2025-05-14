@@ -1,5 +1,8 @@
 <script setup>
-const currentYear = new Date().getFullYear();
+import { useI18n } from 'vue-i18n'
+
+const { t, locale } = useI18n()
+const currentYear = new Date().getFullYear()
 </script>
 
 <template>
@@ -10,19 +13,19 @@ const currentYear = new Date().getFullYear();
         <div class="column">
           <h4>Categories</h4>
           <ul>
-            <li>Programming & Tech</li>
-            <li>Data</li>
-            <li>Business</li>
-            <li>Graphics & Design</li>
-            <li>Video & Animation</li>
-            <li>Music & Audio</li>
-            <li>Writing & Translation</li>
-            <li>Photography</li>
-            <li>Digital Marketing</li>
+            <li>{{ t('categories.programming') }}</li>
+            <li>{{ t('categories.data') }}</li>
+            <li>{{ t('categories.business') }}</li>
+            <li>{{ t('categories.design') }}</li>
+            <li>{{ t('categories.video') }}</li>
+            <li>{{ t('categories.music') }}</li>
+            <li>{{ t('categories.writing') }}</li>
+            <li>{{ t('categories.photo') }}</li>
+            <li>{{ t('categories.marketing') }}</li>
           </ul>
         </div>
         <div class="column">
-          <h4>About</h4>
+          <h4>{{ t('footer.about.title') }}</h4>
           <ul>
             <li>Terms of Service</li>
             <li>Privacy Policy</li>
@@ -30,7 +33,7 @@ const currentYear = new Date().getFullYear();
           </ul>
         </div>
         <div class="column">
-          <h4>Support</h4>
+          <h4>{{ t('footer.support.title') }}</h4>
           <ul>
             <li>Help & Support</li>
             <li>Buying</li>
@@ -38,7 +41,7 @@ const currentYear = new Date().getFullYear();
           </ul>
         </div>
         <div class="column">
-          <h4>Community</h4>
+          <h4>{{ t('footer.community.title') }}</h4>
           <ul>
             <li>Invite a Friend</li>
             <li>Become a Seller</li>
@@ -52,7 +55,8 @@ const currentYear = new Date().getFullYear();
         <img src="/src/components/icons/logo.png" alt="GigU Logo" class="logo" />
         <span>© GigU {{ currentYear }}</span>
         <div class="language-selector">
-          <i class="pi pi-globe"></i> English
+          <i class="pi pi-globe"></i>
+          {{ locale === 'es' ? 'Español' : 'English' }}
         </div>
       </div>
     </div>

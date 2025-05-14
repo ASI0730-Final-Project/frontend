@@ -1,11 +1,9 @@
 <script setup>
-import { useRouter } from 'vue-router';
-import { selectedService } from '@/composables/useSelectedService'; // Asegúrate de que la ruta sea correcta
+import { useRouter } from 'vue-router'
+import { selectedService } from '@/composables/useSelectedService'
 
-// Inicializa el router
-const router = useRouter();
+const router = useRouter()
 
-// Define las props que recibe la card
 const props = defineProps({
   imgSrc: String,
   sellerAvatar: String,
@@ -17,20 +15,15 @@ const props = defineProps({
     default: 'S/.',
   },
   name: String,
-  // Este objeto puede contener otras propiedades, como el id del servicio.
   service: {
     type: Object,
-    default: () => ({ id: "default" }),
+    default: () => ({ id: 'default' }),
   },
-});
+})
 
-// Función que se ejecuta cuando se hace clic en la card
 function goToOverview() {
-  console.log("Card clicked!");
-
-  // Actualiza la variable global con la información de la card
   selectedService.value = {
-    ...props.service, // Copia todas las propiedades del objeto service (por ejemplo, id)
+    ...props.service,
     imgSrc: props.imgSrc,
     sellerAvatar: props.sellerAvatar,
     sellerName: props.sellerName,
@@ -38,38 +31,33 @@ function goToOverview() {
     price: props.price,
     currency: props.currency,
     name: props.name,
-  };
-
-  console.log("Servicio seleccionado:", selectedService.value);
-
-  // Navega a la vista Overview usando el id (puede ser "default" o el que corresponda)
-  router.push({ name: "ServiceOverview", params: { serviceId: props.service.id } });
+  }
+  router.push({ name: 'ServiceOverview', params: { serviceId: props.service.id } })
 }
 </script>
 
 <template>
-  <!-- Se define el contenedor principal y se asigna el evento de clic -->
   <div class="gig-card" @click="goToOverview">
     <img :src="imgSrc" alt="Gig Image" class="gig-image" />
     <div class="seller-info">
       <span>{{ sellerName }}</span>
     </div>
     <p class="gig-description">{{ description }}</p>
-    <div class="gig-price">
-      Starting at {{ currency }}{{ price.toFixed(2) }}
-    </div>
+    <!-- ✅ Aquí eliminamos "startingAt" -->
+    <div class="gig-price">{{ currency }}{{ price.toFixed(2) }}</div>
   </div>
 </template>
 
 <style scoped>
-/* Puedes mantener o ajustar estos estilos según tu tema */
 .gig-card {
   border: 1px solid #e0e0e0;
   border-radius: 4px;
   overflow: hidden;
   background-color: #fff;
   cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
   position: relative;
   z-index: 10;
 }

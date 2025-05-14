@@ -1,12 +1,20 @@
 <script setup>
+import { ref, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import HeroSection from '@/components/HeroSection.vue'
 import GigCard from '@/components/GigCard.vue'
-import { ref, onMounted } from 'vue'
 
-// Usuario actual desde localStorage
+const { t, locale } = useI18n()
+
+// Idioma actual
+const currentLanguage = ref('es')
+const switchLanguage = () => {
+  currentLanguage.value = currentLanguage.value === 'es' ? 'en' : 'es'
+  locale.value = currentLanguage.value
+}
+
+// Usuario actual
 const currentUser = ref(null)
-
-// Cargar datos del usuario al montar el componente
 onMounted(() => {
   const userData = localStorage.getItem('loggedUser')
   if (userData) {
@@ -14,13 +22,13 @@ onMounted(() => {
   }
 })
 
-// Datos de ejemplo para gigs
+// Datos multilingües para gigs
 const popularGigs = ref([
   {
     id: 1,
     imgSrc: 'https://images.indianexpress.com/2022/11/Telegram-bots-2-1.jpg',
     sellerName: 'Olivia Hayes',
-    description: 'Codes Simple Telegram Bots.',
+    descriptionKey: 'gigs.olivia',
     price: 50.0,
   },
   {
@@ -28,21 +36,21 @@ const popularGigs = ref([
     imgSrc:
       'https://www.collectivealternative.com/wp-content/uploads/2023/03/Social-Media-Marketing-for-Small-Businesses.jpg',
     sellerName: 'Isabelle Moreira',
-    description: 'Manages social media for small businesses.',
+    descriptionKey: 'gigs.isabelle',
     price: 84.0,
   },
   {
     id: 3,
     imgSrc: 'https://i.ytimg.com/vi/i83HYdsy7mg/maxresdefault.jpg',
     sellerName: 'Lucas Griffths',
-    description: 'Creates corporate PowerPoint presentations.',
+    descriptionKey: 'gigs.lucas',
     price: 89.0,
   },
   {
     id: 4,
     imgSrc: 'https://influencermarketinghub.com/wp-content/uploads/2019/04/Template.jpg',
     sellerName: 'Mia Zhang',
-    description: 'Handles scheduling for influencers.',
+    descriptionKey: 'gigs.mia',
     price: 89.0,
   },
   {
@@ -50,7 +58,7 @@ const popularGigs = ref([
     imgSrc:
       'https://www.dotsignage.com/wp-content/uploads/2024/03/eye-catching-digital-menu-boards-templates.jpg',
     sellerName: 'Allen Brooks',
-    description: 'Designs digital menus for restaurants.',
+    descriptionKey: 'gigs.allen',
     price: 89.0,
   },
 ])
@@ -60,7 +68,7 @@ const continueBrowseGigs = ref([
     id: 6,
     imgSrc: 'https://cdn.kwork.com/pics/t5/35/25315226-63f3d9cdd8464.jpg',
     sellerName: 'Ethan Carter',
-    description: 'I will design and build a web page.',
+    descriptionKey: 'gigs.ethan',
     price: 89.0,
   },
   {
@@ -68,7 +76,7 @@ const continueBrowseGigs = ref([
     imgSrc:
       'https://img.freepik.com/premium-vector/responsive-website-design-with-desktop-computer-screen-tablet-computer-illustration_47012-80.jpg',
     sellerName: 'Sophia Bennett',
-    description: 'Writes short scripts for commercials.',
+    descriptionKey: 'gigs.sophia',
     price: 189.0,
   },
   {
@@ -76,7 +84,7 @@ const continueBrowseGigs = ref([
     imgSrc:
       'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRbZZlXQVXuIrHX_ccOfNbksUwVqBYOrvBh2FmqUOvcFeVTfpJDpu6XpqAcNHU-e2-tnR4&usqp=CAU',
     sellerName: 'Emily Sharpe',
-    description: 'UI/UX mockups for apps.',
+    descriptionKey: 'gigs.emily',
     price: 160.0,
   },
   {
@@ -84,7 +92,7 @@ const continueBrowseGigs = ref([
     imgSrc:
       'https://images.ctfassets.net/wowgx05xsdrr/78tynwsztqlpgZaqK4cN9D/f865d194ae7e2647313a6ffb39fce142/product-photography-hero-1.jpg?fm=webp&w=3840&q=75',
     sellerName: 'Alfredo Ugarte',
-    description: 'Photographs Products for e-commerce',
+    descriptionKey: 'gigs.alfredo',
     price: 260.0,
   },
   {
@@ -92,7 +100,7 @@ const continueBrowseGigs = ref([
     imgSrc:
       'https://fiverr-res.cloudinary.com/images/q_auto,f_auto/gigs/265996558/original/93d12aadf061a5264507d79a77e29aaff7972133/translate-any-technical-document-from-english-to-spanish.png',
     sellerName: 'Noah Simmons',
-    description: 'Technical document translation to Spanish.',
+    descriptionKey: 'gigs.noah',
     price: 89.0,
   },
 ])
@@ -102,45 +110,52 @@ const continueBrowseGigs = ref([
   <HeroSection />
 
   <div class="main-content container">
-    <!-- Perfil del usuario -->
     <div v-if="currentUser" class="user-profile">
       <img :src="currentUser.profileImage" alt="Foto de perfil" class="profile-img" />
       <div class="user-info">
-        <h3>Bienvenido, {{ currentUser.firstName }} {{ currentUser.lastName }}</h3>
+        <h3>
+          {{ currentLanguage === 'es' ? 'Bienvenido' : 'Welcome' }}, {{ currentUser.firstName }}
+          {{ currentUser.lastName }}
+        </h3>
         <p>{{ currentUser.email }}</p>
       </div>
     </div>
 
-    <!-- Gigs: Continue Browse -->
     <section class="gig-section">
-      <h2>Continue Browse <a href="#">&rarr;</a></h2>
+      <h2>
+        {{ currentLanguage === 'es' ? 'Continúa explorando' : 'Continue Browse' }}
+        <a href="#">&rarr;</a>
+      </h2>
       <div class="gig-list">
         <GigCard
           v-for="gig in continueBrowseGigs"
           :key="gig.id"
           :img-src="gig.imgSrc"
           :seller-name="gig.sellerName"
-          :description="gig.description"
+          :description="t(gig.descriptionKey)"
           :price="gig.price"
         />
       </div>
     </section>
 
-    <!-- Gigs: Populares -->
     <section class="gig-section">
-      <h2>Popular Tech Gigs</h2>
+      <h2>{{ currentLanguage === 'es' ? 'Gigs Populares de Tecnología' : 'Popular Tech Gigs' }}</h2>
       <div class="gig-list">
         <GigCard
           v-for="gig in popularGigs"
           :key="gig.id"
           :img-src="gig.imgSrc"
           :seller-name="gig.sellerName"
-          :description="gig.description"
+          :description="t(gig.descriptionKey)"
           :price="gig.price"
           currency="S/."
         />
       </div>
     </section>
+
+    <button @click="switchLanguage">
+      {{ currentLanguage === 'es' ? 'Cambiar a Inglés' : 'Switch to Spanish' }}
+    </button>
   </div>
 </template>
 
