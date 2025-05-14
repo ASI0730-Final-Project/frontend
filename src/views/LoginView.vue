@@ -1,7 +1,7 @@
 <template>
   <div class="login-container">
     <h1 class="title">Login</h1>
-    <form @submit.prevent="login" class="form">
+    <form @submit.prevent="handleLogin" class="form">
       <div>
         <label class="label">Email</label>
         <input v-model="email" type="email" class="input" required />
@@ -18,7 +18,11 @@
         <a href="#" class="link2" @click.prevent="goToVerificationLogin">Forgot your Password?</a>
       </div>
 
-      <button type="submit" class="btn">Login</button>
+      <button type="submit" class="btn" :disabled="loading">
+        {{ loading ? 'Logging in...' : 'Login' }}
+      </button>
+
+      <p v-if="error" class="error-message">{{ error }}</p>
 
       <p class="footer-text">
         No account?
@@ -31,42 +35,102 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useUserStore } from '@/stores/userStore'
 
 const email = ref('')
 const password = ref('')
+const error = ref('')
+const loading = ref(false)
 const router = useRouter()
+const userStore = useUserStore()
 
-const login = () => {
-  const storedUser = JSON.parse(localStorage.getItem('user'))
-  if (storedUser && storedUser.email === email.value && storedUser.password === password.value) {
-    localStorage.setItem('user', JSON.stringify(storedUser))
-    alert('Login successful!')
-    router.push('/')
-  } else {
-    alert('Invalid credentials.')
+const handleLogin = async () => {
+  error.value = ''
+  loading.value = true
+  
+  try {
+    // 1. Validar campos
+    if (!email.value.trim() || !password.value.trim()) {
+      throw new Error('Por favor, complete todos los campos')
+    }
+
+    // 2. Validar formato de email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email.value)) {
+      throw new Error('Ingrese un email válido')
+    }
+
+    // 3. Hacer petición a la API
+    const API_URL = 'https://6823dd5865ba058033981a59.mockapi.io/users'
+    const query = `?Email=${encodeURIComponent(email.value)}`
+    const fullUrl = API_URL + query
+
+    console.log('URL de la petición:', fullUrl) // Debug
+
+    const response = await fetch(fullUrl, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+
+    // 4. Manejar respuesta
+    if (response.status === 404) {
+      throw new Error('El usuario no existe')
+    }
+
+    if (!response.ok) {
+      throw new Error(`Error en la API: ${response.status}`)
+    }
+
+    const users = await response.json()
+
+    // 5. Verificar si existe el usuario
+    if (!users || users.length === 0) {
+      throw new Error('No hay una cuenta con este email')
+    }
+
+    const user = users[0]
+
+    // 6. Verificar contraseña
+    if (user.Password !== password.value) {
+      throw new Error('Contraseña incorrecta')
+    }
+
+    // 7. Guardar datos de usuario
+    userStore.user = user
+    userStore.isLoggedIn = true
+    localStorage.setItem('user', JSON.stringify(user))
+
+    // 8. Redirigir según rol
+    const redirectPath = user.Rol === 'Seller' ? '/sellers' : '/'
+    router.push(redirectPath)
+
+  } catch (err) {
+    console.error('Error en login:', err)
+    error.value = err.message || 'Error al iniciar sesión'
+  } finally {
+    loading.value = false
   }
 }
 
 const goToVerificationLogin = () => {
   if (!email.value) {
-    alert('Please enter your email address before proceeding.')
+    error.value = 'Ingrese su email primero'
     return
   }
-
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  if (!emailRegex.test(email.value)) {
-    alert('Please enter a valid email address.')
-    return
-  }
-
-  router.push({
-    name: 'email-verification-login',
-    query: { email: email.value }
-  })
+  router.push({ name: 'email-verification-login', query: { email: email.value } })
 }
 </script>
 
+
 <style scoped>
+.error-message {
+  color: red;
+  margin-top: 1rem;
+  text-align: center;
+}
+
 .login-container {
   min-height: 100vh;
   display: flex;
