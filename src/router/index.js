@@ -5,7 +5,7 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/home',
+      path: '/',
       name: 'home',
       component: () => import('@/views/HomeView.vue'),
       meta: { requiresAuth: false }
@@ -17,21 +17,9 @@ const router = createRouter({
       meta: { requiresAuth: false }
     },
     {
-      path: '/',
+      path: '/login',
       name: 'login',
       component: () => import('@/views/LoginView.vue'),
-      meta: { requiresAuth: false, hideIfLoggedIn: true }
-    },
-    {
-      path: '/PullBuyer',
-      name: 'PullBuyer',
-      component: () => import('@/views/PullBuyerView.vue'),
-      meta: { requiresAuth: false, hideIfLoggedIn: true }
-    },
-    {
-      path: '/PullFreelancer',
-      name: 'PullFreelancer',
-      component: () => import('@/views/PullFreelancerView.vue'),
       meta: { requiresAuth: false, hideIfLoggedIn: true }
     },
     {
