@@ -23,6 +23,12 @@ const router = createRouter({
       meta: { requiresAuth: false, hideIfLoggedIn: true }
     },
     {
+      path: '/PullBuyer',
+      name: 'PullBuyer',
+      component: () => import('@/views/PullBuyerView.vue'),
+      meta: { requiresAuth: false, hideIfLoggedIn: true }
+    },
+    {
       path: '/email-verification-login',
       name: 'email-verification-login',
       component: () => import('@/views/VerificationLoginView.vue'),
