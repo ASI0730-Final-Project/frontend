@@ -2,10 +2,10 @@
 import HeroSection from '@/components/HeroSection.vue'
 import GigCard from '@/components/GigCard.vue'
 import { ref } from 'vue'
-import { useI18n } from 'vue-i18n' // i18n import
+import { useI18n } from 'vue-i18n'
 import 'primeicons/primeicons.css'
 
-const { t } = useI18n() // usar función de traducción
+const { t } = useI18n()
 
 const popularGigs = ref([
   {
@@ -49,7 +49,6 @@ const popularGigs = ref([
 </script>
 
 <template>
-  <!-- Hero section -->
   <HeroSection />
 
   <section class="hero-section">
@@ -61,7 +60,6 @@ const popularGigs = ref([
     </div>
   </section>
 
-  <!-- Gig cards section -->
   <section class="gig-list">
     <div class="gig-grid">
       <GigCard

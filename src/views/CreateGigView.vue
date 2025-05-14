@@ -14,8 +14,8 @@
 </template>
 
 <script>
-import SetGigInfo from './SetGigInfo.vue';
-import SetGigPricing from './SetGigPricing.vue';
+import SetGigInfo from './SetGigInfo.vue'
+import SetGigPricing from './SetGigPricing.vue'
 
 export default {
   components: {
@@ -24,29 +24,29 @@ export default {
   },
   data() {
     return {
-      currentForm: 'SetGigInfo', // Formulario inicial
-      gigInfoData: {}, // Datos del primer formulario
-      gigPricingData: {}, // Datos del segundo formulario
-      allGigData: {} // Datos combinados de ambos formularios
-    };
+      currentForm: 'SetGigInfo',
+      gigInfoData: {},
+      gigPricingData: {},
+      allGigData: {},
+    }
   },
   methods: {
     handleNextStep(infoData) {
-      this.gigInfoData = { ...this.gigInfoData, ...infoData };
-      this.currentForm = 'SetGigPricing';
+      this.gigInfoData = { ...this.gigInfoData, ...infoData }
+      this.currentForm = 'SetGigPricing'
     },
     handleSubmitAll(pricingData) {
-      this.gigPricingData = { ...this.gigPricingData, ...pricingData };
-      this.allGigData = { ...this.gigInfoData, ...this.gigPricingData };
-      console.log('Datos combinados para enviar:', this.allGigData);
-      // Aquí iría la lógica para enviar los datos al backend
-      alert('¡Gig creado! (Datos en la consola)'); // Simulación de éxito
+      this.gigPricingData = { ...this.gigPricingData, ...pricingData }
+      this.allGigData = { ...this.gigInfoData, ...this.gigPricingData }
+      console.log('Datos combinados para enviar:', this.allGigData)
+
+      alert('¡Gig creado! (Datos en la consola)')
     },
     goBack() {
-      this.currentForm = 'SetGigInfo';
-    }
-  }
-};
+      this.currentForm = 'SetGigInfo'
+    },
+  },
+}
 </script>
 
 <style scoped>

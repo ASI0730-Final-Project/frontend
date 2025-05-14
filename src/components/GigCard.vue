@@ -43,7 +43,7 @@ function goToOverview() {
       <span>{{ sellerName }}</span>
     </div>
     <p class="gig-description">{{ description }}</p>
-    <!-- ✅ Aquí eliminamos "startingAt" -->
+
     <div class="gig-price">{{ currency }}{{ price.toFixed(2) }}</div>
   </div>
 </template>

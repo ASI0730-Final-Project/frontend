@@ -6,14 +6,12 @@ import GigCard from '@/components/GigCard.vue'
 
 const { t, locale } = useI18n()
 
-// Idioma actual
 const currentLanguage = ref('es')
 const switchLanguage = () => {
   currentLanguage.value = currentLanguage.value === 'es' ? 'en' : 'es'
   locale.value = currentLanguage.value
 }
 
-// Usuario actual
 const currentUser = ref(null)
 onMounted(() => {
   const userData = localStorage.getItem('loggedUser')
@@ -22,7 +20,6 @@ onMounted(() => {
   }
 })
 
-// Datos multilingües para gigs
 const popularGigs = ref([
   {
     id: 1,
@@ -206,7 +203,6 @@ const continueBrowseGigs = ref([
   }
 }
 
-/* Estilo de perfil */
 .user-profile {
   display: flex;
   align-items: center;

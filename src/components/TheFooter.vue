@@ -8,7 +8,6 @@ const currentYear = new Date().getFullYear()
 <template>
   <footer class="app-footer">
     <div class="footer-content container">
-      <!-- Secciones -->
       <div class="footer-columns">
         <div class="column">
           <h4>Categories</h4>
@@ -50,7 +49,6 @@ const currentYear = new Date().getFullYear()
         </div>
       </div>
 
-      <!-- Logo y copyright -->
       <div class="footer-bottom">
         <img src="/src/components/icons/logo.png" alt="GigU Logo" class="logo" />
         <span>© GigU {{ currentYear }}</span>

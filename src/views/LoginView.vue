@@ -1,32 +1,34 @@
 <template>
   <div class="login-container">
-    <h1 class="title">Login</h1>
+    <h1 class="title">{{ $t('loginPage.login') }}</h1>
     <form @submit.prevent="handleLogin" class="form">
       <div>
-        <label class="label">Email</label>
+        <label class="label">{{ $t('loginPage.email') }}</label>
         <input v-model="email" type="email" class="input" required />
       </div>
 
       <div>
-        <label class="label">Password</label>
+        <label class="label">{{ $t('loginPage.password') }}</label>
         <input v-model="password" type="password" class="input" required />
       </div>
 
       <div class="checkbox-wrapper">
         <input type="checkbox" class="checkbox" id="remember" />
-        <label for="remember" class="checkbox-label">Remember me</label>
-        <a href="#" class="link2" @click.prevent="goToVerificationLogin">Forgot your Password?</a>
+        <label for="remember" class="checkbox-label">{{ $t('loginPage.rememberMe') }}</label>
+        <a href="#" class="link2" @click.prevent="goToVerificationLogin">{{
+          $t('loginPage.forgotPassword')
+        }}</a>
       </div>
 
       <button type="submit" class="btn" :disabled="loading">
-        {{ loading ? 'Logging in...' : 'Login' }}
+        {{ loading ? $t('loginPage.loggingIn') : $t('loginPage.login') }}
       </button>
 
       <p v-if="error" class="error-message">{{ error }}</p>
 
       <p class="footer-text">
-        No account?
-        <a href="/register" class="link">Sign up here</a>
+        {{ $t('loginPage.noAccount') }}
+        <a href="/register" class="link">{{ $t('loginPage.signUp') }}</a>
       </p>
     </form>
   </div>
@@ -47,25 +49,20 @@ const userStore = useUserStore()
 const handleLogin = async () => {
   error.value = ''
   loading.value = true
-  
+
   try {
-    // 1. Validar campos
     if (!email.value.trim() || !password.value.trim()) {
       throw new Error('Por favor, complete todos los campos')
     }
 
-    // 2. Validar formato de email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(email.value)) {
       throw new Error('Ingrese un email válido')
     }
 
-    // 3. Hacer petición a la API
     const API_URL = 'https://6823dd5865ba058033981a59.mockapi.io/users'
     const query = `?Email=${encodeURIComponent(email.value)}`
     const fullUrl = API_URL + query
-
-    console.log('URL de la petición:', fullUrl) // Debug
 
     const response = await fetch(fullUrl, {
       method: 'GET',
@@ -74,7 +71,6 @@ const handleLogin = async () => {
       },
     })
 
-    // 4. Manejar respuesta
     if (response.status === 404) {
       throw new Error('El usuario no existe')
     }
@@ -85,27 +81,22 @@ const handleLogin = async () => {
 
     const users = await response.json()
 
-    // 5. Verificar si existe el usuario
     if (!users || users.length === 0) {
       throw new Error('No hay una cuenta con este email')
     }
 
     const user = users[0]
 
-    // 6. Verificar contraseña
     if (user.Password !== password.value) {
       throw new Error('Contraseña incorrecta')
     }
 
-    // 7. Guardar datos de usuario
     userStore.user = user
     userStore.isLoggedIn = true
     localStorage.setItem('user', JSON.stringify(user))
 
-    // 8. Redirigir según rol
     const redirectPath = user.Rol === 'Seller' ? '/sellers' : '/'
     router.push(redirectPath)
-
   } catch (err) {
     console.error('Error en login:', err)
     error.value = err.message || 'Error al iniciar sesión'
@@ -122,7 +113,6 @@ const goToVerificationLogin = () => {
   router.push({ name: 'email-verification-login', query: { email: email.value } })
 }
 </script>
-
 
 <style scoped>
 .error-message {
@@ -226,4 +216,3 @@ const goToVerificationLogin = () => {
   margin-left: 0.25rem;
 }
 </style>
-
