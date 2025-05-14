@@ -23,6 +23,12 @@ const router = createRouter({
       meta: { requiresAuth: false, hideIfLoggedIn: true }
     },
     {
+      path: '/PullBuyer',
+      name: 'PullBuyer',
+      component: () => import('@/views/PullBuyerView.vue'),
+      meta: { requiresAuth: false, hideIfLoggedIn: true }
+    },
+    {
       path: '/email-verification-login',
       name: 'email-verification-login',
       component: () => import('@/views/VerificationLoginView.vue'),
@@ -103,7 +109,7 @@ const router = createRouter({
 // Guard global de navegación
 router.beforeEach(async (to, from, next) => {
   const userStore = useUserStore()
-  
+
   // Inicializar el usuario si no está cargado pero hay datos en localStorage
   if (!userStore.user && localStorage.getItem('user')) {
     userStore.initializeUser()
@@ -125,11 +131,11 @@ router.beforeEach(async (to, from, next) => {
         query: { redirect: to.fullPath }
       })
     }
-  } 
+  }
   // Evitar que usuarios logueados accedan a login/register
   else if (to.meta.hideIfLoggedIn && userStore.isLoggedIn) {
     next('/') // Redirigir a home
-  } 
+  }
   // Permitir acceso a rutas públicas
   else {
     next()
