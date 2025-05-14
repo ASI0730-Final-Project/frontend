@@ -6,8 +6,12 @@ import ForgotView from '@/views/ForgotView.vue'
 import HomeSellersView from '@/views/HomeSellersView.vue'
 import WannaSellView from '@/views/WannaSellView.vue'
 import EmailVerificationSent from '@/views/VerificationLoginView.vue'
+import DetailsView from '@/views/DetailsView.vue'
 import VerificationPasswordView from '@/views/VerificationPasswordView.vue'
 import ServiceOverviewView from "@/views/ServiceOverviewView.vue";
+import createGigView from '@/views/CreateGigView.vue'
+
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -53,16 +57,32 @@ const router = createRouter({
       component: HomeSellersView,
     },
     {
+      path: '/details',
+      name: 'details',
+      component: DetailsView,
+    },
+    {
       path: '/wannasell',
       name: 'wannasell',
       component: WannaSellView,
     },
     {
+
       path: "/service/:serviceId",
       name: "ServiceOverview",
       component: ServiceOverviewView,
       props: true
+
+      path: '/createGigView',
+      name: 'createGigView',
+      component: createGigView
+
     },
+    {
+     path: '/createGigView',
+      name: 'createGigView',
+      component: createGigView
+      },
   ],
 })
 
