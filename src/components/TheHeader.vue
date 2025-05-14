@@ -10,7 +10,7 @@ const user = ref(null)
 const isLoggedIn = ref(false)
 
 function goToLogin() {
-  router.push('/login')
+  router.push('/')
 }
 
 function goToRegister() {
@@ -18,14 +18,14 @@ function goToRegister() {
 }
 
 function goToHome() {
-  router.push('/')
+  router.push('/home')
 }
 
 function logout() {
   localStorage.removeItem('loggedInUser')
   isLoggedIn.value = false
   user.value = null
-  router.push('/login')
+  router.push('/')
 }
 
 function changeLanguage(lang) {

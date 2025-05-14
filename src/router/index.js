@@ -5,7 +5,7 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',
+      path: '/home',
       name: 'home',
       component: () => import('@/views/HomeView.vue'),
       meta: { requiresAuth: false }
@@ -17,7 +17,7 @@ const router = createRouter({
       meta: { requiresAuth: false }
     },
     {
-      path: '/login',
+      path: '/',
       name: 'login',
       component: () => import('@/views/LoginView.vue'),
       meta: { requiresAuth: false, hideIfLoggedIn: true }
@@ -100,40 +100,5 @@ const router = createRouter({
   ]
 })
 
-// Guard global de navegación
-router.beforeEach(async (to, from, next) => {
-  const userStore = useUserStore()
-  
-  // Inicializar el usuario si no está cargado pero hay datos en localStorage
-  if (!userStore.user && localStorage.getItem('user')) {
-    userStore.initializeUser()
-  }
-
-  // Verificar si la ruta requiere autenticación
-  if (to.meta.requiresAuth) {
-    if (userStore.isLoggedIn) {
-      // Verificar roles si están definidos en la ruta
-      if (to.meta.roles && !to.meta.roles.includes(userStore.user.Rol)) {
-        next('/unauthorized') // Redirigir si no tiene el rol necesario
-      } else {
-        next() // Permitir acceso
-      }
-    } else {
-      // Redirigir a login con la ruta original como query parameter
-      next({
-        path: '/login',
-        query: { redirect: to.fullPath }
-      })
-    }
-  } 
-  // Evitar que usuarios logueados accedan a login/register
-  else if (to.meta.hideIfLoggedIn && userStore.isLoggedIn) {
-    next('/') // Redirigir a home
-  } 
-  // Permitir acceso a rutas públicas
-  else {
-    next()
-  }
-})
 
 export default router
