@@ -10,7 +10,7 @@ const user = ref(null)
 const isLoggedIn = ref(false)
 
 function goToLogin() {
-  router.push('/')
+  router.push('/login')
 }
 
 function goToRegister() {
@@ -18,7 +18,7 @@ function goToRegister() {
 }
 
 function goToHome() {
-  router.push('/home')
+  router.push('/')
 }
 
 function logout() {
