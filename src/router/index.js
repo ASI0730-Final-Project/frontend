@@ -67,22 +67,23 @@ const router = createRouter({
       component: WannaSellView,
     },
     {
-
       path: "/service/:serviceId",
       name: "ServiceOverview",
       component: ServiceOverviewView,
-      props: true
-
+      props: true,
+    },
+    {
       path: '/createGigView',
       name: 'createGigView',
-      component: createGigView
+      component: createGigView,
 
     },
     {
-     path: '/createGigView',
-      name: 'createGigView',
-      component: createGigView
-      },
+      path: '/VVV',
+      name: 'VVVV',
+      component: VerificationPasswordView,
+
+    },
   ],
 })
 
