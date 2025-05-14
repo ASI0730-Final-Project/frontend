@@ -1,45 +1,86 @@
 <script setup>
-// Define las propiedades que este componente espera recibir
+import { useRouter } from 'vue-router';
+import { selectedService } from '@/composables/useSelectedService'; // Asegúrate de que la ruta sea correcta
+
+// Inicializa el router
+const router = useRouter();
+
+// Define las props que recibe la card
 const props = defineProps({
   imgSrc: String,
-  sellerAvatar: String, // Opcional, no muy visible en la imagen principal
+  sellerAvatar: String,
   sellerName: String,
   description: String,
   price: Number,
   currency: {
-    // Prop con valor por defecto
     type: String,
     default: 'S/.',
   },
-})
+  name: String,
+  // Este objeto puede contener otras propiedades, como el id del servicio.
+  service: {
+    type: Object,
+    default: () => ({ id: "default" }),
+  },
+});
+
+// Función que se ejecuta cuando se hace clic en la card
+function goToOverview() {
+  console.log("Card clicked!");
+
+  // Actualiza la variable global con la información de la card
+  selectedService.value = {
+    ...props.service, // Copia todas las propiedades del objeto service (por ejemplo, id)
+    imgSrc: props.imgSrc,
+    sellerAvatar: props.sellerAvatar,
+    sellerName: props.sellerName,
+    description: props.description,
+    price: props.price,
+    currency: props.currency,
+    name: props.name,
+  };
+
+  console.log("Servicio seleccionado:", selectedService.value);
+
+  // Navega a la vista Overview usando el id (puede ser "default" o el que corresponda)
+  router.push({ name: "ServiceOverview", params: { serviceId: props.service.id } });
+}
 </script>
 
 <template>
-  <div class="gig-card">
-    <img :src="props.imgSrc" alt="Gig Image" class="gig-image" />
+  <!-- Se define el contenedor principal y se asigna el evento de clic -->
+  <div class="gig-card" @click="goToOverview">
+    <img :src="imgSrc" alt="Gig Image" class="gig-image" />
     <div class="seller-info">
-      <span>{{ props.sellerName }}</span>
+      <span>{{ sellerName }}</span>
     </div>
-    <p class="gig-description">{{ props.description }}</p>
-    <div class="gig-price">Starting at {{ props.currency }}{{ props.price.toFixed(2) }}</div>
+    <p class="gig-description">{{ description }}</p>
+    <div class="gig-price">
+      Starting at {{ currency }}{{ price.toFixed(2) }}
+    </div>
   </div>
 </template>
 
 <style scoped>
+/* Puedes mantener o ajustar estos estilos según tu tema */
 .gig-card {
   border: 1px solid #e0e0e0;
   border-radius: 4px;
   overflow: hidden;
   background-color: #fff;
-  transition: box-shadow 0.3s ease;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  z-index: 10;
 }
 .gig-card:hover {
+  transform: scale(1.02);
   box-shadow: 0 50px 60px rgba(7, 11, 219, 0.1);
 }
 .gig-image {
   width: 100%;
-  height: 150px; /* Ajusta la altura */
-  object-fit: cover; /* Asegura que la imagen cubra el espacio sin distorsionarse */
+  height: 150px;
+  object-fit: cover;
   display: block;
 }
 .seller-info,
@@ -53,11 +94,10 @@ const props = defineProps({
   font-size: 0.9em;
   color: #302f2f;
 }
-/* .seller-avatar { ... } */
 .gig-description {
   font-size: 1em;
   color: #302f2f;
-  min-height: 60px; /* Para alinear tarjetas de altura variable */
+  min-height: 60px;
 }
 .gig-price {
   font-weight: bold;

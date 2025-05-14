@@ -8,7 +8,9 @@ import WannaSellView from '@/views/WannaSellView.vue'
 import EmailVerificationSent from '@/views/VerificationLoginView.vue'
 import DetailsView from '@/views/DetailsView.vue'
 import VerificationPasswordView from '@/views/VerificationPasswordView.vue'
+import ServiceOverviewView from "@/views/ServiceOverviewView.vue";
 import createGigView from '@/views/CreateGigView.vue'
+
 
 
 const router = createRouter({
@@ -65,10 +67,22 @@ const router = createRouter({
       component: WannaSellView,
     },
     {
+
+      path: "/service/:serviceId",
+      name: "ServiceOverview",
+      component: ServiceOverviewView,
+      props: true
+
       path: '/createGigView',
       name: 'createGigView',
       component: createGigView
+
     },
+    {
+     path: '/createGigView',
+      name: 'createGigView',
+      component: createGigView
+      },
   ],
 })
 
