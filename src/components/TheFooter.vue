@@ -3,6 +3,11 @@ import { useI18n } from 'vue-i18n'
 
 const { t, locale } = useI18n()
 const currentYear = new Date().getFullYear()
+
+function changeLanguage(lang) {
+  locale.value = lang
+  localStorage.setItem('selectedLang', lang)
+}
 </script>
 
 <template>
@@ -54,7 +59,10 @@ const currentYear = new Date().getFullYear()
         <span>© GigU {{ currentYear }}</span>
         <div class="language-selector">
           <i class="pi pi-globe"></i>
-          {{ locale === 'es' ? 'Español' : 'English' }}
+          <select class="language-select" v-model="locale" @change="changeLanguage(locale)">
+          <option value="en">🇬🇧 English</option>
+          <option value="es">🇪🇸 Español</option>
+        </select>
         </div>
       </div>
     </div>
