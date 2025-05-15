@@ -2,8 +2,8 @@
   <div class="verification-container">
     <div class="card">
       <svg class="check-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <circle cx="12" cy="12" r="10" stroke-width="1" /> <!-- Línea más delgada -->
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 12l2 2l4 -4" /> <!-- Línea más delgada -->
+        <circle cx="12" cy="12" r="10" stroke-width="1" />
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 12l2 2l4 -4" />
       </svg>
 
       <p class="message">
@@ -54,8 +54,8 @@ const goToForgot = () => {
 }
 
 .check-icon {
-  width: 120px; /* Aumenta el tamaño aquí */
-  height: 120px; /* Aumenta el tamaño aquí */
+  width: 120px;
+  height: 120px;
   stroke: #000;
   margin: 0 auto 1rem;
 }
