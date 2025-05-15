@@ -1,13 +1,15 @@
 <script setup>
 import { ref, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import { useI18n } from 'vue-i18n'
+import { useUserStore } from '@/stores/userStore'
 
 const router = useRouter()
-const { locale } = useI18n()
+const userStore = useUserStore()
 
-const user = ref(null)
-const isLoggedIn = ref(false)
+// Initialize user from store
+onMounted(() => {
+  userStore.initializeUser()
+})
 
 function goToLogin() {
   router.push('/login')
@@ -22,37 +24,9 @@ function goToHome() {
 }
 
 function logout() {
-  localStorage.removeItem('loggedInUser')
-  isLoggedIn.value = false
-  user.value = null
-  router.push('/')
+  userStore.logoutUser()
 }
 
-function changeLanguage(lang) {
-  locale.value = lang
-  localStorage.setItem('selectedLang', lang)
-}
-
-onMounted(() => {
-  const storedUser = JSON.parse(localStorage.getItem('loggedInUser'))
-  if (storedUser) {
-    user.value = storedUser
-    isLoggedIn.value = true
-  }
-
-  const savedLang = localStorage.getItem('selectedLang')
-  if (savedLang) locale.value = savedLang
-})
-
-watch(
-  () => localStorage.getItem('loggedInUser'),
-  (newValue) => {
-    const updatedUser = newValue ? JSON.parse(newValue) : null
-    user.value = updatedUser
-    isLoggedIn.value = !!updatedUser
-  },
-  { immediate: true },
-)
 </script>
 
 <template>
@@ -66,28 +40,26 @@ watch(
         <i class="pi pi-heart icon"></i>
         <i class="pi pi-bell icon"></i>
         <i class="pi pi-envelope icon"></i>
-        <a href="#" class="orders-link">{{ $t('header.orders') }}</a>
-
-        <select class="language-select" v-model="locale" @change="changeLanguage(locale)">
-          <option value="en">🇬🇧 English</option>
-          <option value="es">🇪🇸 Español</option>
-        </select>
-
-        <div class="actions">
-          <template v-if="isLoggedIn">
-            <div class="user-info">
-              <img :src="user.image" alt="Avatar" class="avatar-img" />
-              <span class="user-name">{{ user.firstName }}</span>
-              <button class="auth-button logout" @click="logout">{{ $t('header.logout') }}</button>
-            </div>
-          </template>
-          <template v-else>
-            <button class="auth-button login" @click="goToLogin">{{ $t('header.login') }}</button>
-            <button class="auth-button register" @click="goToRegister">
-              {{ $t('header.register') }}
-            </button>
-          </template>
-        </div>
+        
+        <!-- Show different links based on role -->
+        <template v-if="userStore.isLoggedIn">
+          <a v-if="userStore.user.Rol === 'Buyer'" href="#" class="orders-link">My Orders</a>
+          <a v-if="userStore.user.Rol === 'Seller'" href="/createGigView" class="orders-link">Create Gig</a>
+          
+          <div class="user-info">
+            <img 
+              :src="userStore.user.Image || 'https://via.placeholder.com/40'" 
+              alt="Avatar" 
+              class="avatar-img" 
+            />
+            <span class="user-name">{{ userStore.user.Name }}</span>
+            <button class="auth-button logout" @click="logout">{{ $t('header.logout') }}</button>
+          </div>
+        </template>
+        <template v-else>
+          <button class="auth-button login" @click="goToLogin">{{ $t('header.login') }}</button>
+          <button class="auth-button register" @click="goToRegister">{{ $t('header.register') }}</button>
+        </template>
       </div>
     </div>
 
@@ -204,13 +176,5 @@ watch(
 }
 .main-nav a:hover {
   color: #5acae6;
-}
-.language-select {
-  padding: 5px 10px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  background: #fff;
-  font-size: 14px;
-  cursor: pointer;
 }
 </style>
