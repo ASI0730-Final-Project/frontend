@@ -1,6 +1,5 @@
 <template>
   <div class="service-overview">
-    <!-- Barra de navegación superior -->
     <nav class="overview-nav">
       <ul>
         <li class="active">Overview</li>
@@ -12,12 +11,10 @@
       </ul>
     </nav>
 
-    <!-- Sección Overview: Banner -->
     <section class="overview-section">
       <img :src="serviceData.imgSrc || serviceData.bannerUrl" alt="Service Banner" class="banner-image" />
     </section>
 
-    <!-- Sección Description -->
     <section class="description-section">
       <h2>About this Gig</h2>
       <p>{{ serviceData.description || serviceData.fullDescription }}</p>
@@ -26,7 +23,6 @@
       </div>
     </section>
 
-    <!-- Sección About the Seller -->
     <section class="seller-section">
       <h2>About the seller</h2>
       <div class="seller-info">
@@ -37,7 +33,6 @@
       </div>
     </section>
 
-    <!-- Sección Compare Packages / Pricing -->
     <section class="packages-section">
       <h2>Compare packages</h2>
       <div class="pricing-box">
@@ -68,7 +63,6 @@
       </div>
     </section>
 
-    <!-- Sección Reviews -->
     <section class="reviews-section">
       <h2>Reviews ({{ serviceData.reviews ? serviceData.reviews.length : 0 }})</h2>
       <div v-for="review in serviceData.reviews || []" :key="review.id" class="review">
@@ -87,8 +81,6 @@
 import { computed } from 'vue';
 import { selectedService } from '@/composables/useSelectedService';
 
-// Si el usuario navega directamente sin seleccionar una card,
-// usamos datos por defecto.
 const serviceData = computed(() => {
   return selectedService.value || {
     id: "default",
@@ -122,7 +114,6 @@ const serviceData = computed(() => {
   font-size: 0.9rem;
 }
 
-/* Barra de navegación superior */
 .overview-nav {
   background-color: #fff;
   border-bottom: 1px solid #e0e0e0;
@@ -144,7 +135,6 @@ const serviceData = computed(() => {
   border-bottom: 3px solid #0f2c32;
 }
 
-/* Secciones */
 .overview-section {
   text-align: center;
   padding: 20px;
@@ -192,7 +182,6 @@ const serviceData = computed(() => {
   border-radius: 4px;
 }
 
-/* Sección Seller */
 .seller-info {
   display: flex;
   align-items: center;
@@ -209,7 +198,6 @@ const serviceData = computed(() => {
   font-size: 0.95rem;
 }
 
-/* Pricing Box */
 .pricing-box {
   background-color: #f7f9fc;
   padding: 16px;
@@ -275,7 +263,6 @@ const serviceData = computed(() => {
   font-size: 1rem;
 }
 
-/* Reviews */
 .review {
   border-top: 1px solid #ddd;
   padding-top: 8px;
@@ -301,7 +288,6 @@ const serviceData = computed(() => {
   color: #888;
 }
 
-/* Ajustes responsivos */
 @media (max-width: 768px) {
   .overview-nav ul {
     flex-direction: column;
