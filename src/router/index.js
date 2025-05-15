@@ -83,14 +83,12 @@ const router = createRouter({
       component: () => import('@/views/VerificationPasswordView.vue'),
       meta: { requiresAuth: false }
     },
-    // Ruta para manejar accesos no autorizados
     {
       path: '/unauthorized',
       name: 'unauthorized',
       component: () => import('@/views/UnauthorizedView.vue'),
       meta: { requiresAuth: false }
     },
-    // Ruta de catch-all para 404
     {
       path: '/:pathMatch(.*)*',
       name: 'not-found',

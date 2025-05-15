@@ -8,7 +8,6 @@ export const useUserStore = defineStore('user', () => {
   const router = useRouter()
   const API_URL = 'https://6823dd5865ba058033981a59.mockapi.io/users'
 
-  // Función mejorada para verificar usuario
   const checkUserExists = async (email) => {
     try {
       const response = await fetch(`${API_URL}?email=${encodeURIComponent(email)}`)
@@ -21,7 +20,6 @@ export const useUserStore = defineStore('user', () => {
     }
   }
 
-  // Login mejorado
   const loginUser = async (email, password) => {
     try {
       const userData = await checkUserExists(email)
@@ -44,7 +42,6 @@ export const useUserStore = defineStore('user', () => {
     }
   }
 
-  // Registro mejorado
   const registerUser = async (userData) => {
     try {
       const existingUser = await checkUserExists(userData.Email)
@@ -83,7 +80,6 @@ export const useUserStore = defineStore('user', () => {
     }
   }
 
-  // Logout
   const logoutUser = () => {
     user.value = null
     isLoggedIn.value = false
@@ -91,7 +87,6 @@ export const useUserStore = defineStore('user', () => {
     router.push('/login')
   }
 
-  // Inicialización
   const initializeUser = () => {
     const storedUser = localStorage.getItem('user')
     if (storedUser) {
