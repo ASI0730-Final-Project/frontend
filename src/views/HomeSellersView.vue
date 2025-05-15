@@ -1,6 +1,6 @@
 <script setup>
 import HeroSection from '@/components/HeroSection.vue'
-import GigCard from '@/components/GigCard.vue' //
+import GigCard from '@/components/GigCard.vue'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
