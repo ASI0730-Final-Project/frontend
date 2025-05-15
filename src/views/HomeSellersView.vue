@@ -63,10 +63,6 @@ const popularGigs = ref([
     </div>
 
     <section class="gig-section">
-      <h2>
-        {{ currentLanguage === 'es' ? 'Continúa explorando' : 'Continue Browse' }}
-        <a href="#">&rarr;</a>
-      </h2>
       <div class="gig-list">
         <GigCard
           v-for="gig in continueBrowseGigs"
@@ -153,11 +149,6 @@ h1 {
   font-size: 48px;
   font-weight: normal;
   font-family: 'KonkhmerSleokchher';
-}
-
-.gig-list {
-  padding: 40px 20px;
-  background: #f4f4f4;
 }
 
 .gig-grid {
