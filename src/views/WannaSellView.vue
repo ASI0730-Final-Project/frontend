@@ -54,19 +54,17 @@
   const acceptedTerms = ref(false)
   
   const onCarnetUpload = (event) => {
-    // lógica para manejar el archivo
     console.log('Carnet uploaded:', event.files)
   }
   
   const onDniUpload = (event) => {
-    // lógica para manejar el archivo
     console.log('DNI uploaded:', event.files)
   }
   
   const router = useRouter()
   const verify = () => {
     alert(`Datos enviados:\n${fullName.value} ${lastNames.value}\n${email.value}`)
-    router.push('/confirmation') // redirección simulada
+    router.push('/confirmation')
   }
   </script>
   
