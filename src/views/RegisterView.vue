@@ -1,59 +1,59 @@
 <template>
   <div class="signup-container">
-    <h1 class="title">Sign Up</h1>
+    <h1 class="title">{{ $t('registerPage.title') }}</h1>
     <form @submit.prevent="handleRegister" class="form">
       <div>
-        <label class="label">Name</label>
+        <label class="label">{{ $t('registerPage.name') }}</label>
         <input v-model="firstName" type="text" class="input" required />
       </div>
 
       <div>
-        <label class="label">Last Name</label>
+        <label class="label">{{ $t('registerPage.lastName') }}</label>
         <input v-model="lastName" type="text" class="input" required />
       </div>
 
       <div>
-        <label class="label">Email</label>
+        <label class="label">{{ $t('registerPage.email') }}</label>
         <input v-model="email" type="email" class="input" required />
       </div>
 
       <div>
-        <label class="label">Password</label>
+        <label class="label">{{ $t('registerPage.password') }}</label>
         <input v-model="password" type="password" class="input" required minlength="6" />
       </div>
 
       <div>
-        <label class="label">Confirm Password</label>
+        <label class="label">{{ $t('registerPage.confirmPassword') }}</label>
         <input v-model="confirmPassword" type="password" class="input" required />
       </div>
 
       <div>
-        <label class="label">Profile Image</label>
+        <label class="label">{{ $t('registerPage.profileImage') }}</label>
         <input type="file" @change="onFileChange" class="input" accept="image/*" />
       </div>
 
       <div>
-        <label class="label">Role</label>
+        <label class="label">{{ $t('registerPage.role') }}</label>
         <select v-model="role" class="input" required>
-          <option value="Buyer">Buyer</option>
-          <option value="Seller">Seller</option>
+          <option value="Buyer">{{ $t('registerPage.buyer') }}</option>
+          <option value="Seller">{{ $t('registerPage.seller') }}</option>
         </select>
       </div>
 
       <div class="checkbox-wrapper">
         <input type="checkbox" class="checkbox" id="terms" required />
-        <label for="terms" class="checkbox-label">Terms and Conditions</label>
+        <label for="terms" class="checkbox-label">{{ $t('registerPage.terms') }}</label>
       </div>
 
       <button type="submit" class="btn" :disabled="loading">
-        {{ loading ? 'Creating account...' : 'Create Account' }}
+        {{ loading ? $t('registerPage.creating') : $t('registerPage.create') }}
       </button>
 
       <p v-if="error" class="error-message">{{ error }}</p>
 
       <p class="footer-text">
-        Already have an account?
-        <a href="/login" class="link">Login</a>
+        {{ $t('registerPage.already') }}
+        <a href="/login" class="link">{{ $t('registerPage.login') }}</a>
       </p>
     </form>
   </div>
@@ -90,12 +90,15 @@ const onFileChange = (e) => {
 const handleRegister = async () => {
   error.value = ''
   loading.value = true
-  
+
   try {
-    // Validaciones
-    if (!firstName.value.trim() || !lastName.value.trim() || 
-        !email.value.trim() || !password.value.trim() || 
-        !confirmPassword.value.trim()) {
+    if (
+      !firstName.value.trim() ||
+      !lastName.value.trim() ||
+      !email.value.trim() ||
+      !password.value.trim() ||
+      !confirmPassword.value.trim()
+    ) {
       throw new Error('Please fill in all required fields')
     }
 
@@ -118,7 +121,7 @@ const handleRegister = async () => {
       Email: email.value.trim(),
       Password: password.value,
       Rol: role.value,
-      Image: imageBase64.value
+      Image: imageBase64.value,
     }
 
     await userStore.registerUser(userData)
@@ -138,7 +141,6 @@ const handleRegister = async () => {
   margin-top: 1rem;
   text-align: center;
 }
-
 
 .signup-container {
   min-height: 100vh;

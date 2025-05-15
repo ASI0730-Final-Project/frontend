@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, watch } from 'vue'
+import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/userStore'
 
@@ -26,7 +26,6 @@ function goToHome() {
 function logout() {
   userStore.logoutUser()
 }
-
 </script>
 
 <template>
@@ -40,17 +39,19 @@ function logout() {
         <i class="pi pi-heart icon"></i>
         <i class="pi pi-bell icon"></i>
         <i class="pi pi-envelope icon"></i>
-        
+
         <!-- Show different links based on role -->
         <template v-if="userStore.isLoggedIn">
           <a v-if="userStore.user.Rol === 'Buyer'" href="#" class="orders-link">My Orders</a>
-          <a v-if="userStore.user.Rol === 'Seller'" href="/createGigView" class="orders-link">Create Gig</a>
-          
+          <a v-if="userStore.user.Rol === 'Seller'" href="/createGigView" class="orders-link"
+            >Create Gig</a
+          >
+
           <div class="user-info">
-            <img 
-              :src="userStore.user.Image || 'https://via.placeholder.com/40'" 
-              alt="Avatar" 
-              class="avatar-img" 
+            <img
+              :src="userStore.user.Image || 'https://via.placeholder.com/40'"
+              alt="Avatar"
+              class="avatar-img"
             />
             <span class="user-name">{{ userStore.user.Name }}</span>
             <button class="auth-button logout" @click="logout">{{ $t('header.logout') }}</button>
@@ -58,7 +59,9 @@ function logout() {
         </template>
         <template v-else>
           <button class="auth-button login" @click="goToLogin">{{ $t('header.login') }}</button>
-          <button class="auth-button register" @click="goToRegister">{{ $t('header.register') }}</button>
+          <button class="auth-button register" @click="goToRegister">
+            {{ $t('header.register') }}
+          </button>
         </template>
       </div>
     </div>

@@ -1,10 +1,7 @@
 <template>
   <div>
-    <!-- Contenedor para los elementos (rectángulos y chat-box) -->
     <div class="zoom-container">
-      <!-- Rectángulos (detalles y precio) -->
       <div class="section-layout">
-        <!-- Rectángulos (detalles y precio) -->
         <div class="text-container">
           <div class="details-box">
             <h3 class="price-header">
@@ -35,19 +32,16 @@
           </div>
         </div>
 
-        <!-- Imagen ChatBox a la derecha de los rectángulos -->
         <div class="chat-box-container">
           <img src="@/assets/ChatBox.png" alt="Chatbox" class="chat-box" />
         </div>
       </div>
 
-      <!-- Contenedor para la imagen Below -->
       <div class="image-below-container">
         <img src="@/assets/imageDesign.png" alt="Design Image" class="image-below" />
       </div>
     </div>
 
-    <!-- Contenedor para el cuadro de texto (donde se ingresa el texto) -->
     <div class="text-input-container">
       <textarea class="text-input" placeholder="Write a Message"></textarea>
     </div>
@@ -60,23 +54,23 @@ export default {
   data() {
     return {
       currentPrice: 285,
-      price: 286
-    };
+      price: 286,
+    }
   },
   methods: {
     increasePrice() {
-      this.price += 1;
+      this.price += 1
     },
     decreasePrice() {
       if (this.price > 0) {
-        this.price -= 1;
+        this.price -= 1
       }
     },
     updateActualPrice() {
-      this.currentPrice = this.price;
-    }
-  }
-};
+      this.currentPrice = this.price
+    },
+  },
+}
 </script>
 
 <style scoped>
@@ -189,7 +183,6 @@ export default {
   background-color: #cccccc;
 }
 
-
 .section-layout {
   display: flex;
   align-items: flex-start;
@@ -253,5 +246,4 @@ export default {
   font-size: 1.5em;
   color: #ccc;
 }
-
 </style>

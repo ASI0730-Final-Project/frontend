@@ -29,7 +29,7 @@ function changeLanguage(lang) {
           </ul>
         </div>
         <div class="column">
-          <h4>{{ t('footer.about.title') }}</h4>
+          <h4>ABOUT</h4>
           <ul>
             <li>Terms of Service</li>
             <li>Privacy Policy</li>
@@ -37,7 +37,7 @@ function changeLanguage(lang) {
           </ul>
         </div>
         <div class="column">
-          <h4>{{ t('footer.support.title') }}</h4>
+          <h4>SUPPORT</h4>
           <ul>
             <li>Help & Support</li>
             <li>Buying</li>
@@ -45,7 +45,7 @@ function changeLanguage(lang) {
           </ul>
         </div>
         <div class="column">
-          <h4>{{ t('footer.community.title') }}</h4>
+          <h4>COMMUNITY</h4>
           <ul>
             <li>Invite a Friend</li>
             <li>Become a Seller</li>
@@ -60,9 +60,9 @@ function changeLanguage(lang) {
         <div class="language-selector">
           <i class="pi pi-globe"></i>
           <select class="language-select" v-model="locale" @change="changeLanguage(locale)">
-          <option value="en">🇬🇧 English</option>
-          <option value="es">🇪🇸 Español</option>
-        </select>
+            <option value="en">🇬🇧 English</option>
+            <option value="es">🇪🇸 Español</option>
+          </select>
         </div>
       </div>
     </div>

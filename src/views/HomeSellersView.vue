@@ -1,9 +1,8 @@
 <script setup>
 import HeroSection from '@/components/HeroSection.vue'
-import GigCard from '@/components/GigCard.vue'
+import GigCard from '@/components/GigCard.vue' //
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import 'primeicons/primeicons.css'
 
 const { t } = useI18n()
 
@@ -12,7 +11,7 @@ const popularGigs = ref([
     id: 1,
     imgSrc: 'https://images.indianexpress.com/2022/11/Telegram-bots-2-1.jpg',
     sellerName: 'Olivia Hayes',
-    description: t('gigs.telegramBot'),
+    descriptionKey: 'gigs.telegramBot',
     price: 50.0,
   },
   {
@@ -20,21 +19,21 @@ const popularGigs = ref([
     imgSrc:
       'https://www.collectivealternative.com/wp-content/uploads/2023/03/Social-Media-Marketing-for-Small-Businesses.jpg',
     sellerName: 'Isabelle Moreira',
-    description: t('gigs.socialMediaManager'),
+    descriptionKey: 'gigs.socialMediaManager',
     price: 84.0,
   },
   {
     id: 3,
     imgSrc: 'https://i.ytimg.com/vi/i83HYdsy7mg/maxresdefault.jpg',
     sellerName: 'Lucas Griffths',
-    description: t('gigs.powerpointCreator'),
+    descriptionKey: 'gigs.powerpointCreator',
     price: 89.0,
   },
   {
     id: 4,
     imgSrc: 'https://influencermarketinghub.com/wp-content/uploads/2019/04/Template.jpg',
     sellerName: 'Mia Zhang',
-    description: t('gigs.influencerScheduler'),
+    descriptionKey: 'gigs.influencerScheduler',
     price: 89.0,
   },
   {
@@ -42,7 +41,7 @@ const popularGigs = ref([
     imgSrc:
       'https://www.dotsignage.com/wp-content/uploads/2024/03/eye-catching-digital-menu-boards-templates.jpg',
     sellerName: 'Allen Brooks',
-    description: t('gigs.menuDesigner'),
+    descriptionKey: 'gigs.menuDesigner',
     price: 89.0,
   },
 ])
@@ -51,28 +50,54 @@ const popularGigs = ref([
 <template>
   <HeroSection />
 
-  <section class="hero-section">
-    <div class="container">
-      <h1>
-        {{ t('home.welcome') }} <span class="highlight">{{ t('home.gigs') }}</span> U<br />
-      </h1>
-      <p class="freelancer-count"><span class="number">#1892</span> {{ t('home.pals') }}</p>
+  <div class="main-content container">
+    <div v-if="currentUser" class="user-profile">
+      <img :src="currentUser.profileImage" alt="Foto de perfil" class="profile-img" />
+      <div class="user-info">
+        <h3>
+          {{ currentLanguage === 'es' ? 'Bienvenido' : 'Welcome' }}, {{ currentUser.firstName }}
+          {{ currentUser.lastName }}
+        </h3>
+        <p>{{ currentUser.email }}</p>
+      </div>
     </div>
-  </section>
 
-  <section class="gig-list">
-    <div class="gig-grid">
-      <GigCard
-        v-for="gig in popularGigs"
-        :key="gig.id"
-        :imgSrc="gig.imgSrc"
-        :sellerName="gig.sellerName"
-        :description="gig.description"
-        :price="gig.price"
-        :service="{ id: gig.id }"
-      />
-    </div>
-  </section>
+    <section class="gig-section">
+      <h2>
+        {{ currentLanguage === 'es' ? 'Continúa explorando' : 'Continue Browse' }}
+        <a href="#">&rarr;</a>
+      </h2>
+      <div class="gig-list">
+        <GigCard
+          v-for="gig in continueBrowseGigs"
+          :key="gig.id"
+          :img-src="gig.imgSrc"
+          :seller-name="gig.sellerName"
+          :description="t(gig.descriptionKey)"
+          :price="gig.price"
+        />
+      </div>
+    </section>
+
+    <section class="gig-section">
+      <h2>{{ currentLanguage === 'es' ? 'Gigs Populares de Tecnología' : 'Popular Tech Gigs' }}</h2>
+      <div class="gig-list">
+        <GigCard
+          v-for="gig in popularGigs"
+          :key="gig.id"
+          :img-src="gig.imgSrc"
+          :seller-name="gig.sellerName"
+          :description="t(gig.descriptionKey)"
+          :price="gig.price"
+          currency="S/."
+        />
+      </div>
+    </section>
+
+    <button @click="switchLanguage">
+      {{ currentLanguage === 'es' ? 'Cambiar a Inglés' : 'Switch to Spanish' }}
+    </button>
+  </div>
 </template>
 
 <style scoped>
@@ -99,11 +124,9 @@ const popularGigs = ref([
 }
 
 .container {
-  max-width: 85%;
-  border-radius: 25px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 50px 20px;
-  background-color: #1b2a2e;
+  padding: 0 15px;
 }
 
 h1 {
@@ -140,6 +163,36 @@ h1 {
 .gig-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+}
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+.main-content {
+  padding-top: 40px;
+}
+.gig-section {
+  margin-bottom: 40px;
+}
+.gig-section h2 {
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.gig-section h2 a {
+  font-size: 0.8em;
+  text-decoration: none;
+  color: #0073bb;
+}
+.gig-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 20px;
 }
 </style>
