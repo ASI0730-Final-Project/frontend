@@ -6,7 +6,6 @@ import { useUserStore } from '@/stores/userStore'
 const router = useRouter()
 const userStore = useUserStore()
 
-// Initialize user from store
 onMounted(() => {
   userStore.initializeUser()
 })
@@ -41,7 +40,6 @@ function logout() {
         <i class="pi pi-bell icon"></i>
         <i class="pi pi-envelope icon"></i>
         
-        <!-- Show different links based on role -->
         <template v-if="userStore.isLoggedIn">
           <a v-if="userStore.user.Rol === 'Buyer'" href="#" class="orders-link">My Orders</a>
           <a v-if="userStore.user.Rol === 'Seller'" href="/createGigView" class="orders-link">Create Gig</a>
