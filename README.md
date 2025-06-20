@@ -1,41 +1,56 @@
-# gigu-landing-page
+## Pasos
 
-This template should help get you started developing with Vue 3 in Vite.
+### Crear carpetas
+Borrar todo lo de src
+Crear estructura de carpetas
 
-## Recommended IDE Setup
+|_ server<br>
+.....|_ db.json<br>
+.....|_ routes.json<br>
+.....|_ start.sh<br>
+|_ src<br>
+.....|_ locales<br>
+..........|_ en.json<br>
+..........|_ es.json<br>
+.....|_ public<br>
+..........|_ components<br>
+................|_ footer-content.component.vue<br>
+................|_ language-switcher.component.vue<br>
+................|_ language-switcher.component.vue<br>
+..........|_ pages<br>
+................|_ home.component.vue<br>
+................|_ content.component.vue<br>
+.....|_ router<br>
+..........|_ index.js<br>
+.....|_ components<br>
+|_ .env.development<br>
+|_ .env.production<br>
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+### Instalar dependencias
 
-## Customize configuration
+1. Global<br>
+npm install -g json-server@0.17.4
 
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
-
-```sh
+2. Crear + bootstrap con Vite<br>
+npm init vite@latest mi-proyecto -- --template vue<br>
+cd mi-proyecto<br>
 npm install
-```
 
-### Compile and Hot-Reload for Development
+3. Router<br>
+npm install vue-router@4
 
-```sh
-npm run dev
-```
+4. i18n<br>
+npm install vue-i18n@next
 
-### Compile and Minify for Production
+5. HTTP Client<br>
+npm install axios
 
-```sh
-npm run build
-```
+6. PrimeVue + estilos<br>
+npm install primevue@latest primeicons primeflex @primeuix/themes
 
-### Run Unit Tests with [Vitest](https://vitest.dev/)
+7. (Opcional) Linter / formateador <br>
+npm install -D eslint prettier
 
-```sh
-npm run test:unit
-```
 
-### Lint with [ESLint](https://eslint.org/)
 
-```sh
-npm run lint
-```
+json-server --watch server/db.json --routes server/routes.json
