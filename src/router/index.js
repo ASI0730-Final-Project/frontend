@@ -1,102 +1,53 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import { useUserStore } from '@/stores/userStore'
+import { createRouter, createWebHistory } from "vue-router"
+import HomeComponent from '../public/views/home.component.vue'
+import GigsComponent from '../public/views/gigs.component.vue'
+import LoginComponent from '../public/views/login.component.vue'
+import RegisterComponent from '../public/views/register.component.vue'
+import CreateGigComponent from '../operations/views/create-gig.component.vue'
+import GigDetailComponent from '../operations/views/gig-detail.component.vue'
+import PageNotFoundComponent from '../public/views/page-not-found.component.vue'
+import SellerGigsComponent from '../public/views/seller-gigs.component.vue'
+import PullBuyerView from '../pull/views/PullBuyerView.component.vue'
+import PullSellerView from '../pull/views/PullSellerView.component.vue'
+import SellerPullsView from '../pull/views/SellerPullsView.component.vue'
+import BuyerPullsView from '../pull/views/BuyerPullsView.component.vue'
+import TestViewComponent from '../portfolio/components/TestView.component.vue'
+import NewPortfolioFormView from '../portfolio/components/NewPortfolioFormView.component.vue'
+import UserProfileView from '../domain/components/views/UserProfileView.component.vue'
+import BuyerProfileView from '../domain/components/views/BuyerProfileView.component.vue'
+import PullNegotiationView from '../pull/views/PullNegotiationView.component.vue'
+
+const routes = [
+  { path: '/:pathMatch(.*)*', component: PageNotFoundComponent, name: '404' },
+  { path: '/', redirect: '/home' },
+  { path: '/home', component: HomeComponent, name: 'home' },
+  { path: '/gigs', component: GigsComponent, name: 'gigs' },
+  { path: '/gigs/create', component: CreateGigComponent, name: 'createGig' },
+  { path: '/gigs/:id', component: GigDetailComponent, name: 'gigDetail' },
+  { path: '/login', component: LoginComponent, name: 'login' },
+  { path: '/register', component: RegisterComponent, name: 'register' },
+  { path: '/seller-gigs', component: SellerGigsComponent, name: 'sellerGigs' },
+  { path: '/buyer/pulls', component: PullBuyerView, name: 'buyerPulls' },
+  { path: '/seller/pulls', component: PullSellerView, name: 'sellerPulls' },
+  { path: '/pull/buyer/:id', component: PullBuyerView, name: 'pullBuyerView' },
+  { path: '/pull/seller/:id', component: PullSellerView, name: 'pullSellerView' },
+  { path: '/seller-pulls', component: SellerPullsView, name: 'pullListView' },
+  { path: '/buyer-pulls', component: BuyerPullsView, name: 'buyerPullListView' },
+  { path: '/pull/negotiation/:id', component: PullNegotiationView, name: 'pullNegotiation' },
+  { path: '/portfolio/test', component: TestViewComponent, name: 'portfolioTest'},
+  { path: '/portfolio/create', component: NewPortfolioFormView, name: 'createPortfolio'},
+  { path: '/profile', component: UserProfileView, name: 'userProfile' },
+  { path: '/buyer-profile', component: BuyerProfileView, name: 'buyerProfile' },
+]
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [
-    {
-      path: '/',
-      name: 'home',
-      component: () => import('@/views/HomeView.vue'),
-      meta: { requiresAuth: false }
-    },
-    {
-      path: '/about',
-      name: 'about',
-      component: () => import('@/views/AboutView.vue'),
-      meta: { requiresAuth: false }
-    },
-    {
-      path: '/login',
-      name: 'login',
-      component: () => import('@/views/LoginView.vue'),
-      meta: { requiresAuth: false, hideIfLoggedIn: true }
-    },
-    {
-      path: '/email-verification-login',
-      name: 'email-verification-login',
-      component: () => import('@/views/VerificationLoginView.vue'),
-      meta: { requiresAuth: false }
-    },
-    {
-      path: '/register',
-      name: 'register',
-      component: () => import('@/views/RegisterView.vue'),
-      meta: { requiresAuth: false, hideIfLoggedIn: true }
-    },
-    {
-      path: '/forgot',
-      name: 'forgot',
-      component: () => import('@/views/ForgotView.vue'),
-      meta: { requiresAuth: false }
-    },
-    {
-      path: '/email-verification-password',
-      name: 'email-verification-password',
-      component: () => import('@/views/VerificationPasswordView.vue'),
-      meta: { requiresAuth: false }
-    },
-    {
-      path: '/sellers',
-      name: 'sellers',
-      component: () => import('@/views/HomeSellersView.vue'),
-      meta: { requiresAuth: true, roles: ['Seller'] }
-    },
-    {
-      path: '/details',
-      name: 'details',
-      component: () => import('@/views/DetailsView.vue'),
-      meta: { requiresAuth: true }
-    },
-    {
-      path: '/wannasell',
-      name: 'wannasell',
-      component: () => import('@/views/WannaSellView.vue'),
-      meta: { requiresAuth: true }
-    },
-    {
-      path: '/service/:serviceId',
-      name: 'ServiceOverview',
-      component: () => import('@/views/ServiceOverviewView.vue'),
-      props: true,
-      meta: { requiresAuth: true }
-    },
-    {
-      path: '/createGigView',
-      name: 'createGigView',
-      component: () => import('@/views/CreateGigView.vue'),
-      meta: { requiresAuth: true, roles: ['Seller'] }
-    },
-    {
-      path: '/VVV',
-      name: 'VVVV',
-      component: () => import('@/views/VerificationPasswordView.vue'),
-      meta: { requiresAuth: false }
-    },
-    {
-      path: '/unauthorized',
-      name: 'unauthorized',
-      component: () => import('@/views/UnauthorizedView.vue'),
-      meta: { requiresAuth: false }
-    },
-    {
-      path: '/:pathMatch(.*)*',
-      name: 'not-found',
-      component: () => import('@/views/NotFoundView.vue'),
-      meta: { requiresAuth: false }
-    }
-  ]
+  routes
 })
 
+router.beforeEach((to, from, next) => {
+  console.log(`Navigating to: ${to.path}`)
+  next()
+})
 
 export default router
