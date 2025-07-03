@@ -1,37 +1,75 @@
 <template>
-  <div class="login-container">
-    <h1 class="title">{{ $t('loginPage.login') }}</h1>
-    <form @submit.prevent="handleLogin" class="form">
-      <div>
-        <label class="label">{{ $t('loginPage.email') }}</label>
-        <input v-model="email" type="email" class="input" required />
+  <main class="login-container" role="main" aria-labelledby="login-heading">
+    <h1 id="login-heading" class="title">{{ $t('loginPage.login') }}</h1>
+    <form @submit.prevent="handleLogin" class="form" role="form" aria-label="Login form">
+      <div role="group" aria-labelledby="email-label">
+        <label id="email-label" class="label">{{ $t('loginPage.email') }}</label>
+        <input
+          v-model="email"
+          type="email"
+          class="input"
+          required
+          aria-required="true"
+          :aria-label="$t('loginPage.email')"
+        />
       </div>
 
-      <div>
-        <label class="label">{{ $t('loginPage.password') }}</label>
-        <input v-model="password" type="password" class="input" required />
+      <div role="group" aria-labelledby="password-label">
+        <label id="password-label" class="label">{{ $t('loginPage.password') }}</label>
+        <input
+          v-model="password"
+          type="password"
+          class="input"
+          required
+          aria-required="true"
+          :aria-label="$t('loginPage.password')"
+        />
       </div>
 
       <div class="checkbox-wrapper">
-        <input type="checkbox" class="checkbox" id="remember" />
+        <input
+          type="checkbox"
+          class="checkbox"
+          id="remember"
+          :aria-label="$t('loginPage.rememberMe')"
+        />
         <label for="remember" class="checkbox-label">{{ $t('loginPage.rememberMe') }}</label>
-        <a href="#" class="link2" @click.prevent="goToVerificationLogin">{{
-          $t('loginPage.forgotPassword')
-        }}</a>
+        <a
+          href="#"
+          class="link2"
+          @click.prevent="goToVerificationLogin"
+          :aria-label="$t('loginPage.forgotPassword')"
+        >
+          {{ $t('loginPage.forgotPassword') }}
+        </a>
       </div>
 
-      <button type="submit" class="btn" :disabled="loading">
+      <button
+        type="submit"
+        class="btn"
+        :disabled="loading"
+        :aria-busy="loading"
+        aria-live="polite"
+      >
         {{ loading ? $t('loginPage.loggingIn') : $t('loginPage.login') }}
       </button>
 
-      <p v-if="error" class="error-message">{{ error }}</p>
+      <p v-if="error" class="error-message" role="alert" aria-live="assertive">
+        {{ error }}
+      </p>
 
       <p class="footer-text">
         {{ $t('loginPage.noAccount') }}
-        <a href="/register" class="link">{{ $t('loginPage.signUp') }}</a>
+        <a
+          href="/register"
+          class="link"
+          :aria-label="$t('loginPage.signUp')"
+        >
+          {{ $t('loginPage.signUp') }}
+        </a>
       </p>
     </form>
-  </div>
+  </main>
 </template>
 
 <script setup>

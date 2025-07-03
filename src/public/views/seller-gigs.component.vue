@@ -44,55 +44,60 @@ export default {
 </script>
 
 <template>
-  <div class="seller-gigs-container">
-    <h1 class="page-title">{{ t('toolbar.myGigs') }}</h1>
-    
-    <div v-if="loading" class="loading-state">
-      <i class="pi pi-spinner pi-spin"></i>
+  <main class="seller-gigs-container" role="main" aria-labelledby="page-title">
+    <h1 id="page-title" class="page-title">{{ t('toolbar.myGigs') }}</h1>
+
+    <div v-if="loading" class="loading-state" role="status" aria-live="polite" aria-busy="true">
+      <i class="pi pi-spinner pi-spin" aria-hidden="true"></i>
       <span>Loading your gigs...</span>
     </div>
-    
-    <div v-else-if="gigs.length === 0" class="empty-state">
+
+    <div v-else-if="gigs.length === 0" class="empty-state" role="alert" aria-live="polite">
       <p>You haven't created any gigs yet</p>
-      <router-link 
+      <router-link
         :to="{ name: 'createGig' }"
         class="create-link"
+        aria-label="Create your first gig"
       >
         Create your first gig
       </router-link>
     </div>
-    
-    <div v-else class="gigs-grid">
+
+    <div v-else class="gigs-grid" role="list">
       <router-link
-        v-for="gig in gigs"
+        v-for="(gig, index) in gigs"
         :key="gig.id"
         :to="{ name: 'gigDetail', params: { id: gig.id } }"
         class="gig-card-link"
         style="text-decoration: none; color: inherit;"
+        role="listitem"
+        :aria-labelledby="`gig-title-${index}`"
+        :aria-describedby="`gig-desc-${index} gig-price-${index}`"
       >
-        <div class="gig-card">
+        <article class="gig-card">
           <div class="gig-image-container">
-            <img 
-              v-if="gig.image" 
-              :src="gig.image" 
-              :alt="gig.title"
+            <img
+              v-if="gig.image"
+              :src="gig.image"
+              :alt="`Image for ${gig.title} gig`"
+              loading="lazy"
             />
-            <div v-else class="image-placeholder">
+            <div v-else class="image-placeholder" aria-hidden="true">
               No Image
             </div>
           </div>
           <div class="gig-details">
-            <h3>{{ gig.title }}</h3>
-            <p class="description">{{ gig.description }}</p>
+            <h3 :id="`gig-title-${index}`" class="gig-title">{{ gig.title }}</h3>
+            <p :id="`gig-desc-${index}`" class="description">{{ gig.description }}</p>
             <div class="gig-meta">
-              <span class="price">{{ formatPrice(gig.price) }}</span>
-              <span class="category">{{ gig.category }}</span>
+              <span :id="`gig-price-${index}`" class="price" aria-label="Price">{{ formatPrice(gig.price) }}</span>
+              <span class="category" aria-label="Category">{{ gig.category }}</span>
             </div>
           </div>
-        </div>
+        </article>
       </router-link>
     </div>
-  </div>
+  </main>
 </template>
 
 <style scoped>
@@ -130,6 +135,14 @@ export default {
   color: white;
   border-radius: 4px;
   text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+.create-link:hover,
+.create-link:focus {
+  background-color: #3a0d7a;
+  outline: 2px solid #5e35b1;
+  outline-offset: 2px;
 }
 
 .gigs-grid {
@@ -139,24 +152,27 @@ export default {
 }
 
 .gig-card {
-
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   transition: transform 0.2s ease;
-    margin-bottom: 2rem;
+  margin-bottom: 2rem;
   padding: 1rem;
   background-color: #18191d;
   border-radius: 8px;
 }
 
-.gig-card:hover {
+.gig-card:hover,
+.gig-card:focus-within {
   transform: translateY(-5px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
 .gig-image-container {
   height: 160px;
   overflow: hidden;
+  background-color: #25252c;
+  border-radius: 8px;
 }
 
 .gig-image-container img {
@@ -171,8 +187,6 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #25252c;
-  border-radius: 8px;
   color: #666;
 }
 
@@ -180,7 +194,7 @@ export default {
   padding: 1rem;
 }
 
-.gig-details h3 {
+.gig-title {
   margin: 0 0 0.5rem 0;
   font-size: 1.1rem;
   color: #ffffff;
@@ -191,6 +205,7 @@ export default {
   font-size: 0.9rem;
   margin-bottom: 1rem;
   display: -webkit-box;
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -211,5 +226,16 @@ export default {
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
   font-size: 0.8rem;
+  color: #333;
+}
+
+
+.gig-card-link:focus {
+  outline: none;
+}
+
+.gig-card-link:focus-visible .gig-card {
+  outline: 2px solid #5e35b1;
+  outline-offset: 2px;
 }
 </style>

@@ -1,80 +1,109 @@
 <template>
-  <div class="service-overview">
-    <nav class="overview-nav">
-      <ul>
-        <li class="active">Overview</li>
-        <li>Description</li>
-        <li>About the seller</li>
-        <li>Compare packages</li>
-        <li>Recommendations</li>
-        <li>Reviews</li>
+  <main class="service-overview" role="main" aria-labelledby="service-overview-heading">
+    <nav class="overview-nav" role="navigation" aria-label="Service overview sections">
+      <ul role="list">
+        <li role="listitem" class="active" aria-current="page">Overview</li>
+        <li role="listitem">Description</li>
+        <li role="listitem">About the seller</li>
+        <li role="listitem">Compare packages</li>
+        <li role="listitem">Recommendations</li>
+        <li role="listitem">Reviews</li>
       </ul>
     </nav>
 
-    <section class="overview-section">
-      <img :src="serviceData.imgSrc || serviceData.bannerUrl" alt="Service Banner" class="banner-image" />
+    <section class="overview-section" aria-labelledby="service-banner-heading">
+      <h2 id="service-banner-heading" class="sr-only">Service Banner</h2>
+      <img
+        :src="serviceData.imgSrc || serviceData.bannerUrl"
+        :alt="serviceData.description || 'Service banner image'"
+        class="banner-image"
+      />
     </section>
 
-    <section class="description-section">
-      <h2>About this Gig</h2>
+    <section class="description-section" aria-labelledby="about-service-heading">
+      <h2 id="about-service-heading">About this Gig</h2>
       <p>{{ serviceData.description || serviceData.fullDescription }}</p>
       <div v-if="serviceData.detailImage" class="detail-image">
-        <img :src="serviceData.detailImage" alt="Service Detail" />
+        <img
+          :src="serviceData.detailImage"
+          :alt="'Detailed view of ' + (serviceData.description || 'the service')"
+        />
       </div>
     </section>
 
-    <section class="seller-section">
-      <h2>About the seller</h2>
+    <section class="seller-section" aria-labelledby="about-seller-heading">
+      <h2 id="about-seller-heading">About the seller</h2>
       <div class="seller-info">
-        <img :src="serviceData.sellerAvatar" alt="Seller Avatar" class="seller-avatar" />
+        <img
+          :src="serviceData.sellerAvatar"
+          :alt="'Profile picture of ' + serviceData.sellerName"
+          class="seller-avatar"
+        />
         <div class="seller-details">
           <p class="seller-name">{{ serviceData.sellerName }}</p>
         </div>
       </div>
     </section>
 
-    <section class="packages-section">
-      <h2>Compare packages</h2>
-      <div class="pricing-box">
+    <section class="packages-section" aria-labelledby="packages-heading">
+      <h2 id="packages-heading">Compare packages</h2>
+      <div class="pricing-box" role="region" aria-labelledby="basic-package-heading">
         <div class="price-header">
-          <span class="start-label">Start price</span>
+          <span id="basic-package-heading" class="start-label">Start price</span>
           <span class="price">{{ serviceData.currency }}{{ serviceData.price || serviceData.startingPrice }}</span>
         </div>
         <p class="package-title">Basic Package Only</p>
         <p class="package-desc">Laptop-scenes Includes, Background Music, Logo, and 720HD Video</p>
         <div class="delivery-revision">
           <div class="delivery">
-            <span class="icon">&#9200;</span>
+            <span class="icon" aria-hidden="true">&#9200;</span>
             <span>4 - 12 Days Delivery</span>
           </div>
           <div class="revision">
-            <span class="icon">&#8635;</span>
+            <span class="icon" aria-hidden="true">&#8635;</span>
             <span>1 Revision</span>
           </div>
         </div>
-        <ul class="features-list">
-          <li><span class="check">&#10003;</span> 8 captions</li>
-          <li><span class="check">&#10003;</span> 5 screenshots</li>
-          <li><span class="check">&#10003;</span> Screen recording</li>
-          <li><span class="check">&#10003;</span> Add logo</li>
-          <li><span class="check">&#10003;</span> Dynamic transitions</li>
-          <li><span class="check">&#10003;</span> 30 seconds running time</li>
+        <ul class="features-list" role="list">
+          <li role="listitem"><span class="check" aria-hidden="true">&#10003;</span> 8 captions</li>
+          <li role="listitem"><span class="check" aria-hidden="true">&#10003;</span> 5 screenshots</li>
+          <li role="listitem"><span class="check" aria-hidden="true">&#10003;</span> Screen recording</li>
+          <li role="listitem"><span class="check" aria-hidden="true">&#10003;</span> Add logo</li>
+          <li role="listitem"><span class="check" aria-hidden="true">&#10003;</span> Dynamic transitions</li>
+          <li role="listitem"><span class="check" aria-hidden="true">&#10003;</span> 30 seconds running time</li>
         </ul>
       </div>
     </section>
 
-    <section class="reviews-section">
-      <h2>Reviews ({{ serviceData.reviews ? serviceData.reviews.length : 0 }})</h2>
-      <div v-for="review in serviceData.reviews || []" :key="review.id" class="review">
-        <div class="review-stars">
-          <span v-for="n in Math.round(review.rating)" :key="n" class="star">&#9733;</span>
-          <span v-for="n in (5 - Math.round(review.rating))" :key="n" class="star inactive">&#9733;</span>
+    <section class="reviews-section" aria-labelledby="reviews-heading">
+      <h2 id="reviews-heading">Reviews ({{ serviceData.reviews ? serviceData.reviews.length : 0 }})</h2>
+      <div
+        v-for="review in serviceData.reviews || []"
+        :key="review.id"
+        class="review"
+        role="article"
+        :aria-labelledby="'review-heading-' + review.id"
+      >
+        <h3 :id="'review-heading-' + review.id" class="sr-only">Review by {{ review.reviewer }}</h3>
+        <div class="review-stars" aria-label="Rating: ${review.rating} out of 5 stars">
+          <span
+            v-for="n in Math.round(review.rating)"
+            :key="n"
+            class="star"
+            aria-hidden="true"
+          >&#9733;</span>
+          <span
+            v-for="n in (5 - Math.round(review.rating))"
+            :key="n"
+            class="star inactive"
+            aria-hidden="true"
+          >&#9733;</span>
         </div>
         <p class="review-comment">"{{ review.comment }}"</p>
         <p class="reviewer-name">- {{ review.reviewer }}</p>
       </div>
     </section>
-  </div>
+  </main>
 </template>
 
 <script setup>

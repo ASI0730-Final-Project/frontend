@@ -1,41 +1,70 @@
 <template>
-  <div class="pulls-container">
-    <h2 class="pulls-title">{{ t('toolbar.myPulls') }}</h2>
-    <div v-if="enrichedPulls.length > 0" class="pulls-grid">
-      <div
-        v-for="pull in enrichedPulls"
+  <main class="pulls-container" role="main" aria-labelledby="pulls-heading">
+    <h1 id="pulls-heading" class="pulls-title">{{ t('toolbar.myPulls') }}</h1>
+
+    <div v-if="enrichedPulls.length > 0" class="pulls-grid" role="list" aria-label="Lista de negociaciones">
+      <article
+        v-for="(pull, index) in enrichedPulls"
         :key="pull.id"
         class="pull-card"
+        role="listitem"
+        :aria-labelledby="`pull-heading-${index}`"
+        :aria-describedby="`pull-desc-${index}`"
       >
-        <img v-if="pull.gig?.image" :src="pull.gig.image" :alt="pull.gig.title" class="pull-gig-main-image" />
+        <img
+          v-if="pull.gig?.image"
+          :src="pull.gig.image"
+          :alt="`Imagen del servicio: ${pull.gig.title}`"
+          class="pull-gig-main-image"
+        />
+
         <div class="pull-card-content">
-          <div class="pull-user-row">
-            <img v-if="pull.buyer?.image" :src="pull.buyer.image" class="pull-avatar" />
+          <div class="pull-user-row" role="group" aria-label="Información del comprador">
+            <img
+              v-if="pull.buyer?.image"
+              :src="pull.buyer.image"
+              class="pull-avatar"
+              :alt="`Avatar de ${pull.buyer.name} ${pull.buyer.lastname}`"
+            />
             <span class="pull-user-name">{{ pull.buyer?.name }} {{ pull.buyer?.lastname }}</span>
           </div>
-          <div class="pull-gig-title">{{ pull.gig?.title }}</div>
-          <div class="pull-gig-desc">{{ pull.gig?.description }}</div>
-          <div class="pull-meta-row">
+
+          <h2 :id="`pull-heading-${index}`" class="pull-gig-title">{{ pull.gig?.title }}</h2>
+
+          <p :id="`pull-desc-${index}`" class="pull-gig-desc">{{ pull.gig?.description }}</p>
+
+          <div class="pull-meta-row" role="group" aria-label="Categoría del servicio">
             <span class="pull-category">{{ pull.gig?.category }}</span>
           </div>
-          <div class="pull-status-row">
-            <span class="pull-status">{{ t('gigs.status') }}: {{ t('negotiation.states.' + pull.state) }}</span>
+
+          <div class="pull-status-row" role="status" :aria-live="pull.state === 'pending' ? 'polite' : 'off'">
+            <span class="pull-status">
+              {{ t('gigs.status') }}: {{ t('negotiation.states.' + pull.state) }}
+            </span>
           </div>
-          <div class="pull-offer-row">
+
+          <div class="pull-offer-row" role="group" aria-label="Oferta actual">
             <span class="pull-offer-label">{{ t('pull.offer') }}</span>
-            <span class="pull-offer-value">S/ {{ Number(pull.price_update ?? pull.price).toFixed(2) }}</span>
+            <span class="pull-offer-value" aria-live="polite">
+              S/ {{ Number(pull.price_update ?? pull.price).toFixed(2) }}
+            </span>
           </div>
+
           <Button
             :label="t('pull.viewDetail')"
             icon="pi pi-eye"
             class="p-button-sm pull-detail-btn"
             @click="goToPullDetail(pull.id)"
+            :aria-label="`Ver detalles de la negociación sobre ${pull.gig?.title}`"
           />
         </div>
-      </div>
+      </article>
     </div>
-    <div v-else class="pulls-empty">{{ t('pull.empty') }}</div>
-  </div>
+
+    <div v-else class="pulls-empty" role="alert" aria-live="polite">
+      {{ t('pull.empty') }}
+    </div>
+  </main>
 </template>
 
 <script>
@@ -234,4 +263,4 @@ export default {
   font-size: 1.1rem;
   font-weight: 700;
 }
-</style> 
+</style>

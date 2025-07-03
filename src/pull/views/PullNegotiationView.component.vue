@@ -1,59 +1,134 @@
 <template>
-  <div class="negotiation-container" v-if="pull && gig && otherUser">
-    <div class="negotiation-card">
-      <img v-if="gig.image" :src="gig.image" :alt="gig.title" class="negotiation-image" />
+  <main class="negotiation-container" role="main" aria-labelledby="negotiation-heading" v-if="pull && gig && otherUser">
+    <div class="negotiation-card" role="region" aria-labelledby="gig-details-heading">
+      <img
+        v-if="gig.image"
+        :src="gig.image"
+        :alt="'Imagen del servicio: ' + gig.title"
+        class="negotiation-image"
+      />
       <div class="negotiation-info">
-        <h2>{{ gig.title }}</h2>
+        <h2 id="gig-details-heading">{{ gig.title }}</h2>
         <p>{{ gig.description }}</p>
-        <div class="negotiation-user">
-          <span v-if="isSeller">Comprador: {{ otherUser.name }} {{ otherUser.lastname }}</span>
-          <span v-else>Vendedor: {{ otherUser.name }} {{ otherUser.lastname }}</span>
+        <div class="negotiation-user" role="group" aria-label="Información del usuario">
+          <span v-if="isSeller" aria-label="Comprador">
+            Comprador: {{ otherUser.name }} {{ otherUser.lastname }}
+          </span>
+          <span v-else aria-label="Vendedor">
+            Vendedor: {{ otherUser.name }} {{ otherUser.lastname }}
+          </span>
         </div>
-        <div class="negotiation-price">
+        <div class="negotiation-price" role="group" aria-label="Precio acordado">
           <span>Precio: S/ {{ pull.price_update ?? pull.price_init }}</span>
         </div>
-        <div class="negotiation-state">
+        <div class="negotiation-state" role="status" aria-live="polite">
           <span>Estado: {{ pull.state }}</span>
         </div>
 
-        <!-- Seller -->
-        <div v-if="isSeller">
+        <!-- Seller Actions -->
+        <div v-if="isSeller" role="group" aria-label="Acciones para el vendedor">
           <template v-if="pull.state === 'pending'">
-            <button class="accept-btn" @click="acceptPrice">Aceptar Oferta</button>
+            <button
+              class="accept-btn"
+              @click="acceptPrice"
+              aria-label="Aceptar oferta de precio actual"
+            >
+              Aceptar Oferta
+            </button>
           </template>
           <template v-else-if="pull.state === 'in_process'">
-            <p style="color: orange;">Esperando que el comprador realice el pago...</p>
+            <p style="color: orange;" role="alert" aria-live="assertive">
+              Esperando que el comprador realice el pago...
+            </p>
           </template>
           <template v-else-if="pull.state === 'payed'">
-            <button class="disabled-btn" disabled>Pago confirmado</button>
+            <button class="disabled-btn" disabled aria-label="Pago confirmado">
+              Pago confirmado
+            </button>
           </template>
         </div>
 
-        <!-- Buyer -->
-        <div v-if="isBuyer && pull.state === 'in_process'">
+        <!-- Buyer Actions -->
+        <div v-if="isBuyer && pull.state === 'in_process'" role="form" aria-label="Formulario de pago">
           <div class="payment-form">
-            <h3>Datos de pago</h3>
-            <input v-model="card.number" placeholder="Número de Tarjeta (16 dígitos)" maxlength="16" />
-            <div class="expiry-cvc-group">
-              <input v-model="card.expiry" placeholder="MM/AA" maxlength="5" />
-              <input v-model="card.cvc" placeholder="CVC" maxlength="3" />
+            <h3 id="payment-heading">Datos de pago</h3>
+            <div role="group" aria-labelledby="card-number-label">
+              <label id="card-number-label" class="sr-only">Número de Tarjeta</label>
+              <input
+                v-model="card.number"
+                placeholder="Número de Tarjeta (16 dígitos)"
+                maxlength="16"
+                aria-required="true"
+                inputmode="numeric"
+                pattern="[0-9]{16}"
+                aria-describedby="card-number-hint"
+              />
+              <span id="card-number-hint" class="sr-only">Ingrese 16 dígitos sin espacios</span>
             </div>
-            <input v-model="card.name" placeholder="Nombre del titular de la tarjeta" />
-            <button class="accept-btn" @click="confirmPayment">Siguiente</button>
+            <div class="expiry-cvc-group">
+              <div role="group" aria-labelledby="card-expiry-label">
+                <label id="card-expiry-label" class="sr-only">Fecha de Expiración</label>
+                <input
+                  v-model="card.expiry"
+                  placeholder="MM/AA"
+                  maxlength="5"
+                  aria-required="true"
+                  inputmode="numeric"
+                  pattern="(0[1-9]|1[0-2])\/[0-9]{2}"
+                  aria-describedby="card-expiry-hint"
+                />
+                <span id="card-expiry-hint" class="sr-only">Formato MM/AA (mes/año)</span>
+              </div>
+              <div role="group" aria-labelledby="card-cvc-label">
+                <label id="card-cvc-label" class="sr-only">Código de Seguridad</label>
+                <input
+                  v-model="card.cvc"
+                  placeholder="CVC"
+                  maxlength="3"
+                  aria-required="true"
+                  inputmode="numeric"
+                  pattern="[0-9]{3}"
+                  aria-describedby="card-cvc-hint"
+                />
+                <span id="card-cvc-hint" class="sr-only">3 dígitos en el reverso de su tarjeta</span>
+              </div>
+            </div>
+            <div role="group" aria-labelledby="card-name-label">
+              <label id="card-name-label" class="sr-only">Nombre del Titular</label>
+              <input
+                v-model="card.name"
+                placeholder="Nombre del titular de la tarjeta"
+                aria-required="true"
+              />
+            </div>
+            <button
+              class="accept-btn"
+              @click="confirmPayment"
+              aria-label="Confirmar pago y proceder"
+              :disabled="!isPaymentFormValid"
+            >
+              Siguiente
+            </button>
           </div>
         </div>
 
         <div v-if="isBuyer && pull.state === 'payed'">
-          <button class="finish-btn" @click="finishPull">Marcar como completado</button>
+          <button
+            class="finish-btn"
+            @click="finishPull"
+            aria-label="Marcar negociación como completada"
+          >
+            Marcar como completado
+          </button>
         </div>
       </div>
     </div>
 
-    <div class="negotiation-chat">
+    <div class="negotiation-chat" role="region" aria-label="Chat de negociación">
       <ChatBox :user-id="otherUser.id" :pull-id="pull.id" />
     </div>
-  </div>
-  <div v-else class="loading">Cargando...</div>
+  </main>
+  <div v-else class="loading" role="alert" aria-busy="true">Cargando...</div>
 </template>
 
 <script setup>

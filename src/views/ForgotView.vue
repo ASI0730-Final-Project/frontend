@@ -1,28 +1,57 @@
 <template>
-  <div class="forgot-container">
-    <h1 class="title">Forgot your password</h1>
-    <form @submit.prevent="forgot" class="form">
-      <div>
-        <label class="label">Email</label>
-        <input v-model="email" type="email" class="input" required />
+  <div class="forgot-container" role="main" aria-labelledby="forgot-heading">
+    <h1 id="forgot-heading" class="title">Forgot your password</h1>
+    <form @submit.prevent="forgot" class="form" role="form">
+      <div role="group" aria-labelledby="email-label">
+        <label id="email-label" class="label">Email</label>
+        <input
+          v-model="email"
+          type="email"
+          class="input"
+          required
+          aria-required="true"
+          aria-labelledby="email-label"
+        />
       </div>
 
-      <div>
-        <label class="label">Password</label>
-        <input v-model="password" type="password" class="input" required />
+      <div role="group" aria-labelledby="password-label">
+        <label id="password-label" class="label">Password</label>
+        <input
+          v-model="password"
+          type="password"
+          class="input"
+          required
+          aria-required="true"
+          aria-labelledby="password-label"
+        />
       </div>
 
-      <div>
-        <label class="label">Confirm password</label>
-        <input v-model="confirmPassword" type="password" class="input" required />
+      <div role="group" aria-labelledby="confirm-password-label">
+        <label id="confirm-password-label" class="label">Confirm password</label>
+        <input
+          v-model="confirmPassword"
+          type="password"
+          class="input"
+          required
+          aria-required="true"
+          aria-labelledby="confirm-password-label"
+        />
       </div>
 
       <div class="checkbox-wrapper">
-        <input v-model="termsAccepted" type="checkbox" class="checkbox" id="terms" />
+        <input
+          v-model="termsAccepted"
+          type="checkbox"
+          class="checkbox"
+          id="terms"
+          aria-required="true"
+        />
         <label for="terms" class="checkbox-label">Terms and Conditions</label>
       </div>
 
-      <button class="btn" type="submit">Login</button>
+      <button class="btn" type="submit" aria-label="Submit password reset request">
+        Login
+      </button>
     </form>
   </div>
 </template>

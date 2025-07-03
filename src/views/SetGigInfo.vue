@@ -1,42 +1,78 @@
 <template>
-
   <div class="gig-info-container">
     <div class="form-card">
-      <form>
-        <h2>Create Your Gig</h2>
+      <form @submit.prevent="emitData" role="form" aria-labelledby="gig-form-title">
+        <h2 id="gig-form-title">Create Your Gig</h2>
+
+
         <div class="form-group">
           <label for="gig-title">Gig title</label>
-          <input type="text" id="gig-title" v-model="gigInfo.title"  maxlength="80">
-          <span class="char-count">{{ gigInfo.title.length }} / 80 max</span>
+          <input
+            type="text"
+            id="gig-title"
+            v-model="gigInfo.title"
+            maxlength="80"
+            aria-required="true"
+            aria-describedby="gig-title-desc"
+          />
+          <span id="gig-title-desc" class="sr-only">Maximum 80 characters</span>
+          <span class="char-count" aria-live="polite">{{ gigInfo.title.length }} / 80 max</span>
         </div>
+
 
         <div class="form-group category-row">
           <label for="category">Category</label>
           <div class="select-group">
-            <select id="category" v-model="gigInfo.category">
+            <select
+              id="category"
+              v-model="gigInfo.category"
+              aria-required="true"
+              aria-describedby="category-desc"
+            >
               <option value="">SELECT A CATEGORY</option>
             </select>
-            <select id="subcategory" v-model="gigInfo.subcategory">
+            <select
+              id="subcategory"
+              v-model="gigInfo.subcategory"
+              aria-required="true"
+              aria-describedby="subcategory-desc"
+            >
               <option value="">SELECT A SUBCATEGORY</option>
             </select>
           </div>
+          <small id="category-desc" class="sr-only">Select a main category</small>
+          <small id="subcategory-desc" class="sr-only">Select a subcategory</small>
         </div>
+
 
         <div class="form-group search-tags">
           <label for="positive-keywords">Search tags</label>
-          <label class="sub-label" for="positive-keywords">Positive keywords</label>
-          <label class="sub-label" for="positive-keywords">Enter search terms you feel your buyers will use when looking for your service.</label>
-          <textarea id="positive-keywords" v-model="gigInfo.tags" ></textarea>
+          <span class="sr-only" id="keywords-desc">
+            Enter keywords buyers might use to find your service
+          </span>
+          <textarea
+            id="positive-keywords"
+            v-model="gigInfo.tags"
+            aria-describedby="keywords-desc"
+            aria-required="false"
+          ></textarea>
         </div>
 
+
         <div class="form-actions">
-          <button type = "submit" @click="emitData" class="save-continue">Save & Continue</button>
+          <button
+            type="submit"
+            class="save-continue"
+            aria-label="Save and proceed to next step"
+          >
+            Save & Continue
+          </button>
         </div>
       </form>
     </div>
   </div>
-
 </template>
+
 
 <script>
 export default {

@@ -1,22 +1,52 @@
 <template>
-  <div class="main-container">
+  <section
+    class="main-container"
+    role="region"
+    aria-labelledby="pull-detail-title"
+  >
     <div v-if="pull" class="container">
+
+      <!-- Título oculto solo para accesibilidad -->
+      <h1 id="pull-detail-title" class="sr-only">
+        {{ t('pull.detailsTitle') || 'Detalle del Pull' }}
+      </h1>
+
       <!-- Banner de estado -->
-      <div v-if="pull.state === 'pending'" class="state-banner pending">
+      <div
+        v-if="pull.state === 'pending'"
+        class="state-banner pending"
+        role="status"
+        aria-live="polite"
+      >
         {{ t('pull.buyer.pending') }}
       </div>
-      <div v-else-if="pull.state === 'in_process'" class="state-banner in-process">
+      <div
+        v-else-if="pull.state === 'in_process'"
+        class="state-banner in-process"
+        role="status"
+        aria-live="polite"
+      >
         {{ t('pull.buyer.in_process') }}
       </div>
-      <div v-else-if="pull.state === 'payed'" class="state-banner in-process">
+      <div
+        v-else-if="pull.state === 'payed'"
+        class="state-banner in-process"
+        role="status"
+        aria-live="polite"
+      >
         {{ t('pull.buyer.payed') }}
       </div>
-      <div v-else-if="pull.state === 'complete'" class="state-banner finished">
+      <div
+        v-else-if="pull.state === 'complete'"
+        class="state-banner finished"
+        role="status"
+        aria-live="polite"
+      >
         {{ t('pull.buyer.complete') }}
       </div>
 
       <!-- Precios -->
-      <div class="price-header">
+      <div class="price-header" role="group" aria-label="Resumen de precios y oferta">
         <div class="price-column">
           <div class="price-label">{{ t('pull.initialPrice') }}</div>
           <div class="price-value text-green">${{ pull.price_init }}</div>
@@ -27,21 +57,45 @@
         </div>
         <div class="price-column">
           <div class="price-label">{{ t('pull.makeOffer') }}</div>
-          <div v-if="pull.state === 'pending'" class="offer-input-group">
-            <input type="number" v-model.number="offerInput" class="offer-input" :placeholder="pull.price_update ?? pull.price_init" />
-            <button class="save-button" @click="saveOffer">
+          <div
+            v-if="pull.state === 'pending'"
+            class="offer-input-group"
+            role="form"
+            aria-label="Formulario de oferta"
+          >
+            <input
+              type="number"
+              v-model.number="offerInput"
+              class="offer-input"
+              :placeholder="pull.price_update ?? pull.price_init"
+              aria-label="Ingrese su oferta"
+            />
+            <button
+              class="save-button"
+              @click="saveOffer"
+              aria-label="Guardar oferta"
+            >
               <i class="pi pi-check"></i>
             </button>
           </div>
-          <div v-else class="offer-input-group">
-            <span class="offer-value-disabled">{{ t('pull.notModifiable') }}</span>
+          <div
+            v-else
+            class="offer-input-group"
+            aria-disabled="true"
+            aria-label="Oferta no modificable"
+          >
+            <span class="offer-value-disabled">
+              {{ t('pull.notModifiable') }}
+            </span>
           </div>
         </div>
       </div>
 
       <!-- Chat -->
-      <div class="chat-section">
-        <div class="chat-label">{{ t('pull.chatWithSeller') }}</div>
+      <div class="chat-section" role="region" aria-labelledby="chat-title">
+        <div id="chat-title" class="chat-label">
+          {{ t('pull.chatWithSeller') }}
+        </div>
         <ChatBox
           v-if="currentUser && currentUser.id"
           :user-id="String(currentUser.id)"
@@ -51,7 +105,7 @@
       </div>
 
       <!-- Cancelar -->
-      <div class="pull-actions">
+      <div class="pull-actions" role="group" aria-label="Opciones del pull">
         <div class="pull-actions-label">
           <template v-if="pull.state === 'payed' || pull.state === 'complete'">
             {{ t('pull.noLongerClosable') }}
@@ -61,36 +115,21 @@
           </template>
         </div>
         <div class="button-group">
-          <button class="cancel-button" @click="leavePull" v-if="pull.state !== 'payed' && pull.state !== 'complete'">
+          <button
+            class="cancel-button"
+            @click="leavePull"
+            v-if="pull.state !== 'payed' && pull.state !== 'complete'"
+            aria-label="Cancelar solicitud"
+          >
             {{ t('pull.cancel') }}
           </button>
         </div>
       </div>
 
-      <!-- Formulario de pago -->
-      <div v-if="pull.state === 'in_process'" class="payment-form">
-        <h3>{{ t('pull.paymentData') }}</h3>
-        <input v-model="card.number" :placeholder="t('pull.cardNumber')" maxlength="16" />
-        <div class="expiry-cvc-group">
-          <input v-model="card.expiry" :placeholder="t('pull.expiryDate')" maxlength="5" />
-          <input v-model="card.cvc" :placeholder="t('pull.cvc')" maxlength="3" />
-        </div>
-        <input v-model="card.name" :placeholder="t('pull.cardHolder')" />
-        <button class="confirm-delivery-button" @click="processPayment">{{ t('pull.next') }}</button>
-      </div>
-
-      <!-- Confirmar entrega -->
-      <div v-if="pull.state === 'payed'" class="confirm-delivery-section">
-        <button class="confirm-delivery-button" @click="confirmDelivery">{{ t('pull.confirmDelivery') }}</button>
-      </div>
     </div>
-
-    <div v-else class="loading">
-      <i class="pi pi-spin pi-spinner"></i>
-      <span>{{ t('pull.loading') }}</span>
-    </div>
-  </div>
+  </section>
 </template>
+
 
 <script>
 import { ref, onMounted, computed } from 'vue'
@@ -422,4 +461,4 @@ export default {
     width: 100%;
   }
 }
-</style> 
+</style>
