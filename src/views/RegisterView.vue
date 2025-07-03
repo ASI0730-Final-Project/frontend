@@ -1,62 +1,140 @@
 <template>
-  <div class="signup-container">
-    <h1 class="title">{{ $t('registerPage.title') }}</h1>
-    <form @submit.prevent="handleRegister" class="form">
-      <div>
-        <label class="label">{{ $t('registerPage.name') }}</label>
-        <input v-model="firstName" type="text" class="input" required />
+  <main class="signup-container" role="main" aria-labelledby="registration-heading">
+    <h1 id="registration-heading" class="title">{{ $t('registerPage.title') }}</h1>
+    <form
+      @submit.prevent="handleRegister"
+      class="form"
+      role="form"
+      aria-label="User registration form"
+    >
+      <div role="group" aria-labelledby="firstName-label">
+        <label id="firstName-label" class="label">{{ $t('registerPage.name') }}</label>
+        <input
+          v-model="firstName"
+          type="text"
+          class="input"
+          required
+          aria-required="true"
+          :aria-label="$t('registerPage.name')"
+        />
       </div>
 
-      <div>
-        <label class="label">{{ $t('registerPage.lastName') }}</label>
-        <input v-model="lastName" type="text" class="input" required />
+      <div role="group" aria-labelledby="lastName-label">
+        <label id="lastName-label" class="label">{{ $t('registerPage.lastName') }}</label>
+        <input
+          v-model="lastName"
+          type="text"
+          class="input"
+          required
+          aria-required="true"
+          :aria-label="$t('registerPage.lastName')"
+        />
       </div>
 
-      <div>
-        <label class="label">{{ $t('registerPage.email') }}</label>
-        <input v-model="email" type="email" class="input" required />
+      <div role="group" aria-labelledby="email-label">
+        <label id="email-label" class="label">{{ $t('registerPage.email') }}</label>
+        <input
+          v-model="email"
+          type="email"
+          class="input"
+          required
+          aria-required="true"
+          :aria-label="$t('registerPage.email')"
+        />
       </div>
 
-      <div>
-        <label class="label">{{ $t('registerPage.password') }}</label>
-        <input v-model="password" type="password" class="input" required minlength="6" />
+      <div role="group" aria-labelledby="password-label">
+        <label id="password-label" class="label">{{ $t('registerPage.password') }}</label>
+        <input
+          v-model="password"
+          type="password"
+          class="input"
+          required
+          minlength="6"
+          aria-required="true"
+          :aria-label="$t('registerPage.password')"
+          aria-describedby="password-requirements"
+        />
+        <span id="password-requirements" class="sr-only">Minimum 6 characters required</span>
       </div>
 
-      <div>
-        <label class="label">{{ $t('registerPage.confirmPassword') }}</label>
-        <input v-model="confirmPassword" type="password" class="input" required />
+      <div role="group" aria-labelledby="confirmPassword-label">
+        <label id="confirmPassword-label" class="label">{{ $t('registerPage.confirmPassword') }}</label>
+        <input
+          v-model="confirmPassword"
+          type="password"
+          class="input"
+          required
+          aria-required="true"
+          :aria-label="$t('registerPage.confirmPassword')"
+        />
       </div>
 
-      <div>
-        <label class="label">{{ $t('registerPage.profileImage') }}</label>
-        <input type="file" @change="onFileChange" class="input" accept="image/*" />
+      <div role="group" aria-labelledby="profileImage-label">
+        <label id="profileImage-label" class="label">{{ $t('registerPage.profileImage') }}</label>
+        <input
+          type="file"
+          @change="onFileChange"
+          class="input"
+          accept="image/*"
+          :aria-label="$t('registerPage.profileImage')"
+        />
       </div>
 
-      <div>
-        <label class="label">{{ $t('registerPage.role') }}</label>
-        <select v-model="role" class="input" required>
+      <div role="group" aria-labelledby="role-label">
+        <label id="role-label" class="label">{{ $t('registerPage.role') }}</label>
+        <select
+          v-model="role"
+          class="input"
+          required
+          aria-required="true"
+          :aria-label="$t('registerPage.role')"
+        >
           <option value="Buyer">{{ $t('registerPage.buyer') }}</option>
           <option value="Seller">{{ $t('registerPage.seller') }}</option>
         </select>
       </div>
 
-      <div class="checkbox-wrapper">
-        <input type="checkbox" class="checkbox" id="terms" required />
-        <label for="terms" class="checkbox-label">{{ $t('registerPage.terms') }}</label>
+      <div class="checkbox-wrapper" role="group" aria-labelledby="terms-label">
+        <input
+          type="checkbox"
+          class="checkbox"
+          id="terms"
+          required
+          aria-required="true"
+          :aria-label="$t('registerPage.terms')"
+        />
+        <label for="terms" id="terms-label" class="checkbox-label">
+          {{ $t('registerPage.terms') }}
+        </label>
       </div>
 
-      <button type="submit" class="btn" :disabled="loading">
+      <button
+        type="submit"
+        class="btn"
+        :disabled="loading"
+        :aria-busy="loading"
+        aria-live="polite"
+      >
         {{ loading ? $t('registerPage.creating') : $t('registerPage.create') }}
       </button>
 
-      <p v-if="error" class="error-message">{{ error }}</p>
+      <p v-if="error" class="error-message" role="alert" aria-live="assertive">
+        {{ error }}
+      </p>
 
       <p class="footer-text">
         {{ $t('registerPage.already') }}
-        <a href="/login" class="link">{{ $t('registerPage.login') }}</a>
+        <a
+          href="/login"
+          class="link"
+          :aria-label="$t('registerPage.login')"
+        >
+          {{ $t('registerPage.login') }}
+        </a>
       </p>
     </form>
-  </div>
+  </main>
 </template>
 
 <script setup>

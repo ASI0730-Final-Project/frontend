@@ -1,46 +1,61 @@
 <template>
-  <div>
-
+  <div role="main" aria-labelledby="price-acceptance-heading">
     <div class="zoom-container">
-
       <div class="section-layout">
         <div class="text-container">
-          <div class="details-box">
-            <h3 class="price-header">
+          <div class="details-box" role="region" aria-labelledby="start-price-heading">
+            <h3 id="start-price-heading" class="price-header">
               <strong class="label-text">Start Price:</strong>
               <strong class="start-price">s/.310</strong>
             </h3>
-            <div class="details-content">
-              <p><strong>Days Delivery: 5</strong></p>
-              <p><strong>Responsive: yes</strong></p>
-              <p><strong>Revisions: 2</strong></p>
-              <p><strong>Pages: 6</strong></p>
-              <p><strong>Custom Animations: ✅</strong></p>
+            <div class="details-content" role="list">
+              <p role="listitem"><strong>Days Delivery: 5</strong></p>
+              <p role="listitem"><strong>Responsive: yes</strong></p>
+              <p role="listitem"><strong>Revisions: 2</strong></p>
+              <p role="listitem"><strong>Pages: 6</strong></p>
+              <p role="listitem"><strong>Custom Animations: ✅</strong></p>
             </div>
           </div>
 
-          <div class="price-box">
-            <h3 class="price-header">
+          <div class="price-box" role="region" aria-labelledby="final-price-heading">
+            <h3 id="final-price-heading" class="price-header">
               <strong class="label-text">Actual Price:</strong>
               <strong class="actual-price">{{ currentPrice }}</strong>
             </h3>
             <div class="spacer"></div>
-            <button class="accept-btn">Accept</button>
+            <button
+              class="accept-btn"
+              aria-label="Accept offer at current price"
+            >
+              Accept
+            </button>
           </div>
         </div>
 
         <div class="chat-box-container">
-          <img src="@/assets/ChatBox.png" alt="Chatbox" class="chat-box" />
+          <img
+            src="@/assets/ChatBox.png"
+            alt="Chatbox showing final negotiation"
+            class="chat-box"
+          />
         </div>
       </div>
 
       <div class="image-below-container">
-        <img src="@/assets/imageDesign.png" alt="Design Image" class="image-below" />
+        <img
+          src="@/assets/imageDesign.png"
+          alt="Final design preview of the service"
+          class="image-below"
+        />
       </div>
     </div>
 
     <div class="text-input-container">
-      <textarea class="text-input" placeholder="Write a Message"></textarea>
+      <textarea
+        class="text-input"
+        placeholder="Write a Message"
+        aria-label="Message input for final confirmation"
+      ></textarea>
     </div>
   </div>
 </template>

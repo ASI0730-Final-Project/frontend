@@ -1,18 +1,33 @@
 <template>
-  <div class="verification-container">
+  <main class="verification-container" role="main" aria-labelledby="verification-heading">
     <div class="card">
-      <svg class="check-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <svg
+        class="check-icon"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        aria-hidden="true"
+      >
         <circle cx="12" cy="12" r="10" stroke-width="1" />
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 12l2 2l4 -4" />
       </svg>
 
+      <h2 id="verification-heading" class="sr-only">Password Reset Verification</h2>
       <p class="message">
-        We sent an email to <span class="email">{{ obfuscatedEmail }}</span>. Go to the link to reset your password.
+        We sent an email to <span class="email">{{ obfuscatedEmail }}</span>.
+        Go to the link in the email to reset your password.
       </p>
 
-      <button class="btn" @click="goToForgot">Log In</button>
+      <button
+        class="btn"
+        @click="goToForgot"
+        aria-label="Go to login page"
+      >
+        Log In
+      </button>
     </div>
-  </div>
+  </main>
 </template>
 
 <script setup>

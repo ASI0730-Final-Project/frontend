@@ -104,56 +104,69 @@ const continueBrowseGigs = ref([
 </script>
 
 <template>
-  <HeroSection />
+  <main role="main">
+    <HeroSection />
 
-  <div class="main-content container">
-    <div v-if="currentUser" class="user-profile">
-      <img :src="currentUser.profileImage" alt="Foto de perfil" class="profile-img" />
-      <div class="user-info">
-        <h3>
-          {{ currentLanguage === 'es' ? 'Bienvenido' : 'Welcome' }}, {{ currentUser.firstName }}
-          {{ currentUser.lastName }}
-        </h3>
-        <p>{{ currentUser.email }}</p>
+    <div class="main-content container">
+      <div v-if="currentUser" class="user-profile" role="region" aria-labelledby="user-profile-heading">
+        <img
+          :src="currentUser.profileImage"
+          :alt="t('aria.userProfileImage', {name: currentUser.firstName})"
+          class="profile-img"
+        />
+        <div class="user-info">
+          <h3 id="user-profile-heading">
+            {{ currentLanguage === 'es' ? 'Bienvenido' : 'Welcome' }}, {{ currentUser.firstName }}
+            {{ currentUser.lastName }}
+          </h3>
+          <p>{{ currentUser.email }}</p>
+        </div>
       </div>
+
+      <section class="gig-section" aria-labelledby="continue-browsing-heading">
+        <h2 id="continue-browsing-heading">
+          {{ currentLanguage === 'es' ? 'Continúa explorando' : 'Continue Browse' }}
+          <a href="#" aria-label="View all continue browsing gigs">&rarr;</a>
+        </h2>
+        <div class="gig-list" role="list">
+          <GigCard
+            v-for="gig in continueBrowseGigs"
+            :key="gig.id"
+            :img-src="gig.imgSrc"
+            :seller-name="gig.sellerName"
+            :description="t(gig.descriptionKey)"
+            :price="gig.price"
+            role="listitem"
+          />
+        </div>
+      </section>
+
+      <section class="gig-section" aria-labelledby="popular-tech-heading">
+        <h2 id="popular-tech-heading">
+          {{ currentLanguage === 'es' ? 'Gigs Populares de Tecnología' : 'Popular Tech Gigs' }}
+        </h2>
+        <div class="gig-list" role="list">
+          <GigCard
+            v-for="gig in popularGigs"
+            :key="gig.id"
+            :img-src="gig.imgSrc"
+            :seller-name="gig.sellerName"
+            :description="t(gig.descriptionKey)"
+            :price="gig.price"
+            currency="S/."
+            role="listitem"
+          />
+        </div>
+      </section>
+
+      <button
+        @click="switchLanguage"
+        :aria-label="currentLanguage === 'es' ? 'Cambiar idioma a inglés' : 'Switch language to Spanish'"
+      >
+        {{ currentLanguage === 'es' ? 'Cambiar a Inglés' : 'Switch to Spanish' }}
+      </button>
     </div>
-
-    <section class="gig-section">
-      <h2>
-        {{ currentLanguage === 'es' ? 'Continúa explorando' : 'Continue Browse' }}
-        <a href="#">&rarr;</a>
-      </h2>
-      <div class="gig-list">
-        <GigCard
-          v-for="gig in continueBrowseGigs"
-          :key="gig.id"
-          :img-src="gig.imgSrc"
-          :seller-name="gig.sellerName"
-          :description="t(gig.descriptionKey)"
-          :price="gig.price"
-        />
-      </div>
-    </section>
-
-    <section class="gig-section">
-      <h2>{{ currentLanguage === 'es' ? 'Gigs Populares de Tecnología' : 'Popular Tech Gigs' }}</h2>
-      <div class="gig-list">
-        <GigCard
-          v-for="gig in popularGigs"
-          :key="gig.id"
-          :img-src="gig.imgSrc"
-          :seller-name="gig.sellerName"
-          :description="t(gig.descriptionKey)"
-          :price="gig.price"
-          currency="S/."
-        />
-      </div>
-    </section>
-
-    <button @click="switchLanguage">
-      {{ currentLanguage === 'es' ? 'Cambiar a Inglés' : 'Switch to Spanish' }}
-    </button>
-  </div>
+  </main>
 </template>
 
 <style scoped>

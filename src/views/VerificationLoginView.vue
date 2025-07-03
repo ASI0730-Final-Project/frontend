@@ -1,19 +1,28 @@
 <template>
-  <div class="verification-container">
+  <div class="verification-container" role="main" aria-labelledby="verification-title">
     <div class="card">
-      <svg class="check-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <svg
+        class="check-icon"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        aria-hidden="true"
+        role="img"
+      >
         <circle cx="12" cy="12" r="10" stroke-width="1" />
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 12l2 2l4 -4" />
       </svg>
 
-      <p class="message">
+      <p class="message" id="verification-title" role="alert">
         We sent an email to <span class="email">{{ obfuscatedEmail }}</span>. Go to the link in the email to verify this account.
       </p>
 
-      <button class="btn" @click="goToForgot">Log In</button>
+      <button class="btn" @click="goToForgot" aria-label="Return to login screen">Log In</button>
     </div>
   </div>
 </template>
+
 
 <script setup>
 import { useRoute, useRouter } from 'vue-router'

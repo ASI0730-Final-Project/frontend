@@ -97,25 +97,26 @@ export default {
 </script>
 
 <template>
-  <div class="gig-detail-container">
-    <pv-button 
+  <div class="gig-detail-container" role="main" aria-labelledby="gig-title">
+    <pv-button
       label="Back to Gigs"
       icon="pi pi-arrow-left"
       class="mb-4"
       @click="$router.push({ name: 'gigs' })"
+      aria-label="Volver a la lista de Gigs"
     />
 
-    <div v-if="loading" class="loading-spinner">
+    <div v-if="loading" class="loading-spinner" role="status" aria-live="polite">
       <i class="pi pi-spinner pi-spin"></i> {{ t('loading') }}
     </div>
 
-    <div v-else-if="error" class="error-message">
+    <div v-else-if="error" class="error-message" role="alert" aria-live="assertive">
       {{ error }}
     </div>
 
     <div v-else-if="gig" class="gig-detail-content">
       <div class="gig-header">
-        <h1 class="gig-title">{{ gig.title }}</h1>
+        <h1 id="gig-title" class="gig-title">{{ gig.title }}</h1>
         <div class="gig-price">
           <template v-if="gig.price !== undefined && gig.price !== null">
             S/ {{ gig.price }}
@@ -126,45 +127,46 @@ export default {
         </div>
       </div>
 
-      <div class="gig-seller">
+      <section class="gig-seller" role="region" aria-label="Información del vendedor">
         <div class="seller-info">
-          <img 
-            v-if="gig.seller?.image" 
-            :src="gig.seller.image" 
-            :alt="`${gig.seller.name} ${gig.seller.lastname}`"
+          <img
+            v-if="gig.seller?.image"
+            :src="gig.seller.image"
+            :alt="`Foto de perfil de ${gig.seller.name} ${gig.seller.lastname}`"
             class="seller-avatar"
           />
-          <pv-avatar 
+          <pv-avatar
             v-else
             :label="gig.seller?.name?.charAt(0) + gig.seller?.lastname?.charAt(0)"
             size="large"
             shape="circle"
+            aria-label="Avatar del vendedor"
           />
           <div class="seller-details">
             <h3>{{ gig.seller?.name }} {{ gig.seller?.lastname }}</h3>
             <p class="seller-rating">⭐ 4.9 (25 reviews)</p>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div class="gig-image-container">
-        <img 
-          v-if="gig.image" 
-          :src="gig.image" 
+      <section class="gig-image-container" role="region" aria-label="Imagen del servicio">
+        <img
+          v-if="gig.image"
+          :src="gig.image"
           :alt="gig.title"
           class="gig-main-image"
         />
-        <div v-else class="gig-image-placeholder">
+        <div v-else class="gig-image-placeholder" role="note">
           No image available
         </div>
-      </div>
+      </section>
 
-      <div class="gig-description">
-        <h2>{{ t('gigs.aboutThisGig') }}</h2>
+      <section class="gig-description" aria-labelledby="about-this-gig">
+        <h2 id="about-this-gig">{{ t('gigs.aboutThisGig') }}</h2>
         <p>{{ gig.description }}</p>
-      </div>
+      </section>
 
-      <div class="gig-details">
+      <section class="gig-details" role="region" aria-label="Detalles técnicos del servicio">
         <div class="detail-section">
           <h3>{{ t('gigs.category') }}</h3>
           <p class="detail-info">{{ gig.category }}</p>
@@ -196,32 +198,34 @@ export default {
 
         <div v-if="gig.tags?.length" class="detail-section">
           <h3>{{ t('gigs.tags') }}</h3>
-          <div class="tags-container">
-            <span v-for="tag in parseTags(gig.tags)" :key="tag" class="tag">
+          <div class="tags-container" role="list" aria-label="Etiquetas asociadas al Gig">
+            <span v-for="tag in parseTags(gig.tags)" :key="tag" class="tag" role="listitem">
               {{ tag }}
             </span>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div v-if="orderError" class="error-message mt-2">
+      <div v-if="orderError" class="error-message mt-2" role="alert">
         {{ orderError }}
       </div>
-      <div v-if="orderSuccess" class="success-message mt-2">
+      <div v-if="orderSuccess" class="success-message mt-2" role="status" aria-live="polite">
         {{ t('gigs.orderSuccess') }}
       </div>
 
       <div class="gig-actions mt-4">
-        <pv-button 
+        <pv-button
           :label="`Order Now (S/ ${gig.price !== undefined && gig.price !== null ? gig.price : 'N/A'})`"
           icon="pi pi-shopping-cart"
           class="p-button-success"
           @click="orderGig"
+          aria-label="Ordenar ahora"
         />
       </div>
     </div>
   </div>
 </template>
+
 
 <style scoped>
 .gig-detail-container {
@@ -365,4 +369,4 @@ export default {
   gap: 1rem;
   margin-top: 2rem;
 }
-</style> 
+</style>

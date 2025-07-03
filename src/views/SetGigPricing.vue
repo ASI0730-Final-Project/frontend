@@ -1,78 +1,102 @@
 <template>
   <div class="pricing-container">
     <div class="pricing-card">
-      <form @submit.prevent="handleSubmit">
-        <h3>Price Calculator</h3>
-        <p class="description">Specify the Range, and we will establish a base price.</p>
+      <form @submit.prevent="handleSubmit" role="form" aria-labelledby="calculator-title">
+        <h3 id="calculator-title">Price Calculator</h3>
+        <p class="description" id="calculator-desc">Specify the Range, and we will establish a base price.</p>
 
         <div class="form-group horizontal-item">
           <label for="days-delivery">Days Delivery</label>
-          <div class="select-wrapper">
-            <select id="days-delivery" v-model="pricing.daysDelivery">
-              <option value="" disabled selected>Choose (4 - 8)</option>
-              <option value="4">4 Days</option>
-              <option value="5">5 Days</option>
-              <option value="6">6 Days</option>
-              <option value="7">7 Days</option>
-              <option value="8">8 Days</option>
-            </select>
-          </div>
+          <select
+            id="days-delivery"
+            v-model="pricing.daysDelivery"
+            aria-required="true"
+            aria-describedby="days-desc"
+          >
+            <option value="" disabled selected>Choose (4 - 8)</option>
+            <option value="4">4 Days</option>
+            <option value="5">5 Days</option>
+            <option value="6">6 Days</option>
+            <option value="7">7 Days</option>
+            <option value="8">8 Days</option>
+          </select>
+          <small id="days-desc" class="sr-only">Select delivery time in days</small>
         </div>
 
         <div class="form-group horizontal-item">
           <label for="responsive">Responsive</label>
-          <div class="select-wrapper">
-            <select id="responsive" v-model="pricing.responsive">
-              <option value="" disabled selected>Choose (yes/no)</option>
-              <option value="yes">Yes</option>
-              <option value="no">No</option>
-            </select>
-          </div>
+          <select
+            id="responsive"
+            v-model="pricing.responsive"
+            aria-required="true"
+            aria-describedby="responsive-desc"
+          >
+            <option value="" disabled selected>Choose (yes/no)</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+          </select>
+          <small id="responsive-desc" class="sr-only">Choose if the site should be responsive</small>
         </div>
 
         <div class="form-group horizontal-item">
           <label for="revisions">Revisions</label>
-          <div class="select-wrapper">
-            <select id="revisions" v-model="pricing.revisions">
-              <option value="" disabled selected>Choose (0 - 3)</option>
-              <option value="0">0 Revisions</option>
-              <option value="1">1 Revision</option>
-              <option value="2">2 Revisions</option>
-              <option value="3">3 Revisions</option>
-            </select>
-          </div>
+          <select
+            id="revisions"
+            v-model="pricing.revisions"
+            aria-required="true"
+            aria-describedby="revisions-desc"
+          >
+            <option value="" disabled selected>Choose (0 - 3)</option>
+            <option value="0">0 Revisions</option>
+            <option value="1">1 Revision</option>
+            <option value="2">2 Revisions</option>
+            <option value="3">3 Revisions</option>
+          </select>
+          <small id="revisions-desc" class="sr-only">Select how many revisions are allowed</small>
         </div>
 
         <div class="form-group horizontal-item">
           <label for="pages">Pages</label>
-          <div class="select-wrapper">
-            <select id="pages" v-model="pricing.pages">
-              <option value="" disabled selected>Choose (1 - 15)</option>
-              <option v-for="n in 15" :key="n" :value="n">{{ n }} Pages</option>
-            </select>
-          </div>
+          <select
+            id="pages"
+            v-model="pricing.pages"
+            aria-required="true"
+            aria-describedby="pages-desc"
+          >
+            <option value="" disabled selected>Choose (1 - 15)</option>
+            <option v-for="n in 15" :key="n" :value="n">{{ n }} Pages</option>
+          </select>
+          <small id="pages-desc" class="sr-only">Number of pages to include</small>
         </div>
 
         <div class="form-group horizontal-item">
           <label for="extra-functions">Extra Functions</label>
-          <div class="select-wrapper">
-            <select id="extra-functions" v-model="pricing.extraFunctions">
-              <option value="" disabled selected>Choose (yes/no)</option>
-              <option value="yes">Yes</option>
-              <option value="no">No</option>
-            </select>
-          </div>
+          <select
+            id="extra-functions"
+            v-model="pricing.extraFunctions"
+            aria-required="true"
+            aria-describedby="functions-desc"
+          >
+            <option value="" disabled selected>Choose (yes/no)</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+          </select>
+          <small id="functions-desc" class="sr-only">Whether to include additional functionality</small>
         </div>
 
         <div class="form-group horizontal-item">
           <label for="custom-animations">Custom Animations</label>
-          <div class="select-wrapper">
-            <select id="custom-animations" v-model="pricing.customAnimations">
-              <option value="" disabled selected>Choose (yes/no)</option>
-              <option value="yes">Yes</option>
-              <option value="no">No</option>
-            </select>
-          </div>
+          <select
+            id="custom-animations"
+            v-model="pricing.customAnimations"
+            aria-required="true"
+            aria-describedby="animations-desc"
+          >
+            <option value="" disabled selected>Choose (yes/no)</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+          </select>
+          <small id="animations-desc" class="sr-only">Whether to include animations</small>
         </div>
 
         <div class="price-estimated">
@@ -80,14 +104,13 @@
         </div>
 
         <div class="form-actions">
-          <button type="submit" class="post-button">Post</button>
+          <button type="submit" class="post-button" aria-label="Submit price configuration">Post</button>
         </div>
-
       </form>
     </div>
-
   </div>
 </template>
+
 
 <script>
 export default {

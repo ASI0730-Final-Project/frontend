@@ -50,19 +50,31 @@ const popularGigs = ref([
 <template>
   <HeroSection />
 
-  <div class="main-content container">
-    <div v-if="currentUser" class="user-profile">
-      <img :src="currentUser.profileImage" alt="Foto de perfil" class="profile-img" />
+  <main class="main-content container" role="main">
+    <section
+      v-if="currentUser"
+      class="user-profile"
+      aria-labelledby="user-profile-title"
+    >
+      <img
+        :src="currentUser.profileImage"
+        alt="Foto de perfil del usuario"
+        class="profile-img"
+      />
       <div class="user-info">
-        <h3>
-          {{ currentLanguage === 'es' ? 'Bienvenido' : 'Welcome' }}, {{ currentUser.firstName }}
-          {{ currentUser.lastName }}
+        <h3 id="user-profile-title">
+          {{ currentLanguage === 'es' ? 'Bienvenido' : 'Welcome' }},
+          {{ currentUser.firstName }} {{ currentUser.lastName }}
         </h3>
         <p>{{ currentUser.email }}</p>
       </div>
-    </div>
+    </section>
 
-    <section class="gig-section">
+
+    <section class="gig-section" aria-labelledby="continue-browse-title">
+      <h2 id="continue-browse-title" class="sr-only">
+        {{ currentLanguage === 'es' ? 'Gigs recomendados para ti' : 'Recommended Gigs' }}
+      </h2>
       <div class="gig-list">
         <GigCard
           v-for="gig in continueBrowseGigs"
@@ -75,8 +87,11 @@ const popularGigs = ref([
       </div>
     </section>
 
-    <section class="gig-section">
-      <h2>{{ currentLanguage === 'es' ? 'Gigs Populares de Tecnología' : 'Popular Tech Gigs' }}</h2>
+
+    <section class="gig-section" aria-labelledby="popular-gigs-title">
+      <h2 id="popular-gigs-title">
+        {{ currentLanguage === 'es' ? 'Gigs Populares de Tecnología' : 'Popular Tech Gigs' }}
+      </h2>
       <div class="gig-list">
         <GigCard
           v-for="gig in popularGigs"
@@ -90,11 +105,12 @@ const popularGigs = ref([
       </div>
     </section>
 
-    <button @click="switchLanguage">
+    <button @click="switchLanguage" aria-label="Cambiar idioma">
       {{ currentLanguage === 'es' ? 'Cambiar a Inglés' : 'Switch to Spanish' }}
     </button>
-  </div>
+  </main>
 </template>
+
 
 <style scoped>
 @font-face {

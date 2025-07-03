@@ -1,42 +1,41 @@
 <template>
-  <div class="details-container">
-    <div class="option-group">
+  <div class="details-container" role="main" aria-labelledby="specify-needs-heading">
+    <div class="option-group" role="form">
       <div class="title-bar">
-        <h2 class="section-title">Specify your needs</h2>
+        <h2 id="specify-needs-heading" class="section-title">Specify your needs</h2>
       </div>
 
-      <div class="option-item">
-        <label>Days Delivery</label>
-        <Dropdown v-model="responsiveDays" :options="daysOptions" placeholder="Choose (4 - 8)" class="visible-border" />
+      <div class="option-item" role="group" aria-labelledby="days-label">
+        <label id="days-label">Days Delivery</label>
+        <Dropdown
+          v-model="responsiveDays"
+          :options="daysOptions"
+          placeholder="Choose (4 - 8)"
+          class="visible-border"
+          aria-required="true"
+          aria-labelledby="days-label"
+        />
       </div>
 
-      <div class="option-item">
-        <label>Responsive</label>
-        <Dropdown v-model="responsiveChoice" :options="yesNoValues" placeholder="Choose (yes/no)" class="visible-border" />
-      </div>
-
-      <div class="option-item">
-        <label>Revisions</label>
-        <Dropdown v-model="revisions" :options="revisionsOptions" placeholder="Choose (0 - 3)" class="visible-border" />
-      </div>
-
-      <div class="option-item">
-        <label>Pages</label>
-        <Dropdown v-model="pagesChoice" :options="yesNoValues" placeholder="Choose (1 - 15)" class="visible-border" />
-      </div>
-
-      <div class="option-item">
-        <label>Extra Functions</label>
-        <Dropdown v-model="extraFunctions" :options="yesNoValues" placeholder="Choose (yes/no)" class="visible-border" />
-      </div>
-
-      <div class="option-item">
-        <label>Custom Animations</label>
-        <Dropdown v-model="customAnimations" :options="yesNoValues" placeholder="Choose (yes/no)" class="visible-border" />
+      <div class="option-item" role="group" aria-labelledby="responsive-label">
+        <label id="responsive-label">Responsive</label>
+        <Dropdown
+          v-model="responsiveChoice"
+          :options="yesNoValues"
+          placeholder="Choose (yes/no)"
+          class="visible-border"
+          aria-required="true"
+          aria-labelledby="responsive-label"
+        />
       </div>
 
       <div class="button-container">
-        <button class="start-button">Start the pull</button>
+        <button
+          class="start-button"
+          aria-label="Start the pull process"
+        >
+          Start the pull
+        </button>
       </div>
     </div>
   </div>

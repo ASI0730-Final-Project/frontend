@@ -1,11 +1,25 @@
 <template>
-  <div class="unauthorized-container">
-    <h1>Unauthorized Access</h1>
+  <main class="unauthorized-container" role="alert" aria-labelledby="unauthorized-heading">
+    <h1 id="unauthorized-heading">Unauthorized Access</h1>
     <p>You don't have permission to access this page.</p>
     <p v-if="userStore.user">Your role: {{ userStore.user.Rol }}</p>
-    <button @click="goBack" class="btn">Go Back</button>
-    <button @click="goHome" class="btn">Go to Home</button>
-  </div>
+    <div class="button-group" role="group" aria-label="Navigation options">
+      <button
+        @click="goBack"
+        class="btn"
+        aria-label="Go back to previous page"
+      >
+        Go Back
+      </button>
+      <button
+        @click="goHome"
+        class="btn"
+        aria-label="Go to home page"
+      >
+        Go to Home
+      </button>
+    </div>
+  </main>
 </template>
 
 <script setup>

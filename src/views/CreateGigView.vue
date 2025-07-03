@@ -1,14 +1,21 @@
 <template>
-  <div class="create-gig-view">
-    <h1>Create a New Gig</h1>
-    <component
-      :is="currentForm"
-      :gigInfo="gigInfoData"
-      @next-step="handleNextStep"
-      @submit-all="handleSubmitAll"
-    />
+  <div class="create-gig-view" role="main" aria-labelledby="create-gig-heading">
+    <h1 id="create-gig-heading">Create a New Gig</h1>
+    <div role="region" aria-live="polite">
+      <component
+        :is="currentForm"
+        :gigInfo="gigInfoData"
+        @next-step="handleNextStep"
+        @submit-all="handleSubmitAll"
+      />
+    </div>
     <div v-if="currentForm === 'SetGigPricing'">
-      <button @click="goBack">Go Back</button>
+      <button
+        @click="goBack"
+        aria-label="Go back to previous step"
+      >
+        Go Back
+      </button>
     </div>
   </div>
 </template>

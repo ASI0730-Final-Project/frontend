@@ -1,9 +1,15 @@
 <template>
-  <div class="not-found-container">
-    <h1>404 - Page Not Found</h1>
+  <main class="not-found-container" role="main" aria-labelledby="not-found-heading">
+    <h1 id="not-found-heading">404 - Page Not Found</h1>
     <p>The page you are looking for doesn't exist or has been moved.</p>
-    <button @click="goHome" class="btn">Go to Home</button>
-  </div>
+    <button
+      @click="goHome"
+      class="btn"
+      aria-label="Go to home page"
+    >
+      Go to Home
+    </button>
+  </main>
 </template>
 
 <script setup>

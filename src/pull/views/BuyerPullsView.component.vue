@@ -1,41 +1,87 @@
 <template>
-  <div class="pulls-container">
-    <h2 class="pulls-title">{{ t('toolbar.myPulls') }}</h2>
-    <div v-if="enrichedPulls.length > 0" class="pulls-grid">
+  <section
+    class="pulls-container"
+    role="region"
+    aria-labelledby="my-pulls-title"
+  >
+    <h2 id="my-pulls-title" class="pulls-title">
+      {{ t('toolbar.myPulls') }}
+    </h2>
+
+    <div
+      v-if="enrichedPulls.length > 0"
+      class="pulls-grid"
+      role="list"
+      aria-label="Lista de solicitudes (pulls)"
+    >
       <div
         v-for="pull in enrichedPulls"
         :key="pull.id"
         class="pull-card"
+        role="listitem"
+        :aria-labelledby="'pull-title-' + pull.id"
       >
-        <img v-if="pull.gig?.image" :src="pull.gig.image" :alt="pull.gig.title" class="pull-gig-main-image" />
+        <img
+          v-if="pull.gig?.image"
+          :src="pull.gig.image"
+          class="pull-gig-main-image"
+          :alt="pull.gig.title"
+        />
+
         <div class="pull-card-content">
           <div class="pull-user-row">
-            <img v-if="pull.seller?.image" :src="pull.seller.image" class="pull-avatar" />
+            <img
+              v-if="pull.seller?.image"
+              :src="pull.seller.image"
+              class="pull-avatar"
+              :alt="`Foto de ${pull.seller?.name ?? ''}`"
+            />
             <span class="pull-user-name">{{ pull.seller?.name }} {{ pull.seller?.lastname }}</span>
           </div>
-          <div class="pull-gig-title">{{ pull.gig?.title }}</div>
+
+          <div class="pull-gig-title" :id="'pull-title-' + pull.id">
+            {{ pull.gig?.title }}
+          </div>
+
           <div class="pull-meta-row">
             <span class="pull-category">{{ pull.gig?.category }}</span>
           </div>
+
           <div class="pull-status-row">
-            <span class="pull-status">{{ t('gigs.status') }}: {{ t('negotiation.states.' + pull.state) }}</span>
+            <span class="pull-status">
+              {{ t('gigs.status') }}: {{ t('negotiation.states.' + pull.state) }}
+            </span>
           </div>
+
           <div class="pull-offer-row">
             <span class="pull-offer-label">Oferta actual:</span>
-            <span class="pull-offer-value">S/ {{ Number(pull.price_update ?? pull.price).toFixed(2) }}</span>
+            <span class="pull-offer-value">
+              S/ {{ Number(pull.price_update ?? pull.price).toFixed(2) }}
+            </span>
           </div>
+
           <Button
             label="Ver Detalle"
             icon="pi pi-eye"
             class="p-button-sm pull-detail-btn"
             @click="goToPullDetail(pull.id)"
+            aria-label="Ver detalle de la solicitud"
           />
         </div>
       </div>
     </div>
-    <div v-else class="pulls-empty">No tienes pulls disponibles.</div>
-  </div>
+
+    <div
+      v-else
+      class="pulls-empty"
+      role="alert"
+      aria-live="polite"
+    >
+      No tienes pulls disponibles.
+    </div>
+  </section>
 </template>
+
 
 <script>
 import { ref, onMounted } from 'vue'
@@ -222,4 +268,4 @@ export default {
   font-size: 1.1rem;
   font-weight: 700;
 }
-</style> 
+</style>
