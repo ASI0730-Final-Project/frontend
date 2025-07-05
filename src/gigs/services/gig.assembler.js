@@ -9,7 +9,7 @@ export class GigAssembler {
       tags: dto.tags || [],
       category: dto.category,
       image: dto.image,
-      delivery_days: dto.deliveryDays,       // ⬅ camelCase del backend
+      delivery_days: dto.deliveryDays,
       is_responsive: dto.isResponsive,
       revision_count: dto.revisionCount,
       page_count: dto.pageCount,
@@ -28,7 +28,7 @@ export class GigAssembler {
       tags: gigEntity.tags,
       category: gigEntity.category,
       image: gigEntity.image,
-      deliveryDays: gigEntity.delivery_days,       // ⬅ camelCase correcto para el backend
+      deliveryDays: gigEntity.delivery_days,
       isResponsive: gigEntity.is_responsive,
       revisionCount: gigEntity.revision_count,
       pageCount: gigEntity.page_count,
