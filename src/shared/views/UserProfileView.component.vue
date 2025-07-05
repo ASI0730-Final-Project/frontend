@@ -10,7 +10,6 @@ const user = ref(null)
 const isEditing = ref(false)
 const editedUser = ref({})
 
-// Datos del seller
 const sellerStats = ref({
   totalGigs: 8,
   activeGigs: 5,
@@ -18,7 +17,6 @@ const sellerStats = ref({
   totalEarnings: 3250.75
 })
 
-// Métricas de rendimiento
 const performanceMetrics = ref({
   deliveredOnTime: 92,
   orderCompletion: 96,
@@ -133,7 +131,6 @@ onMounted(async () => {
 
 <template>
   <div v-if="user && user.role === 'seller'" class="seller-profile-container">
-    <!-- Header del perfil -->
     <div class="profile-header">
       <div class="profile-avatar-section">
         <div v-if="user.image" class="profile-avatar">
@@ -172,7 +169,6 @@ onMounted(async () => {
       </div>
     </div>
 
-    <!-- Estadísticas principales -->
     <div class="stats-section">
       <h2 class="section-title">{{ t('profile.performance') }}</h2>
       <div class="stats-grid">
@@ -218,7 +214,6 @@ onMounted(async () => {
       </div>
     </div>
 
-    <!-- Métricas de rendimiento -->
     <div class="metrics-section">
       <h2 class="section-title">{{ t('profile.performanceMetrics') }}</h2>
       <div class="metrics-grid">
@@ -248,7 +243,6 @@ onMounted(async () => {
       </div>
     </div>
 
-    <!-- Información personal -->
     <div class="personal-info-section">
       <h2 class="section-title">{{ t('profile.personalInfo') }}</h2>
       <div class="info-grid">
@@ -277,7 +271,6 @@ onMounted(async () => {
       </div>
     </div>
 
-    <!-- Redes sociales -->
     <div class="social-section">
       <h2 class="section-title">{{ t('profile.linkSocial') }}</h2>
       <div class="social-content">
@@ -307,7 +300,6 @@ onMounted(async () => {
       </div>
     </div>
 
-    <!-- Modal para agregar red social -->
     <div v-if="showSocialForm" class="modal-overlay">
       <div class="modal-content">
         <div class="modal-header">
@@ -340,7 +332,6 @@ onMounted(async () => {
       </div>
     </div>
 
-    <!-- Notificación -->
     <div v-if="notification.show" :class="['notification', notification.type]">
       <i :class="notification.type === 'success' ? 'pi pi-check-circle' : 'pi pi-exclamation-triangle'"></i>
       <span>{{ notification.message }}</span>
@@ -366,7 +357,6 @@ onMounted(async () => {
   color: #fff;
 }
 
-/* Header del perfil */
 .profile-header {
   display: flex;
   align-items: center;
@@ -509,7 +499,6 @@ onMounted(async () => {
   gap: 1rem;
 }
 
-/* Sección de estadísticas */
 .stats-section,
 .metrics-section,
 .personal-info-section,
@@ -574,7 +563,6 @@ onMounted(async () => {
   margin: 0;
 }
 
-/* Métricas de rendimiento */
 .metrics-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -626,7 +614,6 @@ onMounted(async () => {
   transition: width 0.3s ease;
 }
 
-/* Información personal */
 .info-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -672,7 +659,6 @@ onMounted(async () => {
   box-shadow: 0 0 0 2px rgba(123, 31, 162, 0.2);
 }
 
-/* Redes sociales */
 .social-content {
   background: #23242a;
   border-radius: 16px;
@@ -774,7 +760,6 @@ onMounted(async () => {
   transform: translateY(-2px);
 }
 
-/* Modal */
 .modal-overlay {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
@@ -892,7 +877,6 @@ onMounted(async () => {
   background: #4a4b5a;
 }
 
-/* Notificación */
 .notification {
   position: fixed;
   top: 2rem;
@@ -940,7 +924,6 @@ onMounted(async () => {
   color: #bdbdbd;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .seller-profile-container {
     padding: 1rem;
