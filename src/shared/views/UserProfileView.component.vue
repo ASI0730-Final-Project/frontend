@@ -3,6 +3,9 @@ import { ref, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { authService } from '../services/auth.service'
+import Portfolio from '../../portfolio/components/portfolio.component.vue'
+import ProjectModal from '../../portfolio/components/EditProjectModal.component.vue'
+import { portfolioService } from '../../portfolio/services/portfolio.service.js'
 
 const { t } = useI18n()
 const router = useRouter()
@@ -11,16 +14,8 @@ const isEditing = ref(false)
 const editedUser = ref({})
 
 const sellerStats = ref({
-  totalGigs: 8,
-  activeGigs: 5,
-  completedOrders: 24,
-  totalEarnings: 3250.75
-})
-
-const performanceMetrics = ref({
-  deliveredOnTime: 92,
-  orderCompletion: 96,
-  earnedInMonth: 850.50
+  totalGigs: 0,
+  completedOrders: 0
 })
 
 const showSocialForm = ref(false)
@@ -29,8 +24,13 @@ const availableSocials = [
   { icon: 'pi pi-instagram', label: 'Instagram', value: 'instagram' },
   { icon: 'pi pi-facebook', label: 'Facebook', value: 'facebook' },
   { icon: 'pi pi-x', label: 'X', value: 'x' },
-  { icon: 'pi pi-linkedin', label: 'LinkedIn', value: 'linkedin' },
+  { icon: 'pi pi-linkedin', label: 'LinkedIn', value: 'linkedin' }
 ]
+
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
+const gigsEndpoint = import.meta.env.VITE_GIGS_ENDPOINT_PATH
+const usersEndpoint = import.meta.env.VITE_USERS_ENDPOINT_PATH
+const pullsEndpoint = import.meta.env.VITE_PULLS_ENDPOINT_PATH
 
 const onlineStatus = ref(true)
 
@@ -78,9 +78,12 @@ function goToCreateGig() {
 
 async function updateSocialNetworks() {
   if (!user.value?.id) return
-  const res = await fetch(`http://localhost:3000/users/${user.value.id}`, {
+  const res = await fetch(`${apiBaseUrl}/users/${user.value.id}`, {
     method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${authService.getToken()}`
+    },
     body: JSON.stringify({ ...user.value, socialNetworks: user.value.socialNetworks })
   })
   return res.ok
@@ -120,11 +123,105 @@ async function removeSocialNetwork(idx) {
   }
 }
 
+const projects = ref([])
+const showProjectModal = ref(false)
+const editableProject = ref(null)
+const isNewProject = ref(true)
+const portfolioId = ref(null)
+
+function openNewProject() {
+  editableProject.value = {
+    title: '',
+    description: '',
+    price: '',
+    time: '',
+    gigLink: '',
+    images: []
+  }
+  isNewProject.value = true
+  showProjectModal.value = true
+}
+
+function openEditProject(project) {
+  editableProject.value = { ...project }
+  isNewProject.value = false
+  showProjectModal.value = true
+}
+
+async function saveProject(project) {
+  try {
+    if (!portfolioId.value) {
+      showNotification('error', 'Portfolio ID no definido.')
+      return
+    }
+
+    if (isNewProject.value) {
+      await portfolioService.addProject(portfolioId.value, project)
+      showNotification('success', t('profile.projectCreated'))
+    } else {
+      await portfolioService.updateProject(portfolioId.value, project)
+      showNotification('success', t('profile.projectUpdated'))
+    }
+
+    const updatedPortfolio = await portfolioService.getPortfolioBySellerId(user.value.id)
+    projects.value = updatedPortfolio.projects || []
+    sellerStats.value.totalGigs = projects.value.length
+    showProjectModal.value = false
+  } catch (error) {
+    showNotification('error', t('profile.projectSaveError') || 'Error guardando proyecto')
+  }
+}
+
+async function fetchSellerStats(sellerId) {
+  try {
+    const token = authService.getToken()
+
+    const gigsResponse = await fetch(`${apiBaseUrl}${gigsEndpoint}/seller/${sellerId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+    const gigsData = await gigsResponse.json()
+    console.log('Gigs response:', gigsData)
+    const gigs = Array.isArray(gigsData) ? gigsData : gigsData.data || gigsData.gigs || []
+
+    sellerStats.value.totalGigs = gigs.length
+
+    let totalCompletedOrders = 0
+    for (const gig of gigs) {
+      const pullResponse = await fetch(`${apiBaseUrl}${pullsEndpoint}/${gig.id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+      const orders = await pullResponse.json()
+      totalCompletedOrders += Array.isArray(orders) ? orders.length : 0
+    }
+
+    sellerStats.value.completedOrders = totalCompletedOrders
+  } catch (err) {
+    console.error('Error cargando estadísticas del vendedor:', err)
+  }
+}
+
 onMounted(async () => {
   user.value = await authService.getCurrentUser()
   if (user.value) {
     if (user.value.rol && !user.value.role) user.value.role = user.value.rol
     if (user.value.role) user.value.role = user.value.role.toLowerCase().trim()
+
+    portfolioId.value = user.value.portfolioId || null
+
+    try {
+      const portfolio = await portfolioService.getPortfolioBySellerId(user.value.id)
+      if (portfolio) {
+        projects.value = portfolio.projects || []
+      }
+    } catch {
+      projects.value = []
+    }
+
+    await fetchSellerStats(user.value.id)
   }
 })
 </script>
@@ -144,12 +241,10 @@ onMounted(async () => {
           <span>{{ t('profile.online') }}</span>
         </div>
       </div>
-      
       <div class="profile-info">
         <h1 class="profile-name">{{ user.name }} {{ user.lastname }}</h1>
         <p class="profile-role">{{ t('auth.role') }}: {{ t('auth.seller') }}</p>
         <p class="profile-email">{{ user.email }}</p>
-        
         <div class="profile-actions">
           <button v-if="!isEditing" @click="startEditing" class="edit-btn">
             <i class="pi pi-pencil"></i>
@@ -181,17 +276,7 @@ onMounted(async () => {
             <p>{{ t('profile.totalGigs') }}</p>
           </div>
         </div>
-        
-        <div class="stat-card">
-          <div class="stat-icon">
-            <i class="pi pi-clock"></i>
-          </div>
-          <div class="stat-content">
-            <h3>{{ sellerStats.activeGigs }}</h3>
-            <p>{{ t('profile.activeGigs') }}</p>
-          </div>
-        </div>
-        
+
         <div class="stat-card">
           <div class="stat-icon">
             <i class="pi pi-check-circle"></i>
@@ -199,45 +284,6 @@ onMounted(async () => {
           <div class="stat-content">
             <h3>{{ sellerStats.completedOrders }}</h3>
             <p>{{ t('profile.completedOrders') }}</p>
-          </div>
-        </div>
-        
-        <div class="stat-card">
-          <div class="stat-icon">
-            <i class="pi pi-dollar"></i>
-          </div>
-          <div class="stat-content">
-            <h3>S/ {{ sellerStats.totalEarnings.toFixed(2) }}</h3>
-            <p>{{ t('profile.totalEarnings') }}</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="metrics-section">
-      <h2 class="section-title">{{ t('profile.performanceMetrics') }}</h2>
-      <div class="metrics-grid">
-        <div class="metric-card">
-          <div class="metric-header">
-            <span class="metric-label">{{ t('profile.deliveredOnTime') }}</span>
-            <span class="metric-value">{{ performanceMetrics.deliveredOnTime }}%</span>
-          </div>
-          <div class="metric-progress">
-            <div class="progress-bar">
-              <div class="progress-fill" :style="{ width: performanceMetrics.deliveredOnTime + '%' }"></div>
-            </div>
-          </div>
-        </div>
-        
-        <div class="metric-card">
-          <div class="metric-header">
-            <span class="metric-label">{{ t('profile.orderCompletion') }}</span>
-            <span class="metric-value">{{ performanceMetrics.orderCompletion }}%</span>
-          </div>
-          <div class="metric-progress">
-            <div class="progress-bar">
-              <div class="progress-fill" :style="{ width: performanceMetrics.orderCompletion + '%' }"></div>
-            </div>
           </div>
         </div>
       </div>
@@ -251,19 +297,19 @@ onMounted(async () => {
           <div v-if="!isEditing" class="info-value">{{ user.name }}</div>
           <input v-else v-model="editedUser.name" type="text" class="info-input" />
         </div>
-        
+
         <div class="info-card">
           <label>{{ t('auth.lastname') }}</label>
-          <div v-if="!isEditing" class="info-value">{{ user.lastname }}</div>
+          <div v-if="!isEditing" class="info-value">{{ user.lastName }}</div>
           <input v-else v-model="editedUser.lastname" type="text" class="info-input" />
         </div>
-        
+
         <div class="info-card">
           <label>{{ t('auth.email') }}</label>
           <div v-if="!isEditing" class="info-value">{{ user.email }}</div>
           <input v-else v-model="editedUser.email" type="email" class="info-input" />
         </div>
-        
+
         <div class="info-card">
           <label>{{ t('auth.role') }}</label>
           <div class="info-value">{{ t('auth.seller') }}</div>
@@ -271,65 +317,17 @@ onMounted(async () => {
       </div>
     </div>
 
-    <div class="social-section">
-      <h2 class="section-title">{{ t('profile.linkSocial') }}</h2>
-      <div class="social-content">
-        <div v-if="!user.socialNetworks || user.socialNetworks.length === 0" class="empty-social">
-          <i class="pi pi-share-alt"></i>
-          <p>{{ t('profile.noSocialNetworksPrompt') }}</p>
-          <button @click="openSocialForm" class="add-social-btn">
-            <i class="pi pi-plus"></i>
-            {{ t('profile.addSocial') }}
-          </button>
-        </div>
-        <div v-else class="social-grid">
-          <div v-for="(sn, idx) in user.socialNetworks" :key="sn.type" class="social-item">
-            <a :href="sn.url" target="_blank" rel="noopener" class="social-link">
-              <i :class="availableSocials.find(s => s.value === sn.type)?.icon"></i>
-              <span>{{ availableSocials.find(s => s.value === sn.type)?.label }}</span>
-            </a>
-            <button @click="removeSocialNetwork(idx)" class="remove-social-btn">
-              <i class="pi pi-times"></i>
-            </button>
-          </div>
-          <button @click="openSocialForm" class="add-social-btn">
-            <i class="pi pi-plus"></i>
-            {{ t('profile.addSocial') }}
-          </button>
-        </div>
-      </div>
-    </div>
+    <ProjectModal 
+      v-if="showProjectModal" 
+      :editable="editableProject" 
+      :isNew="isNewProject" 
+      @save="saveProject" 
+      @close="showProjectModal = false" 
+    />
 
-    <div v-if="showSocialForm" class="modal-overlay">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h3>{{ t('profile.addSocial') }}</h3>
-          <button @click="closeSocialForm" class="modal-close">
-            <i class="pi pi-times"></i>
-          </button>
-        </div>
-        <form @submit.prevent="addSocialNetwork" class="social-form">
-          <div class="form-group">
-            <label>{{ t('profile.selectNetwork') }}</label>
-            <select v-model="newSocial.type" required class="form-select">
-              <option disabled value="">{{ t('profile.selectNetwork') }}</option>
-              <option v-for="s in availableSocials" :key="s.value" :value="s.value">{{ s.label }}</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>{{ t('profile.linkPlaceholder') }}</label>
-            <input v-model="newSocial.url" type="url" :placeholder="t('profile.linkPlaceholder')" required class="form-input" />
-          </div>
-          <div class="form-actions">
-            <button type="button" @click="closeSocialForm" class="btn-secondary">
-              {{ t('profile.cancel') }}
-            </button>
-            <button type="submit" class="btn-primary">
-              {{ t('profile.add') }}
-            </button>
-          </div>
-        </form>
-      </div>
+    <div class="portfolio-section">
+      <h2 class="section-title">{{ t('profile.portfolio') }}</h2>
+      <Portfolio />
     </div>
 
     <div v-if="notification.show" :class="['notification', notification.type]">
@@ -337,13 +335,13 @@ onMounted(async () => {
       <span>{{ notification.message }}</span>
     </div>
   </div>
-  
-  <div v-else-if="user && user.role !== 'seller'" class="profile-not-seller">
-    {{ t('profile.onlySeller') }}
+
+  <div v-else-if="user && user.role !== 'seller'">
+    <p>No tienes permiso para acceder a este perfil.</p>
   </div>
-  
-  <div v-else class="profile-loading">
-    {{ t('profile.loading') }}
+
+  <div v-else>
+    <p>Cargando...</p>
   </div>
 </template>
 

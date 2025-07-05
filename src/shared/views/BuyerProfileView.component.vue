@@ -8,6 +8,7 @@ const user = ref(null)
 const isEditing = ref(false)
 const editedUser = ref({})
 
+
 const buyerStats = ref({
   totalPulls: 12,
   completedPulls: 8,
@@ -57,6 +58,7 @@ onMounted(async () => {
 
 <template>
   <div v-if="user && user.role === 'buyer'" class="buyer-profile-container">
+    <!-- Header del perfil -->
     <div class="profile-header">
       <div class="profile-avatar-section">
         <div v-if="user.image" class="profile-avatar">
@@ -95,6 +97,7 @@ onMounted(async () => {
       </div>
     </div>
 
+    <!-- Estadísticas del buyer -->
     <div class="stats-section">
       <h2 class="section-title">{{ t('profile.performance') }}</h2>
       <div class="stats-grid">
@@ -140,6 +143,7 @@ onMounted(async () => {
       </div>
     </div>
 
+    <!-- Información personal -->
     <div class="personal-info-section">
       <h2 class="section-title">{{ t('profile.personalInfo') }}</h2>
       <div class="info-grid">
@@ -168,6 +172,7 @@ onMounted(async () => {
       </div>
     </div>
 
+    <!-- Notificación -->
     <div v-if="notification.show" :class="['notification', notification.type]">
       {{ notification.message }}
     </div>

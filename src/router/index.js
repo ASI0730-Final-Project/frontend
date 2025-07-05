@@ -11,10 +11,10 @@ import PullBuyerView from '../pull/views/PullBuyerView.component.vue'
 import PullSellerView from '../pull/views/PullSellerView.component.vue'
 import SellerPullsView from '../pull/views/SellerPullsView.component.vue'
 import BuyerPullsView from '../pull/views/BuyerPullsView.component.vue'
-import NewPortfolioFormView from '../portfolio/components/NewPortfolioFormView.component.vue'
 import UserProfileView from '../shared/views/UserProfileView.component.vue'
 import BuyerProfileView from '../shared/views/BuyerProfileView.component.vue'
 import PullNegotiationView from '../pull/views/PullNegotiationView.component.vue'
+import NewPortfolioFormView from '../portfolio/components/NewPortfolioFormView.component.vue'
 
 const routes = [
   { path: '/:pathMatch(.*)*', component: PageNotFoundComponent, name: '404' },
