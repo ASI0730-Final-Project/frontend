@@ -1,12 +1,6 @@
 <template>
-  <section
-    class="pulls-container"
-    role="region"
-    aria-labelledby="my-pulls-title"
-  >
-    <h2 id="my-pulls-title" class="pulls-title">
-      {{ t('toolbar.myPulls') }}
-    </h2>
+  <section class="pulls-container" role="region" aria-labelledby="my-pulls-title">
+    <h2 id="my-pulls-title" class="pulls-title">{{ t('toolbar.myPulls') }}</h2>
 
     <div
       v-if="enrichedPulls.length > 0"
@@ -56,7 +50,7 @@
           <div class="pull-offer-row">
             <span class="pull-offer-label">Oferta actual:</span>
             <span class="pull-offer-value">
-              S/ {{ Number(pull.price_update ?? pull.price).toFixed(2) }}
+              S/ {{ Number(pull.priceUpdate ?? pull.priceInit).toFixed(2) }}
             </span>
           </div>
 
@@ -71,17 +65,11 @@
       </div>
     </div>
 
-    <div
-      v-else
-      class="pulls-empty"
-      role="alert"
-      aria-live="polite"
-    >
+    <div v-else class="pulls-empty" role="alert" aria-live="polite">
       No tienes pulls disponibles.
     </div>
   </section>
 </template>
-
 
 <script>
 import { ref, onMounted } from 'vue'
@@ -89,7 +77,7 @@ import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import Button from 'primevue/button'
 import { pullService } from '../services/pulls.service'
-import { gigService } from '../../operations/services/gig.service'
+import { gigService } from '../../gigs/services/gig.service'
 import { authService } from '../../shared/services/auth.service'
 
 export default {
@@ -105,19 +93,27 @@ export default {
       try {
         const user = JSON.parse(localStorage.getItem('user'))
         if (!user?.id) throw new Error('No authenticated user found')
+
+        // Aseguramos usar la nueva API
+        pullService.useNewApi = true
+
         const pulls = await pullService.getPullsByBuyer(user.id)
         buyerPulls.value = pulls
-        // Filtrar pulls con gig_id válido y que no estén finalizados
-        const validPulls = pulls.filter(p => !!p.gig_id && p.state !== 'finished')
-        // Enriquecer pulls con datos de gig y seller
-        const gigIds = [...new Set(validPulls.map(p => p.gig_id))]
-        const sellerIds = [...new Set(validPulls.map(p => p.seller_id))]
+
+        // Filtrar pulls válidos y activos
+        const validPulls = pulls.filter(p => !!p.gigId && p.state !== 'finished')
+
+        // Obtener gig y seller de cada pull
+        const gigIds = [...new Set(validPulls.map(p => p.gigId))]
+        const sellerIds = [...new Set(validPulls.map(p => p.sellerId))]
+
         const gigs = await Promise.all(gigIds.map(id => gigService.getGigById(id)))
         const sellers = await Promise.all(sellerIds.map(id => authService.getUserById(id)))
+
         enrichedPulls.value = validPulls.map(pull => ({
           ...pull,
-          gig: gigs.find(g => g.id === pull.gig_id),
-          seller: sellers.find(s => s.id === pull.seller_id)
+          gig: gigs.find(g => g.id === pull.gigId),
+          seller: sellers.find(s => s.id === pull.sellerId)
         }))
       } catch (error) {
         console.error('Error fetching buyer pulls:', error)
@@ -138,6 +134,7 @@ export default {
   }
 }
 </script>
+
 
 <style scoped>
 .pulls-container {

@@ -4,36 +4,16 @@
 
     <div v-if="pull">
       <!-- Banner de estado -->
-      <div
-        v-if="pull.state === 'pending'"
-        class="state-banner pending"
-        role="alert"
-        aria-live="polite"
-      >
+      <div v-if="pull.state === 'pending'" class="state-banner pending" role="alert" aria-live="polite">
         {{ t('pullSeller.stateBanner.pending') }}
       </div>
-      <div
-        v-else-if="pull.state === 'in_process'"
-        class="state-banner in-process"
-        role="alert"
-        aria-live="polite"
-      >
+      <div v-else-if="pull.state === 'in_process'" class="state-banner in-process" role="alert" aria-live="polite">
         {{ t('pullSeller.stateBanner.in_process') }}
       </div>
-      <div
-        v-else-if="pull.state === 'payed'"
-        class="state-banner in-process"
-        role="alert"
-        aria-live="polite"
-      >
+      <div v-else-if="pull.state === 'payed'" class="state-banner in-process" role="alert" aria-live="polite">
         {{ t('pullSeller.stateBanner.payed') }}
       </div>
-      <div
-        v-else-if="pull.state === 'complete'"
-        class="state-banner finished"
-        role="alert"
-        aria-live="polite"
-      >
+      <div v-else-if="pull.state === 'complete'" class="state-banner finished" role="alert" aria-live="polite">
         {{ t('pullSeller.stateBanner.complete') }}
       </div>
 
@@ -42,11 +22,11 @@
         <h2 id="prices-heading" class="sr-only">Detalles de precios</h2>
         <div class="price-column" role="group" aria-labelledby="initial-price-label">
           <div id="initial-price-label" class="price-label">{{ t('pullSeller.price.initial') }}</div>
-          <div class="price-value text-green" aria-live="polite">${{ pull.price_init }}</div>
+          <div class="price-value text-green" aria-live="polite">${{ pull.priceInit }}</div>
         </div>
         <div class="price-column" role="group" aria-labelledby="current-offer-label">
           <div id="current-offer-label" class="price-label">{{ t('pullSeller.price.buyerOffer') }}</div>
-          <div class="price-value text-blue" aria-live="polite">${{ pull.price_update ?? pull.price_init }}</div>
+          <div class="price-value text-blue" aria-live="polite">${{ pull.priceUpdate ?? pull.priceInit }}</div>
         </div>
       </div>
 
@@ -86,13 +66,14 @@
       <div class="chat-section" role="region" aria-labelledby="chat-heading">
         <h2 id="chat-heading" class="chat-label">{{ t('pull.chat.buyer') }}</h2>
         <ChatBox
-          v-if="pull && pull.buyer_id && currentUser"
+          v-if="pull && pull.buyerId && currentUser"
           :user-id="currentUser.id"
           :pull-id="pull.id"
           aria-label="Área de chat con el comprador"
         />
       </div>
     </div>
+
     <div v-else class="text-gray-500" role="alert" aria-busy="true">
       {{ t('pull.loading') }}
     </div>
@@ -106,6 +87,7 @@ import { useI18n } from 'vue-i18n'
 import { pullService } from '../services/pulls.service.js'
 import { authService } from '../../shared/services/auth.service.js'
 import ChatBox from '../../chat/components/chatbox.components.vue'
+import { chatService } from '../../chat/services/chat.service.js'
 
 export default {
   name: 'PullSellerView',
@@ -126,19 +108,29 @@ export default {
       pull.value = await pullService.getPullById(id)
     }
 
+    // ✅ Cambia el estado a "in_process"
     const acceptPull = async () => {
       try {
-        await pullService.acceptPull(pull.value.id)
+        await pullService.updatePull(pull.value.id, { newState: 'in_process' })
         await fetchPull()
+        alert(t('pull.actions.accepted'))
       } catch (error) {
         console.error('Error accepting pull:', error)
+        alert(t('pull.actions.errorAccept'))
       }
     }
 
+    // ✅ Cancela (elimina) el pull
     const leavePull = async () => {
-      await pullService.deletePull(pull.value.id)
-      alert(t('pull.alert.cancelled'))
-      router.push('/gigs')
+      try {
+        await chatService.deleteChatByPullId(pull.value.id)
+        await pullService.deletePull(pull.value.id)
+        alert(t('pull.alert.cancelled'))
+        router.push('/gigs')
+      } catch (error) {
+        console.error('Error deleting pull:', error)
+        alert(t('pull.actions.errorCancel'))
+      }
     }
 
     onMounted(async () => {
@@ -163,9 +155,6 @@ export default {
   }
 }
 </script>
-
-
-
 
 <style scoped>
 .state-banner {

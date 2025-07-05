@@ -18,7 +18,8 @@ export default {
       showImageModal: false,
       imageBase64: '',
       imagePreview: '',
-      imageLoading: false
+      imageLoading: false,
+      currentUserId: null
     }
   },
   setup() {
@@ -39,11 +40,20 @@ export default {
           role: this.role
         })
         if (user) {
-          localStorage.setItem('user', JSON.stringify(user))
-          this.showImageModal = true
+          this.currentUserId = user.id
+          
+          // Hacer login automático después del registro
+          const credentials = { email: this.email, password: this.password }
+          const loginResponse = await authService.login(credentials)
+          if (loginResponse && loginResponse.token) {
+            localStorage.setItem('user', JSON.stringify(user))
+            this.showImageModal = true
+          } else {
+            this.error = this.t('auth.registerLoginFailed')
+          }
         }
       } catch (error) {
-        this.error = t('auth.loginFailed')
+        this.error = this.t('auth.registerFailed')
         console.error('Registration error:', error)
       } finally {
         this.loading = false
@@ -53,15 +63,13 @@ export default {
       const file = e.target.files[0]
       if (!file) return
       
-      // Validar tipo de archivo
       if (!file.type.startsWith('image/')) {
-        this.error = t('auth.invalidImageType')
+        this.error = this.t('auth.invalidImageType')
         return
       }
       
-      // Validar tamaño (máximo 5MB)
       if (file.size > 5 * 1024 * 1024) {
-        this.error = t('auth.imageTooLarge')
+        this.error = this.t('auth.imageTooLarge')
         return
       }
       
@@ -75,23 +83,35 @@ export default {
         this.imageLoading = false
       }
       reader.onerror = () => {
-        this.error = t('auth.imageLoadError')
+        this.error = this.t('auth.imageLoadError')
         this.imageLoading = false
       }
       reader.readAsDataURL(file)
     },
+    async saveImage() {
+      try {
+        if (!this.currentUserId) throw new Error('No user ID found after register')
+        this.loading = true
+        this.error = null
+        
+        await authService.updateUserImage(this.currentUserId, this.imageBase64)
+        
+        this.closeModal()
+      } catch (error) {
+        this.error = this.t('auth.imageUploadFailed')
+        console.error('Image upload error:', error)
+      } finally {
+        this.loading = false
+      }
+    },
     closeModal() {
       this.showImageModal = false
       this.router.push({ name: 'home' })
-    },
-    saveImage() {
-      // Aquí puedes guardar la imagen en el backend o en el usuario local
-      // Por ahora solo cierro el modal
-      this.closeModal()
     }
   }
 }
 </script>
+
 
 <template>
   <div class="register-container">
@@ -126,7 +146,6 @@ export default {
       </form>
     </div>
     
-    <!-- Modal para subir imagen -->
     <div v-if="showImageModal" class="modal-overlay">
       <div class="modal-content">
         <h2 class="modal-title">{{ t('auth.uploadProfileImage') }}</h2>

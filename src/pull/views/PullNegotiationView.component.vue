@@ -135,7 +135,7 @@
 import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { pullService } from '../services/pulls.service.js'
-import { gigService } from '../../operations/services/gig.service.js'
+import { gigService } from '../../gigs/services/gig.service.js'
 import { authService } from '../../shared/services/auth.service.js'
 import ChatBox from '../../chat/components/chatbox.components.vue'
 
