@@ -282,7 +282,6 @@ export default {
   font-weight: 500;
 }
 
-/* Modal styles */
 .modal-overlay {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
@@ -425,7 +424,6 @@ export default {
   transform: translateY(-2px) !important;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .modal-content {
     padding: 2rem 1.5rem;
