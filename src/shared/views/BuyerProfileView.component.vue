@@ -8,7 +8,6 @@ const user = ref(null)
 const isEditing = ref(false)
 const editedUser = ref({})
 
-// Datos del buyer
 const buyerStats = ref({
   totalPulls: 12,
   completedPulls: 8,
@@ -39,8 +38,6 @@ function cancelEditing() {
 
 async function saveProfile() {
   try {
-    // Aquí iría la lógica para guardar los cambios
-    // Por ahora solo simulamos el guardado
     user.value = { ...editedUser.value }
     isEditing.value = false
     showNotification('success', t('profile.saveSuccess'))
@@ -60,7 +57,6 @@ onMounted(async () => {
 
 <template>
   <div v-if="user && user.role === 'buyer'" class="buyer-profile-container">
-    <!-- Header del perfil -->
     <div class="profile-header">
       <div class="profile-avatar-section">
         <div v-if="user.image" class="profile-avatar">
@@ -99,7 +95,6 @@ onMounted(async () => {
       </div>
     </div>
 
-    <!-- Estadísticas del buyer -->
     <div class="stats-section">
       <h2 class="section-title">{{ t('profile.performance') }}</h2>
       <div class="stats-grid">
@@ -145,7 +140,6 @@ onMounted(async () => {
       </div>
     </div>
 
-    <!-- Información personal -->
     <div class="personal-info-section">
       <h2 class="section-title">{{ t('profile.personalInfo') }}</h2>
       <div class="info-grid">
@@ -174,7 +168,6 @@ onMounted(async () => {
       </div>
     </div>
 
-    <!-- Notificación -->
     <div v-if="notification.show" :class="['notification', notification.type]">
       {{ notification.message }}
     </div>
@@ -199,7 +192,6 @@ onMounted(async () => {
   color: #fff;
 }
 
-/* Header del perfil */
 .profile-header {
   display: flex;
   align-items: center;
@@ -342,7 +334,6 @@ onMounted(async () => {
   gap: 1rem;
 }
 
-/* Sección de estadísticas */
 .stats-section {
   margin-bottom: 2rem;
 }
@@ -404,7 +395,6 @@ onMounted(async () => {
   margin: 0;
 }
 
-/* Información personal */
 .personal-info-section {
   background: #23242a;
   border-radius: 20px;
@@ -457,7 +447,6 @@ onMounted(async () => {
   box-shadow: 0 0 0 2px rgba(123, 31, 162, 0.2);
 }
 
-/* Notificación */
 .notification {
   position: fixed;
   top: 2rem;
@@ -501,7 +490,6 @@ onMounted(async () => {
   color: #bdbdbd;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .buyer-profile-container {
     padding: 1rem;
