@@ -1,4 +1,4 @@
-// assemblers/pull.assembler.js
+
 import { Pull } from '../models/pull.entity';
 
 export const pullAssembler = {
