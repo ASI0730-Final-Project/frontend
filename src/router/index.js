@@ -3,18 +3,17 @@ import HomeComponent from '../public/views/home.component.vue'
 import GigsComponent from '../public/views/gigs.component.vue'
 import LoginComponent from '../public/views/login.component.vue'
 import RegisterComponent from '../public/views/register.component.vue'
-import CreateGigComponent from '../operations/views/create-gig.component.vue'
-import GigDetailComponent from '../operations/views/gig-detail.component.vue'
+import CreateGigComponent from '../gigs/views/create-gig.component.vue'
+import GigDetailComponent from '../gigs/views/gig-detail.component.vue'
 import PageNotFoundComponent from '../public/views/page-not-found.component.vue'
 import SellerGigsComponent from '../public/views/seller-gigs.component.vue'
 import PullBuyerView from '../pull/views/PullBuyerView.component.vue'
 import PullSellerView from '../pull/views/PullSellerView.component.vue'
 import SellerPullsView from '../pull/views/SellerPullsView.component.vue'
 import BuyerPullsView from '../pull/views/BuyerPullsView.component.vue'
-import TestViewComponent from '../portfolio/components/TestView.component.vue'
 import NewPortfolioFormView from '../portfolio/components/NewPortfolioFormView.component.vue'
-import UserProfileView from '../domain/components/views/UserProfileView.component.vue'
-import BuyerProfileView from '../domain/components/views/BuyerProfileView.component.vue'
+import UserProfileView from '../shared/views/UserProfileView.component.vue'
+import BuyerProfileView from '../shared/views/BuyerProfileView.component.vue'
 import PullNegotiationView from '../pull/views/PullNegotiationView.component.vue'
 
 const routes = [
@@ -34,7 +33,6 @@ const routes = [
   { path: '/seller-pulls', component: SellerPullsView, name: 'pullListView' },
   { path: '/buyer-pulls', component: BuyerPullsView, name: 'buyerPullListView' },
   { path: '/pull/negotiation/:id', component: PullNegotiationView, name: 'pullNegotiation' },
-  { path: '/portfolio/test', component: TestViewComponent, name: 'portfolioTest'},
   { path: '/portfolio/create', component: NewPortfolioFormView, name: 'createPortfolio'},
   { path: '/profile', component: UserProfileView, name: 'userProfile' },
   { path: '/buyer-profile', component: BuyerProfileView, name: 'buyerProfile' },

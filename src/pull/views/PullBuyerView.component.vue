@@ -1,55 +1,19 @@
 <template>
-  <section
-    class="main-container"
-    role="region"
-    aria-labelledby="pull-detail-title"
-  >
+  <div class="main-container">
     <div v-if="pull" class="container">
+      <h1 id="pull-detail-title" class="sr-only">{{ t('pull.detailsTitle') || 'Detalle del Pull' }}</h1>
 
-      <!-- Título oculto solo para accesibilidad -->
-      <h1 id="pull-detail-title" class="sr-only">
-        {{ t('pull.detailsTitle') || 'Detalle del Pull' }}
-      </h1>
-
-      <!-- Banner de estado -->
-      <div
-        v-if="pull.state === 'pending'"
-        class="state-banner pending"
-        role="status"
-        aria-live="polite"
-      >
-        {{ t('pull.buyer.pending') }}
-      </div>
-      <div
-        v-else-if="pull.state === 'in_process'"
-        class="state-banner in-process"
-        role="status"
-        aria-live="polite"
-      >
-        {{ t('pull.buyer.in_process') }}
-      </div>
-      <div
-        v-else-if="pull.state === 'payed'"
-        class="state-banner in-process"
-        role="status"
-        aria-live="polite"
-      >
-        {{ t('pull.buyer.payed') }}
-      </div>
-      <div
-        v-else-if="pull.state === 'complete'"
-        class="state-banner finished"
-        role="status"
-        aria-live="polite"
-      >
-        {{ t('pull.buyer.complete') }}
-      </div>
+      <!-- Estado -->
+      <div v-if="pull.state === 'pending'" class="state-banner pending">{{ t('pull.buyer.pending') }}</div>
+      <div v-else-if="pull.state === 'in_process'" class="state-banner in-process">{{ t('pull.buyer.in_process') }}</div>
+      <div v-else-if="pull.state === 'payed'" class="state-banner in-process">{{ t('pull.buyer.payed') }}</div>
+      <div v-else-if="pull.state === 'complete'" class="state-banner finished">{{ t('pull.buyer.complete') }}</div>
 
       <!-- Precios -->
-      <div class="price-header" role="group" aria-label="Resumen de precios y oferta">
+      <div class="price-header">
         <div class="price-column">
           <div class="price-label">{{ t('pull.initialPrice') }}</div>
-          <div class="price-value text-green">${{ pull.price_init }}</div>
+          <div class="price-value text-green">${{ pull.priceInit }}</div>
         </div>
         <div class="price-column">
           <div class="price-label">{{ t('pull.yourOffer') }}</div>
@@ -57,45 +21,27 @@
         </div>
         <div class="price-column">
           <div class="price-label">{{ t('pull.makeOffer') }}</div>
-          <div
-            v-if="pull.state === 'pending'"
-            class="offer-input-group"
-            role="form"
-            aria-label="Formulario de oferta"
-          >
+          <div v-if="pull.state === 'pending'" class="offer-input-group">
             <input
               type="number"
               v-model.number="offerInput"
               class="offer-input"
-              :placeholder="pull.price_update ?? pull.price_init"
-              aria-label="Ingrese su oferta"
+              :placeholder="pull.priceUpdate ?? pull.priceInit"
+              min="0"
             />
-            <button
-              class="save-button"
-              @click="saveOffer"
-              aria-label="Guardar oferta"
-            >
+            <button class="save-button" @click="saveOffer">
               <i class="pi pi-check"></i>
             </button>
           </div>
-          <div
-            v-else
-            class="offer-input-group"
-            aria-disabled="true"
-            aria-label="Oferta no modificable"
-          >
-            <span class="offer-value-disabled">
-              {{ t('pull.notModifiable') }}
-            </span>
+          <div v-else class="offer-input-group">
+            <span class="offer-value-disabled">{{ t('pull.notModifiable') }}</span>
           </div>
         </div>
       </div>
 
       <!-- Chat -->
-      <div class="chat-section" role="region" aria-labelledby="chat-title">
-        <div id="chat-title" class="chat-label">
-          {{ t('pull.chatWithSeller') }}
-        </div>
+      <div class="chat-section">
+        <div class="chat-label">{{ t('pull.chatWithSeller') }}</div>
         <ChatBox
           v-if="currentUser && currentUser.id"
           :user-id="String(currentUser.id)"
@@ -105,7 +51,7 @@
       </div>
 
       <!-- Cancelar -->
-      <div class="pull-actions" role="group" aria-label="Opciones del pull">
+      <div class="pull-actions">
         <div class="pull-actions-label">
           <template v-if="pull.state === 'payed' || pull.state === 'complete'">
             {{ t('pull.noLongerClosable') }}
@@ -119,17 +65,41 @@
             class="cancel-button"
             @click="leavePull"
             v-if="pull.state !== 'payed' && pull.state !== 'complete'"
-            aria-label="Cancelar solicitud"
           >
             {{ t('pull.cancel') }}
           </button>
         </div>
       </div>
 
-    </div>
-  </section>
-</template>
+      <!-- Pago -->
+      <div v-if="pull.state === 'in_process'" class="payment-form">
+        <h3>{{ t('pull.paymentData') }}</h3>
+        <input v-model="card.number" :placeholder="t('pull.cardNumber')" maxlength="16" />
+        <div class="expiry-cvc-group">
+          <input v-model="card.expiry" :placeholder="t('pull.expiryDate')" maxlength="5" />
+          <input v-model="card.cvc" :placeholder="t('pull.cvc')" maxlength="3" />
+        </div>
+        <input v-model="card.name" :placeholder="t('pull.cardHolder')" />
+        <button class="confirm-delivery-button" @click="processPayment">
+          {{ t('pull.next') }}
+        </button>
+      </div>
 
+      <!-- Confirmar entrega -->
+      <div v-if="pull.state === 'payed'" class="confirm-delivery-section">
+        <button class="confirm-delivery-button" @click="confirmDelivery">
+          {{ t('pull.confirmDelivery') }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Loading -->
+    <div v-else class="loading">
+      <i class="pi pi-spin pi-spinner"></i>
+      <span>{{ t('pull.loading') }}</span>
+    </div>
+  </div>
+</template>
 
 <script>
 import { ref, onMounted, computed } from 'vue'
@@ -167,8 +137,8 @@ export default {
       const id = route.params.id
       const result = await pullService.getPullById(id)
       pull.value = result
-      offerInput.value = result.price_update ?? result.price_init
-      localOffer.value = result.price_update ?? result.price_init
+      offerInput.value = result.priceUpdate ?? result.priceInit
+      localOffer.value = result.priceUpdate ?? result.priceInit
     }
 
     const fetchUser = async () => {
@@ -177,9 +147,9 @@ export default {
 
     const fetchOtherUser = async () => {
       if (pull.value && currentUser.value) {
-        const otherId = currentUser.value.id === pull.value.buyer_id
-          ? pull.value.seller_id
-          : pull.value.buyer_id
+        const otherId = currentUser.value.id === pull.value.buyerId
+          ? pull.value.sellerId
+          : pull.value.buyerId
         otherUser.value = await authService.getUserById(otherId)
       }
     }
@@ -187,21 +157,32 @@ export default {
     const getOtherUserNameObject = () => otherUser.value
 
     const saveOffer = async () => {
+      if (offerInput.value <= 0) {
+        alert(t('pull.invalidOffer') || 'La oferta debe ser mayor a 0')
+        return
+      }
+
       try {
         await pullService.updatePullPrice(pull.value.id, offerInput.value)
         localOffer.value = offerInput.value
-        pull.value.price_update = offerInput.value
+        pull.value.priceUpdate = offerInput.value
         alert(t('pull.offerSent'))
       } catch (error) {
         console.error('Error updating price:', error)
+        alert(t('pull.errorUpdatingPrice') || 'Error updating price')
       }
     }
 
     const leavePull = async () => {
-      await chatService.deleteChatByPullId(pull.value.id)
-      await pullService.deletePull(pull.value.id)
-      alert(t('pull.cancelled'))
-      router.push('/gigs')
+      try {
+        await chatService.deleteChatByPullId(pull.value.id)
+        await pullService.deletePull(pull.value.id)
+        alert(t('pull.cancelled'))
+        router.push('/gigs')
+      } catch (error) {
+        console.error('Error canceling pull:', error)
+        alert(t('pull.errorCanceling') || 'Error canceling')
+      }
     }
 
     const processPayment = async () => {
@@ -209,26 +190,33 @@ export default {
         alert(t('pull.invalidCard'))
         return
       }
-      await pullService.updatePull(pull.value.id, { state: 'payed' })
-      await fetchPull()
-      alert(t('pull.paymentSuccess'))
+
+      try {
+        await pullService.updatePull(pull.value.id, { newState: 'payed' })
+        await fetchPull()
+        alert(t('pull.paymentSuccess'))
+      } catch (error) {
+        console.error('Error processing payment:', error)
+        alert(t('pull.errorProcessingPayment') || 'Error processing payment')
+      }
     }
 
     const confirmDelivery = async () => {
       try {
-        await pullService.updatePull(pull.value.id, { state: 'complete' })
+        await pullService.updatePull(pull.value.id, { newState: 'complete' })
         await fetchPull()
         alert(t('pull.deliveryConfirmed'))
         router.push('/gigs')
       } catch (error) {
         console.error('Error confirming delivery:', error)
+        alert(t('pull.errorConfirmingDelivery') || 'Error confirming delivery')
       }
     }
 
-    onMounted(() => {
-      fetchUser()
-      fetchPull()
-      fetchOtherUser()
+    onMounted(async () => {
+      await fetchUser()
+      await fetchPull()
+      await fetchOtherUser()
     })
 
     return {
@@ -248,7 +236,6 @@ export default {
   }
 }
 </script>
-
 
 
 <style scoped>

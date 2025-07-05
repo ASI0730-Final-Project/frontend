@@ -1,6 +1,6 @@
 <script>
 import { useI18n } from 'vue-i18n'
-import { gigService } from '../../operations/services/gig.service'
+import { gigService } from '../../gigs/services/gig.service'
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 
@@ -18,6 +18,7 @@ export default {
     const { t } = useI18n()
     const router = useRouter()
     
+    // Solo obtenemos el user guardado localmente (sin llamar API)
     const user = computed(() => {
       const userData = localStorage.getItem('user')
       return userData ? JSON.parse(userData) : null
@@ -28,6 +29,7 @@ export default {
   async created() {
     try {
       this.loading = true
+      // Solo llamada a gigs, sin llamar a /api/v1/User
       this.gigs = await gigService.getAllGigs()
     } catch (error) {
       this.error = this.t('gigs.loadError')
@@ -125,6 +127,7 @@ export default {
     </div>
   </div>
 </template>
+
 
 <style scoped>
 .home-container {

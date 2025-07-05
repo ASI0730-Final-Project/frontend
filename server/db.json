@@ -7,7 +7,7 @@
       "email": "vrgames700@gmail.com",
       "password": "123123",
       "role": "seller",
-      "image": "https://esports.as.com/2020/01/07/Vegetta.png?hash=619afe072e4d1934a50f2e7fd1c0911b51a74e2c",
+      "image": "https://img.blogs.es/vizzagency/wp-content/uploads/2022/09/edit-3-3.jpg",
       "socialNetworks": [
         {
           "type": "instagram",
@@ -285,6 +285,26 @@
       "custom_animations": null,
       "price": 450,
       "seller_id": "17df"
+    },
+    {
+      "title": "PATATAS BRAVAS",
+      "description": "COCINA COUSINE",
+      "tags": [
+        "responsive",
+        "webdesign",
+        "cheap"
+      ],
+      "category": "Web Development",
+      "image": "https://i.blogs.es/ade581/bravas/1366_2000.jpg",
+      "delivery_days": 2,
+      "is_responsive": true,
+      "revision_count": 0,
+      "page_count": 5,
+      "extra_features": [],
+      "custom_animations": true,
+      "price": 1350,
+      "seller_id": "1",
+      "id": "cwDq_m2"
     }
   ],
   "pulls": [

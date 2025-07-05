@@ -5,8 +5,9 @@ import Avatar from 'primevue/avatar'
 import { useI18n } from 'vue-i18n'
 import LanguageSwitcher from './language-switcher.component.vue'
 import { useRouter } from 'vue-router'
-import { computed, watch, ref } from 'vue'
+import { computed, ref, onMounted, watch } from 'vue'
 import { authService } from '../../shared/services/auth.service'
+
 export default {
   name: "toolbar-component",
   components: { Button, Toolbar, LanguageSwitcher, Avatar },
@@ -14,20 +15,34 @@ export default {
     const { t } = useI18n()
     const router = useRouter()
     const isMenuOpen = ref(false)
+    const user = ref(null)
 
-    const user = computed(() => {
-      const userData = localStorage.getItem('user')
-      return userData ? JSON.parse(userData) : null
-    })
+    // Carga usuario llamando al servicio que usa /me y cache local
+    const loadUser = async () => {
+      const currentUser = await authService.getCurrentUser()
+      user.value = currentUser
+    }
+
+    onMounted(loadUser)
+
+    // Refresca usuario cuando cambia ruta
+    watch(
+      () => router.currentRoute.value,
+      () => loadUser(),
+      { immediate: true }
+    )
+
     const hasImage = computed(() => {
       return user.value?.image && user.value.image.trim() !== ''
     })
+
     const getInitials = () => {
       if (!user.value) return ''
       const firstName = user.value.name || ''
       const lastName = user.value.lastname || ''
       return `${firstName.charAt(0)}${lastName.charAt(0)}`
     }
+
     const navigationRoutes = computed(() => {
       if (!user.value) {
         return [{ name: 'home', label: 'toolbar.home' }]
@@ -47,13 +62,15 @@ export default {
       }
       return []
     })
+
     const navigateTo = (routeName) => {
       router.push({ name: routeName })
     }
+
     const logout = async () => {
       try {
-        localStorage.removeItem('user')
-        sessionStorage.removeItem('user')
+        authService.logout()
+        user.value = null
         router.push({ name: 'login', query: { timestamp: Date.now() } })
         setTimeout(() => window.location.reload(), 100)
       } catch (error) {
@@ -69,15 +86,7 @@ export default {
       navigateTo(routeName)
       toggleMenu()
     }
-    
-    watch(() => router.currentRoute.value, async () => {
-      if (user.value) {
-        const freshUser = await authService.getCurrentUser()
-        if (freshUser) {
-          localStorage.setItem('user', JSON.stringify(freshUser))
-        }
-      }
-    }, { immediate: true })
+
     return {
       t,
       navigationRoutes,
@@ -106,7 +115,7 @@ export default {
           alt="GigU Logo" 
           @click="navigateTo(user ? (user.role === 'seller' ? 'sellerGigs' : 'gigs') : 'home')"
           style="height: 48px; width: auto; cursor: pointer;"
-        >
+        />
         <div class="desktop-nav flex gap-2 ml-4">
           <Button
             v-for="route in navigationRoutes"
@@ -124,7 +133,7 @@ export default {
       <div class="flex align-items-center gap-3">
         <div class="desktop-auth flex align-items-center gap-3">
           <template v-if="user">
-            <div style="cursor:pointer;display:flex;align-items-center ; gap:0.5rem" @click="navigateTo(user.role === 'buyer' ? 'buyerProfile' : 'userProfile')">
+            <div style="cursor:pointer;display:flex;align-items:center;gap:0.5rem" @click="navigateTo(user.role === 'buyer' ? 'buyerProfile' : 'userProfile')">
               <Avatar
                 v-if="hasImage"
                 :image="user.image"

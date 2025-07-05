@@ -1,18 +1,18 @@
 import httpInstance from './http.instance'
 
-const usersEndpointPath = '/users'
+const usersEndpointPath = '/api/v1/User'
 
 export class AuthService {
   async login(credentials) {
     try {
-      const response = await httpInstance.get(
-        `${usersEndpointPath}?email=${credentials.email}&password=${credentials.password}`
+      const response = await httpInstance.post(
+        `${usersEndpointPath}/login`,
+        credentials
       )
-      
-      console.log('Login response:', response.data)
-      
-      if (response.data && response.data.length > 0) {
-        return response.data[0]
+      const token = response.data
+      if (token) {
+        localStorage.setItem('token', token)
+        return { token }
       }
       return null
     } catch (error) {
@@ -22,17 +22,17 @@ export class AuthService {
   }
 
   async register(userData) {
-    try {
-      const userToCreate = {
-        ...userData,
-        rol: userData.role || userData.rol || 'buyer'
-      }
-      
-      const response = await httpInstance.post(
-        usersEndpointPath,
-        userToCreate
-      )
-      return response.data
+  try {
+    const userToCreate = {
+      ...userData,
+      role: userData.role || 'buyer',
+      image: userData.image || '' 
+    }
+    const response = await httpInstance.post(
+      `${usersEndpointPath}/sign-up`,
+      userToCreate
+    )
+    return response.data
     } catch (error) {
       console.error('Registration error:', error)
       throw error
@@ -42,13 +42,17 @@ export class AuthService {
   async getCurrentUser() {
     try {
       const userData = localStorage.getItem('user')
-      if (!userData) return null
-      
-      const user = JSON.parse(userData)
-      const response = await httpInstance.get(`${usersEndpointPath}/${user.id}`)
-      return response.data
+      if (userData) {
+        return JSON.parse(userData)
+      }
+
+      const response = await httpInstance.get(`${usersEndpointPath}/me`)
+      const user = response.data
+      localStorage.setItem('user', JSON.stringify(user))
+      return user
     } catch (error) {
       console.error('Error fetching current user:', error)
+      localStorage.removeItem('user')
       return null
     }
   }
@@ -61,6 +65,28 @@ export class AuthService {
       console.error('Error fetching user by id:', error)
       return null
     }
+  }
+
+  async updateUserImage(userId, imageBase64) {
+    try {
+      const response = await httpInstance.put(
+        `${usersEndpointPath}/${userId}/image`,
+        { image: imageBase64 }
+      )
+      return response.data
+    } catch (error) {
+      console.error('Error updating user image:', error)
+      throw error
+    }
+  }
+
+  logout() {
+    localStorage.removeItem('token')
+    localStorage.removeItem('user')
+  }
+
+  getToken() {
+    return localStorage.getItem('token')
   }
 }
 

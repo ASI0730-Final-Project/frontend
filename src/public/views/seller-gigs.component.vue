@@ -1,6 +1,6 @@
 <script>
 import { useI18n } from 'vue-i18n'
-import { gigService } from '../../operations/services/gig.service'
+import { gigService } from '../../gigs/services/gig.service'
 import { computed } from 'vue'
 
 export default {

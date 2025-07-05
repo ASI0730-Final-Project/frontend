@@ -1,11 +1,12 @@
+// models/pull.entity.js
 export class Pull {
-  constructor({ id, seller_id, buyer_id, gig_id, price_init, price_update, state }) {
-    this.id = id
-    this.seller_id = seller_id
-    this.buyer_id = buyer_id
-    this.gig_id = gig_id
-    this.price_init = price_init
-    this.price_update = price_update
-    this.state = state
+  constructor(data = {}) {
+    this.id = data.id || null;
+    this.sellerId = data.sellerId || null;
+    this.buyerId = data.buyerId || null;
+    this.gigId = data.gigId || null;
+    this.priceInit = data.priceInit || 0;
+    this.priceUpdate = data.priceUpdate || 0;
+    this.state = data.state || 'pending';
   }
-} 
+}

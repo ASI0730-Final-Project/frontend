@@ -46,7 +46,7 @@
           <div class="pull-offer-row" role="group" aria-label="Oferta actual">
             <span class="pull-offer-label">{{ t('pull.offer') }}</span>
             <span class="pull-offer-value" aria-live="polite">
-              S/ {{ Number(pull.price_update ?? pull.price).toFixed(2) }}
+              S/ {{ Number(pull.priceUpdate ?? pull.price).toFixed(2) }}
             </span>
           </div>
 
@@ -73,7 +73,7 @@ import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import Button from 'primevue/button'
 import { pullService } from '../services/pulls.service'
-import { gigService } from '../../operations/services/gig.service'
+import { gigService } from '../../gigs/services/gig.service'
 import { authService } from '../../shared/services/auth.service'
 
 export default {
@@ -89,18 +89,22 @@ export default {
       try {
         const user = JSON.parse(localStorage.getItem('user'))
         if (!user?.id) throw new Error('No authenticated user found')
+
         const pulls = await pullService.getPullsBySeller(user.id)
         sellerPulls.value = pulls
-        // Enriquecer pulls con datos de gig y buyer, y filtrar los que no estén finalizados
-        const validPulls = pulls.filter(p => p.state !== 'finished' && !!p.gig_id)
-        const gigIds = [...new Set(validPulls.map(p => p.gig_id).filter(Boolean))]
+
+        const validPulls = pulls.filter(p => p.state !== 'finished' && !!p.gigId)
+
+        const gigIds = [...new Set(validPulls.map(p => p.gigId).filter(Boolean))]
         const gigs = await Promise.all(gigIds.map(id => gigService.getGigById(id).catch(() => null)))
-        const buyerIds = [...new Set(validPulls.map(p => p.buyer_id).filter(Boolean))]
+
+        const buyerIds = [...new Set(validPulls.map(p => p.buyerId).filter(Boolean))]
         const buyers = await Promise.all(buyerIds.map(id => authService.getUserById(id).catch(() => null)))
+
         enrichedPulls.value = validPulls.map(pull => ({
           ...pull,
-          gig: gigs.find(g => g && g.id === pull.gig_id) || { title: 'Gig no encontrado', description: '', category: '', image: '' },
-          buyer: buyers.find(b => b && b.id === pull.buyer_id) || { name: 'Desconocido', lastname: '' }
+          gig: gigs.find(g => g && g.id === pull.gigId) || { title: 'Gig no encontrado', description: '', category: '', image: '' },
+          buyer: buyers.find(b => b && b.id === pull.buyerId) || { name: 'Desconocido', lastname: '' }
         }))
       } catch (error) {
         console.error('Error fetching pulls:', error)
@@ -121,6 +125,7 @@ export default {
   }
 }
 </script>
+
 
 <style scoped>
 .pulls-container {
