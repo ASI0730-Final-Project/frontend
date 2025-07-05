@@ -3,17 +3,29 @@
     <div class="modal-content">
       <h3>{{ isNew ? 'Nuevo Proyecto' : 'Editar Proyecto' }}</h3>
 
-      <input v-model="editable.title" placeholder="Título" />
-      <textarea v-model="editable.description" placeholder="Descripción"></textarea>
-      <input v-model="editable.price" placeholder="Precio" />
-      <input v-model="editable.time" placeholder="Tiempo" />
-      <input v-model="editable.gig_link" placeholder="Enlace del Gig" />
+      <input v-model="editable.title" type="text" placeholder="Título" required />
+      <textarea v-model="editable.description" placeholder="Descripción" required></textarea>
+      <input
+        v-model="editable.price"
+        type="text"
+        placeholder="Precio"
+        pattern="^[0-9]+(\.[0-9]{1,2})?$"
+        title="Ingresa un precio válido"
+      />
+      <input v-model="editable.time" type="text" placeholder="Tiempo estimado" />
+      <input v-model="editable.gig_link" type="text" placeholder="Enlace del Gig" />
 
       <label>Subir imágenes:</label>
-      <input type="file" multiple @change="handleImageUpload" />
+      <input type="file" multiple accept="image/*" @change="handleImageUpload" />
 
-      <div class="image-preview" v-if="editable.images.length">
-        <img v-for="(img, i) in editable.images" :key="i" :src="img" />
+      <div class="image-preview" v-if="editable.images?.length">
+        <img
+          v-for="(img, i) in editable.images"
+          :key="i"
+          :src="img"
+          alt="Imagen subida"
+          style="max-width: 100px; max-height: 100px; margin: 0 5px;"
+        />
       </div>
 
       <div class="modal-actions">
@@ -26,31 +38,69 @@
 
 <script setup>
 import { ref, watch } from 'vue'
+import { portfolioService } from '../services/portfolio.service' 
+import { authService } from '../../shared/services/auth.service' 
 
 const props = defineProps({
   project: { type: Object, required: true },
   isNew: { type: Boolean, default: false }
 })
+
 const emit = defineEmits(['save', 'close'])
 
 const editable = ref({ ...props.project })
+const currentUser = ref(null)
+const portfolioId = ref(null)
 
-watch(() => props.project, (val) => {
-  editable.value = { ...val }
-  if (!editable.value.images) editable.value.images = []
-})
+watch(
+  () => props.project,
+  async (val) => {
+    editable.value = { ...val }
+    if (!editable.value.images) editable.value.images = []
+
+    if (!portfolioId.value) {
+      currentUser.value = await authService.getCurrentUser()
+      const portfolio = await portfolioService.getPortfolioBySellerId(currentUser.value.id)
+      portfolioId.value = portfolio?.id
+    }
+  },
+  { immediate: true }
+)
 
 function handleImageUpload(e) {
   const files = e.target.files
   for (const file of files) {
+    if (!file.type.startsWith('image/')) continue
     const reader = new FileReader()
-    reader.onload = () => editable.value.images.push(reader.result)
+    reader.onload = () => {
+      editable.value.images.push(reader.result)
+    }
     reader.readAsDataURL(file)
   }
 }
 
-function save() {
-  emit('save', { ...editable.value })
+async function save() {
+  if (!editable.value.title || !editable.value.description) {
+    alert('Por favor, completa el título y la descripción.')
+    return
+  }
+
+  const projectToSave = {
+    ...editable.value,
+    gigLink: editable.value.gig_link || editable.value.gigLink
+  }
+
+  try {
+    if (!props.isNew && portfolioId.value) {
+      await portfolioService.updateProject(portfolioId.value, projectToSave)
+    }
+
+    emit('save', projectToSave) 
+    close()
+  } catch (err) {
+    console.error('Error actualizando el proyecto:', err)
+    alert('Error guardando el proyecto.')
+  }
 }
 
 function close() {

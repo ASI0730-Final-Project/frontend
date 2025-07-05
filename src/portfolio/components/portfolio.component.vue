@@ -10,21 +10,34 @@
         {{ proj.title }}
       </button>
 
+      <!--
       <template v-if="isOwner">
         <button class="pv-button" @click="openEditModal(selectedProject)">Editar</button>
         <button class="pv-button" @click="openNewProjectModal">Añadir Proyecto</button>
       </template>
+      -->
     </div>
-
+  
     <div v-if="selectedProject" class="pv-project-details">
       <div class="pv-carousel">
-        <img v-for="(img, idx) in selectedProject.images" :key="idx" :src="img" />
+        <img
+          v-for="(img, idx) in selectedProject.images || []"
+          :key="idx"
+          :src="img"
+          alt="Imagen"
+        />
       </div>
       <h3>{{ selectedProject.title }}</h3>
       <p>{{ selectedProject.description }}</p>
       <p><strong>Precio:</strong> {{ selectedProject.price }}</p>
       <p><strong>Tiempo:</strong> {{ selectedProject.time }}</p>
-      <a :href="selectedProject.gig_link" target="_blank" class="pv-button">Ver Gig</a>
+      <a
+        :href="selectedProject.gig_link || selectedProject.gigLink"
+        target="_blank"
+        class="pv-button"
+      >
+        Ver Gig
+      </a>
     </div>
   </div>
 
@@ -46,7 +59,6 @@
 import { ref, onMounted } from 'vue'
 import { portfolioService } from '../services/portfolio.service'
 import { authService } from '../../shared/services/auth.service'
-import { useRouter } from 'vue-router'
 import EditProjectModal from './EditProjectModal.component.vue'
 
 const portfolio = ref(null)
@@ -56,19 +68,20 @@ const currentUser = ref(null)
 const showModal = ref(false)
 const editingProject = ref({})
 const isNewProject = ref(false)
-const router = useRouter()
 
-onMounted(async () => {
+async function loadPortfolio() {
   currentUser.value = await authService.getCurrentUser()
   if (!currentUser.value) return
 
   const fetchedPortfolio = await portfolioService.getPortfolioBySellerId(currentUser.value.id)
   if (fetchedPortfolio) {
     portfolio.value = fetchedPortfolio
-    selectedProject.value = fetchedPortfolio.projects[0] || null
+    selectedProject.value = fetchedPortfolio.projects?.[0] || null
     isOwner.value = currentUser.value.id === fetchedPortfolio.seller_id
   }
-})
+}
+
+onMounted(loadPortfolio)
 
 function selectProject(project) {
   selectedProject.value = project
@@ -98,17 +111,21 @@ async function handleSaveProject(project) {
   if (!portfolio.value) return
   const portfolioId = portfolio.value.id
 
-  if (isNewProject.value) {
-    await portfolioService.addProject(portfolioId, project)
-    portfolio.value.projects.push(project)
-  } else {
-    await portfolioService.updateProject(portfolioId, project)
-    const index = portfolio.value.projects.findIndex(p => p.id === project.id)
-    if (index !== -1) portfolio.value.projects[index] = { ...project }
-  }
+  try {
+    if (isNewProject.value) {
+      await portfolioService.addProject(portfolioId, project)
+      portfolio.value.projects.push(project)
+    } else {
+      await portfolioService.updateProject(portfolioId, project)
+      const idx = portfolio.value.projects.findIndex(p => p.id === project.id)
+      if (idx !== -1) portfolio.value.projects[idx] = project
+    }
 
-  selectedProject.value = project
-  closeModal()
+    selectedProject.value = project
+    closeModal()
+  } catch (err) {
+    console.error('Error guardando proyecto:', err)
+  }
 }
 
 function closeModal() {
