@@ -17,7 +17,6 @@ export default {
     const isMenuOpen = ref(false)
     const user = ref(null)
 
-    // Carga usuario llamando al servicio que usa /me y cache local
     const loadUser = async () => {
       const currentUser = await authService.getCurrentUser()
       user.value = currentUser
@@ -25,7 +24,6 @@ export default {
 
     onMounted(loadUser)
 
-    // Refresca usuario cuando cambia ruta
     watch(
       () => router.currentRoute.value,
       () => loadUser(),
