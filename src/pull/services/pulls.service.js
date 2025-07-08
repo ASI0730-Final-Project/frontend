@@ -37,6 +37,14 @@ export class PullService {
   async deletePull(id) {
     return (await httpInstance.delete(`${apiBase}/${id}`)).data
   }
+
+  async getPullsByRoleBuyer(userId) {
+    return (await httpInstance.get(`${apiBase}/by-role?role=buyer&userId=${userId}`)).data
+  }
+
+  async getPullsByRoleSeller(userId) {
+    return (await httpInstance.get(`${apiBase}/by-role?role=seller&userId=${userId}`)).data
+  }
 }
 
 export const pullService = new PullService()
