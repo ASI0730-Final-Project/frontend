@@ -97,7 +97,7 @@ export default {
         // Aseguramos usar la nueva API
         pullService.useNewApi = true
 
-        const pulls = await pullService.getPullsByBuyer(user.id)
+        const pulls = await pullService.getPullsByRoleBuyer(user.id)
         buyerPulls.value = pulls
 
         // Filtrar pulls válidos y activos
@@ -134,7 +134,6 @@ export default {
   }
 }
 </script>
-
 
 <style scoped>
 .pulls-container {
