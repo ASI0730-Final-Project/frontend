@@ -3,13 +3,13 @@
     <div v-if="pull" class="container">
       <h1 id="pull-detail-title" class="sr-only">{{ t('pull.detailsTitle') || 'Detalle del Pull' }}</h1>
 
-
+      <!-- Estado -->
       <div v-if="pull.state === 'pending'" class="state-banner pending">{{ t('pull.buyer.pending') }}</div>
       <div v-else-if="pull.state === 'in_process'" class="state-banner in-process">{{ t('pull.buyer.in_process') }}</div>
       <div v-else-if="pull.state === 'payed'" class="state-banner in-process">{{ t('pull.buyer.payed') }}</div>
       <div v-else-if="pull.state === 'complete'" class="state-banner finished">{{ t('pull.buyer.complete') }}</div>
 
-
+      <!-- Precios -->
       <div class="price-header">
         <div class="price-column">
           <div class="price-label">{{ t('pull.initialPrice') }}</div>
@@ -39,18 +39,20 @@
         </div>
       </div>
 
-
+      <!-- Chat -->
       <div class="chat-section">
         <div class="chat-label">{{ t('pull.chatWithSeller') }}</div>
         <ChatBox
-          v-if="currentUser && currentUser.id"
-          :user-id="String(currentUser.id)"
+          v-if="currentUser && currentUser.id && pull"
+          :user-id="currentUser.id"
           :pull-id="pull.id"
+          :sender-id="currentUser.id"
+          :receiver-id="pull.sellerId"
           :other-user-name="getOtherUserNameObject()?.name"
         />
       </div>
 
-
+      <!-- Cancelar -->
       <div class="pull-actions">
         <div class="pull-actions-label">
           <template v-if="pull.state === 'payed' || pull.state === 'complete'">
@@ -71,7 +73,7 @@
         </div>
       </div>
 
-
+      <!-- Pago -->
       <div v-if="pull.state === 'in_process'" class="payment-form">
         <h3>{{ t('pull.paymentData') }}</h3>
         <input v-model="card.number" :placeholder="t('pull.cardNumber')" maxlength="16" />
@@ -85,7 +87,7 @@
         </button>
       </div>
 
-
+      <!-- Confirmar entrega -->
       <div v-if="pull.state === 'payed'" class="confirm-delivery-section">
         <button class="confirm-delivery-button" @click="confirmDelivery">
           {{ t('pull.confirmDelivery') }}
@@ -93,7 +95,7 @@
       </div>
     </div>
 
-
+    <!-- Loading -->
     <div v-else class="loading">
       <i class="pi pi-spin pi-spinner"></i>
       <span>{{ t('pull.loading') }}</span>

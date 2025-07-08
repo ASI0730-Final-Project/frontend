@@ -38,7 +38,7 @@ export default {
         console.log('Login success, response:', response)
 
         if (response && response.token) {
-
+          // Guardamos token y usuario si fue exitoso
           localStorage.setItem('token', response.token)
 
           if (response.user) {

@@ -184,6 +184,7 @@ export default {
       {{ error }}
     </div>
 
+    <!-- Step 1: Basic Information -->
     <div
       v-if="currentStep === 1"
       class="step-content"
@@ -274,6 +275,7 @@ export default {
       </div>
     </div>
 
+    <!-- Step 2: Configuration & Pricing -->
     <div
       v-if="currentStep === 2"
       class="step-content"
@@ -462,6 +464,7 @@ export default {
   margin-top: 0.25rem;
 }
 
+/* Focus styles for accessibility */
 input:focus-visible,
 textarea:focus-visible,
 .p-dropdown:focus-visible,
@@ -470,6 +473,7 @@ textarea:focus-visible,
   outline-offset: 2px;
 }
 
+/* High contrast mode support */
 @media (forced-colors: active) {
   .step.active {
     border-bottom-color: Highlight;

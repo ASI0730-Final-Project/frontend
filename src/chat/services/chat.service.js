@@ -1,117 +1,51 @@
 import httpInstance from '../../shared/services/http.instance'
-import { chatAssembler } from './chat.assembler'
 
-const chatEndpointPath = import.meta.env.VITE_CHATS_ENDPOINT_PATH || '/chats'
+const chatEndpointPath = import.meta.env.VITE_CHATS_ENDPOINT_PATH || '/api/v1/cchat'
 
 class ChatService {
-  async getAll() {
+  /**
+   * Obtiene los mensajes entre dos usuarios.
+   * @param {number} senderId
+   * @param {number} receiverId
+   * @returns {Promise<Array<{ sender_id, content, timestamp }>>}
+   */
+  async getMessagesBetweenUsers(senderId, receiverId) {
     try {
-      const { data } = await httpInstance.get(chatEndpointPath)
-      return data
+      const { data } = await httpInstance.get(`${chatEndpointPath}/conversation`, {
+        params: { senderId, receiverId }
+      })
+
+      // Adaptar al formato requerido por el componente
+      return data.map(msg => ({
+        sender_id: msg.senderId,
+        content: msg.content,
+        timestamp: msg.sentAt || msg.createdDate
+      }))
     } catch (error) {
-      console.error('Error fetching chats:', error)
-      throw error
-    }
-  }
-
-  async getById(chatId) {
-    try {
-      const { data } = await httpInstance.get(`${chatEndpointPath}/${chatId}`)
-      return data
-    } catch (error) {
-      console.error(`Error fetching chat by ID ${chatId}:`, error)
-      throw error
-    }
-  }
-
-  async getByPullId(pullId) {
-    try {
-      const { data } = await httpInstance.get(`${chatEndpointPath}?pull_id=${pullId}`)
-      return data.length > 0 ? chatAssembler.fromJson(data[0]) : null
-    } catch (error) {
-      console.error(`Error fetching chat for pull_id=${pullId}:`, error)
-      throw error
-    }
-  }
-
-  async createChat(pullId, user1Id, user2Id) {
-    try {
-      const chat = {
-        pull_id: pullId,
-        user_1_id: user1Id,
-        user_2_id: user2Id,
-        messages: []
-      }
-
-      const { data } = await httpInstance.post(chatEndpointPath, chat)
-      return chatAssembler.fromJson(data)
-    } catch (error) {
-      console.error('Error creating chat:', error)
-      throw error
-    }
-  }
-
-  async addMessage(chatId, message) {
-    try {
-      const chat = await this.getById(chatId)
-      chat.messages.push(message)
-
-      const { data } = await httpInstance.put(
-        `${chatEndpointPath}/${chatId}`,
-        chat
-      )
-      return data
-    } catch (error) {
-      console.error(`Error adding message to chat ID ${chatId}:`, error)
-      throw error
-    }
-  }
-
-  async sendMessageForPull(pullId, senderId, content) {
-    try {
-      let chat = await this.getByPullId(pullId)
-      if (!chat) {
-        const pull = await import('../../pull/services/pulls.service').then(m => m.pullService.getPullById(pullId))
-        const user1Id = pull.seller_id
-        const user2Id = pull.buyer_id
-        chat = await this.createChat(pullId, user1Id, user2Id)
-      }
-      const message = {
-        sender_id: senderId,
-        content: content,
-        timestamp: new Date().toISOString()
-      }
-      chat.addMessage(message)
-      const { data } = await httpInstance.put(
-        `${chatEndpointPath}/${chat.id}`,
-        chatAssembler.toJson(chat)
-      )
-      return chatAssembler.fromJson(data)
-    } catch (error) {
-      console.error('Error sending message for pull:', error)
-      throw error
-    }
-  }
-
-  async getMessagesByPullId(pullId) {
-    try {
-      const chat = await this.getByPullId(pullId)
-      return chat?.messages || []
-    } catch (error) {
-      console.error(`Error getting messages for pull_id=${pullId}:`, error)
+      console.error('Error fetching messages between users:', error)
       return []
     }
   }
 
-  async deleteChatByPullId(pullId) {
+  /**
+   * Envía un nuevo mensaje entre dos usuarios.
+   * @param {number} senderId
+   * @param {number} receiverId
+   * @param {string} content
+   * @returns {Promise<object>}
+   */
+  async sendMessage(senderId, receiverId, content) {
     try {
-      const { data } = await httpInstance.get(`${chatEndpointPath}?pull_id=${pullId}`)
-      if (data.length > 0) {
-        const chatId = data[0].id
-        await httpInstance.delete(`${chatEndpointPath}/${chatId}`)
+      const payload = {
+        senderId,
+        receiverId,
+        content
       }
+      const { data } = await httpInstance.post(`${chatEndpointPath}`, payload)
+      return data
     } catch (error) {
-      console.error(`Error deleting chat for pull_id=${pullId}:`, error)
+      console.error('Error sending message:', error)
+      throw error
     }
   }
 }

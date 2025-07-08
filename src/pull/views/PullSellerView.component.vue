@@ -65,12 +65,14 @@
       <!-- Chat -->
       <div class="chat-section" role="region" aria-labelledby="chat-heading">
         <h2 id="chat-heading" class="chat-label">{{ t('pull.chat.buyer') }}</h2>
-        <ChatBox
-          v-if="pull && pull.buyerId && currentUser"
-          :user-id="currentUser.id"
-          :pull-id="pull.id"
-          aria-label="Área de chat con el comprador"
-        />
+      <ChatBox
+        v-if="pull && pull.buyerId && currentUser"
+        :user-id="currentUser.id"
+        :pull-id="pull.id"
+        :sender-id="currentUser.id"
+        :receiver-id="pull.buyerId"
+        aria-label="Área de chat con el comprador"
+      />
       </div>
     </div>
 

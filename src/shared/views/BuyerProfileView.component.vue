@@ -197,6 +197,7 @@ onMounted(async () => {
   color: #fff;
 }
 
+/* Header del perfil */
 .profile-header {
   display: flex;
   align-items: center;
@@ -495,6 +496,7 @@ onMounted(async () => {
   color: #bdbdbd;
 }
 
+/* Responsive */
 @media (max-width: 768px) {
   .buyer-profile-container {
     padding: 1rem;

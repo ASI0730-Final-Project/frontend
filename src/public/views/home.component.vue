@@ -18,6 +18,7 @@ export default {
     const { t } = useI18n()
     const router = useRouter()
     
+    // Solo obtenemos el user guardado localmente (sin llamar API)
     const user = computed(() => {
       const userData = localStorage.getItem('user')
       return userData ? JSON.parse(userData) : null
@@ -28,6 +29,7 @@ export default {
   async created() {
     try {
       this.loading = true
+      // Solo llamada a gigs, sin llamar a /api/v1/User
       this.gigs = await gigService.getAllGigs()
     } catch (error) {
       this.error = this.t('gigs.loadError')
@@ -47,7 +49,7 @@ export default {
       if (!this.user) {
         this.router.push({ name: 'login' })
       }
-      
+      // Si está logueado, no hacer nada (solo visualización)
     }
   }
 }
@@ -248,6 +250,7 @@ export default {
   font-size: 1.2rem;
 }
 
+/* Efecto para indicar que se necesita login */
 .gig-card:not(.no-hover):hover {
   box-shadow: 0 0 0 2px #4a148c;
 }
