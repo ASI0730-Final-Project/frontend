@@ -94,16 +94,16 @@ export default {
         const user = JSON.parse(localStorage.getItem('user'))
         if (!user?.id) throw new Error('No authenticated user found')
 
-
+        // Aseguramos usar la nueva API
         pullService.useNewApi = true
 
         const pulls = await pullService.getPullsByBuyer(user.id)
         buyerPulls.value = pulls
 
-
+        // Filtrar pulls válidos y activos
         const validPulls = pulls.filter(p => !!p.gigId && p.state !== 'finished')
 
-
+        // Obtener gig y seller de cada pull
         const gigIds = [...new Set(validPulls.map(p => p.gigId))]
         const sellerIds = [...new Set(validPulls.map(p => p.sellerId))]
 

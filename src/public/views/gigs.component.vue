@@ -71,7 +71,7 @@ export default {
         class="gig-card"
         @click="navigateToGig(gig.id)"
       >
-
+        <!-- Imagen del gig -->
         <div class="gig-image-container">
           <img 
             v-if="gig.image" 
@@ -85,7 +85,9 @@ export default {
           </div>
         </div>
         
+        <!-- Contenido del gig -->
         <div class="gig-content">
+          <!-- Información del vendedor -->
           <div class="gig-seller">
             <div class="seller-avatar-container">
               <img 
@@ -106,11 +108,13 @@ export default {
             </div>
           </div>
           
+          <!-- Título y descripción -->
           <div class="gig-details">
             <h3 class="gig-title">{{ gig.title }}</h3>
             <p class="gig-description">{{ gig.description }}</p>
           </div>
           
+          <!-- Footer con categoría y precio -->
           <div class="gig-footer">
             <div class="gig-category">
               <i class="pi pi-tag"></i>
@@ -159,6 +163,7 @@ export default {
   font-weight: 400;
 }
 
+/* Loading y Error */
 .loading-container,
 .error-container {
   display: flex;
@@ -195,6 +200,7 @@ export default {
   font-size: 2rem;
 }
 
+/* Grid de gigs */
 .gigs-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -202,6 +208,7 @@ export default {
   padding: 0;
 }
 
+/* Card de gig */
 .gig-card {
   background: #23242a;
   border-radius: 20px;
@@ -220,6 +227,7 @@ export default {
   border: 1px solid rgba(123, 31, 162, 0.3);
 }
 
+/* Imagen del gig */
 .gig-image-container {
   height: 200px;
   overflow: hidden;
@@ -260,6 +268,7 @@ export default {
   opacity: 0.8;
 }
 
+/* Contenido del gig */
 .gig-content {
   padding: 1.5rem;
   display: flex;
@@ -268,6 +277,7 @@ export default {
   gap: 1rem;
 }
 
+/* Información del vendedor */
 .gig-seller {
   display: flex;
   align-items: center;
@@ -321,6 +331,7 @@ export default {
   letter-spacing: 0.5px;
 }
 
+/* Detalles del gig */
 .gig-details {
   flex: 1;
   display: flex;
@@ -350,6 +361,7 @@ export default {
   overflow: hidden;
 }
 
+/* Footer del gig */
 .gig-footer {
   display: flex;
   justify-content: space-between;
@@ -391,6 +403,7 @@ export default {
   border: 1px solid rgba(34, 197, 94, 0.3);
 }
 
+/* Responsive */
 @media (max-width: 1200px) {
   .gigs-grid {
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));

@@ -1,4 +1,4 @@
-
+// models/pull.entity.js
 export class Pull {
   constructor(data = {}) {
     this.id = data.id || null;

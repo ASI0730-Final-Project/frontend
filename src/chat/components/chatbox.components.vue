@@ -4,11 +4,13 @@
       <div
         v-for="(message, index) in messages"
         :key="index"
-        :class="['message', { 'message--own': String(message.sender_id) === String(currentUserId) }]"
+        :class="['message', { 'message--own': String(message.sender_id) === String(senderId) }]"
       >
-        <div class="message__sender">{{ String(message.sender_id) === String(currentUserId) ? 'Tú' : otherUserName }}</div>
+        <div class="message__sender">
+          {{ String(message.sender_id) === String(senderId) ? 'Tú' : otherUserName }}
+        </div>
         <div class="message__content">{{ message.content }}</div>
-        <div class="message__time">{{ formatTime(message.timestamp || message.created_at) }}</div>
+        <div class="message__time">{{ formatTime(message.timestamp) }}</div>
       </div>
     </div>
 
@@ -34,18 +36,9 @@ import { chatService } from '../services/chat.service'
 export default {
   name: 'ChatBox',
   props: {
-    pullId: {
-      type: Number,
-      required: true
-    },
-    userId: {
-      type: Number,
-      required: true
-    },
-    otherUserName: {
-      type: String,
-      default: 'Otro'
-    }
+    senderId: { type: Number, required: true },
+    receiverId: { type: Number, required: true },
+    otherUserName: { type: String, default: 'Otro' }
   },
   setup(props) {
     const messages = ref([])
@@ -55,12 +48,10 @@ export default {
     const isActive = ref(true)
 
     const fetchMessages = async () => {
-      if (!isActive.value || !props.pullId) return
+      if (!isActive.value) return
       try {
-        const fetchedMessages = await chatService.getMessagesByPullId(props.pullId)
-        if (fetchedMessages && Array.isArray(fetchedMessages)) {
-          messages.value = fetchedMessages
-        }
+        const fetchedMessages = await chatService.getMessagesBetweenUsers(props.senderId, props.receiverId)
+        messages.value = fetchedMessages
         scrollToBottom()
       } catch (error) {
         console.error('Error fetching messages:', error)
@@ -69,17 +60,10 @@ export default {
 
     const sendMessage = async () => {
       if (!newMessage.value.trim() || isLoading.value) return
-
       try {
         isLoading.value = true
-        const messageContent = newMessage.value.trim()
-        await chatService.sendMessageForPull(
-          props.pullId,
-          props.userId,
-          messageContent
-        )
+        await chatService.sendMessage(props.senderId, props.receiverId, newMessage.value.trim())
         newMessage.value = ''
-        await new Promise(res => setTimeout(res, 100))
         await fetchMessages()
       } catch (error) {
         console.error('Error sending message:', error)
@@ -96,9 +80,9 @@ export default {
       })
     }
 
-    const formatTime = (createdAt) => {
-      if (!createdAt) return ''
-      const date = new Date(createdAt)
+    const formatTime = (timestamp) => {
+      if (!timestamp) return ''
+      const date = new Date(timestamp)
       return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }
 
@@ -122,7 +106,7 @@ export default {
       sendMessage,
       messagesContainer,
       formatTime,
-      currentUserId: props.userId,
+      senderId: props.senderId,
       isLoading
     }
   }

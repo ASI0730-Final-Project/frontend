@@ -226,6 +226,9 @@ onMounted(async () => {
 })
 </script>
 
+
+
+
 <template>
   <div v-if="user && user.role === 'seller'" class="seller-profile-container">
     <div class="profile-header">
@@ -344,6 +347,7 @@ onMounted(async () => {
     <p>Cargando...</p>
   </div>
 </template>
+
 
 <style scoped>
 .seller-profile-container {
