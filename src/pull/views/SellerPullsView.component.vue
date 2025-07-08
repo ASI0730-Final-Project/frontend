@@ -90,7 +90,7 @@ export default {
         const user = JSON.parse(localStorage.getItem('user'))
         if (!user?.id) throw new Error('No authenticated user found')
 
-        const pulls = await pullService.getPullsBySeller(user.id)
+        const pulls = await pullService.getPullsByRoleSeller(user.id)
         sellerPulls.value = pulls
 
         const validPulls = pulls.filter(p => p.state !== 'finished' && !!p.gigId)
@@ -125,7 +125,6 @@ export default {
   }
 }
 </script>
-
 
 <style scoped>
 .pulls-container {
