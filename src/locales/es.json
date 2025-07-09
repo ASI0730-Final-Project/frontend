@@ -49,7 +49,14 @@
     "loading": "Cargando...",
     "invalidImageType": "Por favor selecciona un archivo de imagen válido",
     "imageTooLarge": "El archivo de imagen es muy grande. Tamaño máximo 5MB",
-    "imageLoadError": "Error al cargar la imagen. Por favor intente nuevamente"
+    "imageLoadError": "Error al cargar la imagen. Por favor intente nuevamente",
+    "registerFailed": "Error al registrarse",
+    "registerLoginFailed": "Error al iniciar sesión después del registro",
+    "loginSuccess": "¡Inicio de sesión exitoso!",
+    "errorNameInvalid": "El nombre es obligatorio y no puede contener números.",
+    "errorLastnameInvalid": "El apellido es obligatorio y no puede contener números.",
+    "errorEmailInvalid": "Por favor ingrese un correo válido que contenga '@'.",
+    "errorPasswordInvalid": "La contraseña debe tener al menos 6 caracteres."
   },
   "gigs": {
     "create": "Crear Nuevo Trabajo",
@@ -61,12 +68,12 @@
     "submit": "Crear Trabajo",
     "loadError": "Error al cargar los trabajos",
     "detailError": "Error al cargar los detalles del trabajo",
-    "aboutThisGig": "About this gig",
-    "deliveryTime": "Delivery time",
-    "revisions": "Revisions",
-    "pages": "Pages",
-    "tags": "Tags",
-    "orderSuccess": "Your order was placed successfully!",
+    "aboutThisGig": "Acerca de este trabajo",
+    "deliveryTime": "Tiempo de entrega",
+    "revisions": "Revisiones",
+    "pages": "Páginas",
+    "tags": "Etiquetas",
+    "orderSuccess": "¡Tu pedido fue realizado con éxito!",
     "seller": "Vendedor",
     "buyer": "Comprador",
     "status": "Estado",
@@ -74,6 +81,7 @@
     "noImage": "Sin imagen disponible"
   },
   "profile": {
+    "portfolio": "Portafolio",
     "edit": "Editar perfil",
     "save": "Guardar",
     "cancel": "Cancelar",
@@ -200,5 +208,27 @@
       "initial": "Precio Inicial",
       "buyerOffer": "Oferta del comprador"
     }
+  },
+  "portfolio": {
+  "noPortfolio": "No tienes portafolio aún.",
+  "createPortfolio": "Crear Portafolio"
+},
+"portfolioCreate": {
+    "title": "Create New Portfolio",
+    "sellerId": "Seller ID",
+    "name": "Name",
+    "namePlaceholder": "Portfolio name",
+    "description": "Description",
+    "descriptionPlaceholder": "Portfolio description",
+    "projects": "Projects",
+    "projectTitle": "Project title",
+    "projectDescription": "Project description",
+    "projectPrice": "Price",
+    "projectTime": "Time",
+    "projectGigLink": "Gig link",
+    "removeProject": "Remove Project",
+    "addProject": "Add Project",
+    "save": "Save Portfolio",
+    "error": "Failed to create portfolio. Please check the fields."
   }
-} 
+}

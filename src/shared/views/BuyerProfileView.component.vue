@@ -1,19 +1,17 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { authService } from '../services/auth.service'
+import { pullService } from '../../pull/services/pulls.service'
 
 const { t } = useI18n()
 const user = ref(null)
 const isEditing = ref(false)
 const editedUser = ref({})
 
-
 const buyerStats = ref({
-  totalPulls: 12,
-  completedPulls: 8,
-  activePulls: 2,
-  totalSpent: 1250.50
+  totalPulls: 0,        
+  completedPulls: 0
 })
 
 const notification = ref({ show: false, type: '', message: '' })
@@ -39,6 +37,18 @@ function cancelEditing() {
 
 async function saveProfile() {
   try {
+    if (
+      !editedUser.value.name?.trim() ||
+      !editedUser.value.lastName?.trim() ||
+      !editedUser.value.email?.trim()
+    ) {
+      showNotification('error', t('profile.missingFields') || 'Complete todos los campos obligatorios.')
+      return
+    }
+
+  
+    await authService.updateUser(user.value.id, editedUser.value)
+
     user.value = { ...editedUser.value }
     isEditing.value = false
     showNotification('success', t('profile.saveSuccess'))
@@ -47,11 +57,33 @@ async function saveProfile() {
   }
 }
 
+async function fetchBuyerStats(buyerId) {
+  try {
+
+    const pulls = await pullService.getPullsByRoleBuyer(buyerId) 
+    if (!pulls || !Array.isArray(pulls)) {
+      buyerStats.value.totalPulls = 0
+      buyerStats.value.completedPulls = 0
+      return
+    }
+
+    const completed = pulls.filter(pull => pull.state === 'complete')
+    const nonCompleted = pulls.filter(pull => pull.state !== 'complete')
+
+    buyerStats.value.completedPulls = completed.length
+    buyerStats.value.totalPulls = nonCompleted.length
+  } catch (err) {
+    console.error('Error cargando estadísticas del comprador:', err)
+  }
+}
+
 onMounted(async () => {
   user.value = await authService.getCurrentUser()
   if (user.value) {
     if (user.value.rol && !user.value.role) user.value.role = user.value.rol
     if (user.value.role) user.value.role = user.value.role.toLowerCase().trim()
+
+    await fetchBuyerStats(user.value.id)
   }
 })
 </script>
@@ -65,7 +97,7 @@ onMounted(async () => {
           <img :src="user.image" alt="Profile Image" />
         </div>
         <div v-else class="profile-avatar-placeholder">
-          {{ user.name?.charAt(0) }}{{ user.lastname?.charAt(0) }}
+          {{ user.name?.charAt(0) }}{{ user.lastName?.charAt(0) }}
         </div>
         <div class="profile-status">
           <div class="status-dot online"></div>
@@ -74,7 +106,7 @@ onMounted(async () => {
       </div>
       
       <div class="profile-info">
-        <h1 class="profile-name">{{ user.name }} {{ user.lastname }}</h1>
+        <h1 class="profile-name">{{ user.name }} {{ user.lastName }}</h1>
         <p class="profile-role">{{ t('auth.role') }}: {{ t('auth.buyer') }}</p>
         <p class="profile-email">{{ user.email }}</p>
         
@@ -120,26 +152,6 @@ onMounted(async () => {
             <p>{{ t('profile.completedPulls') }}</p>
           </div>
         </div>
-        
-        <div class="stat-card">
-          <div class="stat-icon">
-            <i class="pi pi-clock"></i>
-          </div>
-          <div class="stat-content">
-            <h3>{{ buyerStats.activePulls }}</h3>
-            <p>{{ t('profile.activePulls') }}</p>
-          </div>
-        </div>
-        
-        <div class="stat-card">
-          <div class="stat-icon">
-            <i class="pi pi-dollar"></i>
-          </div>
-          <div class="stat-content">
-            <h3>S/ {{ buyerStats.totalSpent.toFixed(2) }}</h3>
-            <p>{{ t('profile.totalSpent') }}</p>
-          </div>
-        </div>
       </div>
     </div>
 
@@ -155,8 +167,8 @@ onMounted(async () => {
         
         <div class="info-card">
           <label>{{ t('auth.lastname') }}</label>
-          <div v-if="!isEditing" class="info-value">{{ user.lastname }}</div>
-          <input v-else v-model="editedUser.lastname" type="text" class="info-input" />
+          <div v-if="!isEditing" class="info-value">{{ user.lastName }}</div>
+          <input v-else v-model="editedUser.lastName" type="text" class="info-input" />
         </div>
         
         <div class="info-card">
@@ -174,7 +186,8 @@ onMounted(async () => {
 
     <!-- Notificación -->
     <div v-if="notification.show" :class="['notification', notification.type]">
-      {{ notification.message }}
+      <i :class="notification.type === 'success' ? 'pi pi-check-circle' : 'pi pi-exclamation-triangle'"></i>
+      <span>{{ notification.message }}</span>
     </div>
   </div>
   
@@ -186,6 +199,7 @@ onMounted(async () => {
     {{ t('profile.loading') }}
   </div>
 </template>
+
 
 <style scoped>
 .buyer-profile-container {

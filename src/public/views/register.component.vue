@@ -5,7 +5,6 @@ import { useRouter } from 'vue-router'
 
 export default {
   name: "register",
-  title: "Register",
   data() {
     return {
       name: '',
@@ -14,12 +13,10 @@ export default {
       password: '',
       role: 'seller',
       error: null,
+      success: null,
       loading: false,
       showImageModal: false,
-      imageBase64: '',
-      imagePreview: '',
-      imageLoading: false,
-      currentUserId: null
+      imageUrl: '', 
     }
   },
   setup() {
@@ -28,96 +25,140 @@ export default {
     return { t, router }
   },
   methods: {
-    async handleRegister() {
+    validateForm() {
+      this.error = null
+      const numberRegex = /\d/
+      if (!this.name || numberRegex.test(this.name)) {
+        this.error = this.t('auth.errorNameInvalid')
+        return false
+      }
+      if (!this.lastname || numberRegex.test(this.lastname)) {
+        this.error = this.t('auth.errorLastnameInvalid')
+        return false
+      }
+      if (!this.email || !this.email.includes('@')) {
+        this.error = this.t('auth.errorEmailInvalid')
+        return false
+      }
+      if (!this.password || this.password.length < 6) {
+        this.error = this.t('auth.errorPasswordInvalid')
+        return false
+      }
+      return true
+    },
+
+    onSubmit() {
+      if (!this.validateForm()) {
+        this.success = null
+        return
+      }
+      this.error = null
+      this.success = null
+      this.showImageModal = true
+    },
+
+    isValidUrl(url) {
+      try {
+        new URL(url)
+        return true
+      } catch {
+        return false
+      }
+    },
+
+    async saveImage() {
+      if (this.imageUrl && !this.isValidUrl(this.imageUrl)) {
+        this.error = this.t('auth.invalidImageUrl')
+        return
+      }
+
       try {
         this.loading = true
         this.error = null
-        const user = await authService.register({
+
+        const payload = {
           name: this.name,
           lastname: this.lastname,
           email: this.email,
           password: this.password,
-          role: this.role
-        })
-        if (user) {
-          this.currentUserId = user.id
-          
-          // Hacer login automático después del registro
-          const credentials = { email: this.email, password: this.password }
-          const loginResponse = await authService.login(credentials)
-          if (loginResponse && loginResponse.token) {
-            localStorage.setItem('user', JSON.stringify(user))
-            this.showImageModal = true
-          } else {
-            this.error = this.t('auth.registerLoginFailed')
-          }
+          role: this.role,
+          image: this.imageUrl || null
+        }
+
+        const user = await authService.register(payload)
+
+        const credentials = { email: this.email, password: this.password }
+        const loginResponse = await authService.login(credentials)
+
+        if (loginResponse && loginResponse.token) {
+          localStorage.setItem('user', JSON.stringify(user))
+          this.success = this.t('auth.loginSuccess')
+          this.closeModal()
+          this.router.push({ name: 'login' })
+        } else {
+          this.error = this.t('auth.registerLoginFailed')
         }
       } catch (error) {
-        this.error = this.t('auth.registerFailed')
         console.error('Registration error:', error)
+        if (!this.success) {
+          this.error = this.t('auth.registerFailed')
+        }
       } finally {
         this.loading = false
       }
     },
-    handleImageChange(e) {
-      const file = e.target.files[0]
-      if (!file) return
-      
-      if (!file.type.startsWith('image/')) {
-        this.error = this.t('auth.invalidImageType')
-        return
-      }
-      
-      if (file.size > 5 * 1024 * 1024) {
-        this.error = this.t('auth.imageTooLarge')
-        return
-      }
-      
-      this.imageLoading = true
-      this.error = null
-      
-      const reader = new FileReader()
-      reader.onload = (ev) => {
-        this.imageBase64 = ev.target.result
-        this.imagePreview = ev.target.result
-        this.imageLoading = false
-      }
-      reader.onerror = () => {
-        this.error = this.t('auth.imageLoadError')
-        this.imageLoading = false
-      }
-      reader.readAsDataURL(file)
-    },
-    async saveImage() {
+
+    async skipImage() {
       try {
-        if (!this.currentUserId) throw new Error('No user ID found after register')
         this.loading = true
         this.error = null
-        
-        await authService.updateUserImage(this.currentUserId, this.imageBase64)
-        
-        this.closeModal()
+
+        const payload = {
+          name: this.name,
+          lastname: this.lastname,
+          email: this.email,
+          password: this.password,
+          role: this.role,
+          image: null
+        }
+
+        const user = await authService.register(payload)
+
+        const credentials = { email: this.email, password: this.password }
+        const loginResponse = await authService.login(credentials)
+
+        if (loginResponse && loginResponse.token) {
+          localStorage.setItem('user', JSON.stringify(user))
+          this.success = this.t('auth.loginSuccess')
+          this.closeModal()
+          this.router.push({ name: 'login' })
+        } else {
+          this.error = this.t('auth.registerLoginFailed')
+        }
       } catch (error) {
-        this.error = this.t('auth.imageUploadFailed')
-        console.error('Image upload error:', error)
+        console.error('Registration error:', error)
+        if (!this.success) {
+          this.error = this.t('auth.registerFailed')
+        }
       } finally {
         this.loading = false
       }
     },
+
     closeModal() {
       this.showImageModal = false
-      this.router.push({ name: 'home' })
+      this.imageUrl = ''
+      this.error = null
     }
   }
 }
 </script>
 
-
 <template>
   <div class="register-container">
     <div class="register-card">
       <h1 class="register-title">{{ t('auth.register') }}</h1>
-      <form @submit.prevent="handleRegister" class="register-form">
+      <form @submit.prevent="onSubmit" class="register-form">
         <div class="register-field">
           <label for="name">{{ t('auth.name') }}</label>
           <pv-input-text id="name" v-model="name" type="text" required />
@@ -138,54 +179,74 @@ export default {
           <label for="role">{{ t('auth.role') }}</label>
           <pv-dropdown id="role" v-model="role" :options="['seller', 'buyer']" />
         </div>
-        <pv-button type="submit" :label="t('auth.submit')" class="register-btn" :loading="loading" />
-        <div v-if="error" class="register-error">{{ error }}</div>
+
+        <pv-button
+          type="submit"
+          :label="t('auth.submit')"
+          class="register-btn"
+          :loading="loading"
+        />
+
+        <div v-if="error" class="register-error" style="color: red;">{{ error }}</div>
+        <div v-if="success" class="register-success" style="color: green;">{{ success }}</div>
+
         <div class="register-link">
           <router-link :to="{ name: 'login' }">{{ t('auth.haveAccount') }}</router-link>
         </div>
       </form>
     </div>
-    
-    <div v-if="showImageModal" class="modal-overlay">
-      <div class="modal-content">
+
+    <!-- Modal para ingresar link de imagen -->
+    <div
+      v-if="showImageModal"
+      class="modal-overlay"
+      @click.self="closeModal"
+      style="position: fixed; top:0; left:0; width:100%; height:100%; background-color: rgba(0,0,0,0.5); display:flex; justify-content:center; align-items:center; z-index:1000;"
+    >
+      <div
+        class="modal-content"
+        style="background:#fff; padding:20px; border-radius:8px; max-width:400px; width:100%; position:relative;"
+      >
         <h2 class="modal-title">{{ t('auth.uploadProfileImage') }}</h2>
-        
-        <div class="modal-file-input">
-          <input 
-            type="file" 
-            accept="image/*" 
-            @change="handleImageChange" 
-            id="image-upload"
-            class="file-input"
+
+        <div class="modal-field" style="margin-bottom: 1rem;">
+          <label for="image-url" style="display:block; margin-bottom:0.5rem;">{{ t('auth.enterImageUrl') }}</label>
+          <input
+            id="image-url"
+            v-model="imageUrl"
+            type="text"
+            placeholder="https://example.com/image.jpg"
+            style="width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;"
           />
-          <label for="image-upload" class="file-input-label">
-            <i class="pi pi-upload"></i>
-            {{ t('auth.selectImage') }}
-          </label>
         </div>
-        
-        <div v-if="imageLoading" class="modal-loading">
-          <i class="pi pi-spin pi-spinner"></i>
-          {{ t('auth.loading') }}
+
+        <div v-if="imageUrl" class="modal-preview" style="margin-bottom: 1rem;">
+          <img
+            :src="imageUrl"
+            alt="Preview"
+            style="max-width: 100%; border-radius: 4px; border: 1px solid #ddd;"
+            @error="error = t('auth.invalidImageUrl')"
+            @load="error = null"
+          />
         </div>
-        
-        <div v-if="imagePreview" class="modal-preview">
-          <img :src="imagePreview" alt="Preview" />
-        </div>
-        
-        <div v-if="error" class="modal-error">{{ error }}</div>
-        
-        <div class="modal-actions">
-          <pv-button 
-            :label="t('auth.save')" 
-            @click="saveImage" 
-            :disabled="!imageBase64" 
+
+        <div v-if="error" class="modal-error" style="color: red; margin-bottom: 1rem;">{{ error }}</div>
+
+        <div
+          class="modal-actions"
+          style="display:flex; justify-content: flex-end; gap: 10px;"
+        >
+          <pv-button
+            :label="t('auth.save')"
+            @click="saveImage"
+            :disabled="loading"
             class="save-btn"
           />
-          <pv-button 
-            :label="t('auth.skip')" 
-            class="p-button-secondary skip-btn" 
-            @click="closeModal" 
+          <pv-button
+            :label="t('auth.skip')"
+            class="p-button-secondary skip-btn"
+            @click="skipImage"
+            :disabled="loading"
           />
         </div>
       </div>

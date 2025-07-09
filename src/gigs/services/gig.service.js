@@ -1,7 +1,7 @@
 import httpInstance from '../../shared/services/http.instance'
 import { GigAssembler } from '../services/gig.assembler'
 
-const gigsEndpointPath = '/api/Gig'
+const gigsEndpointPath = '/api/v1/Gig'
 const usersEndpointPath = '/api/v1/User'
 
 export class GigService {
