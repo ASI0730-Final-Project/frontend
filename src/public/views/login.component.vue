@@ -21,49 +21,51 @@ export default {
   },
   methods: {
     async handleLogin() {
-      try {
-        this.loading = true
-        this.error = null
+  try {
+    this.loading = true
+    this.error = null
 
-        if (!this.email || !this.password) {
-          this.error = this.t('auth.fillAllFields')
-          return
-        }
-
-        const response = await authService.login({
-          email: this.email.trim(),
-          password: this.password.trim()
-        })
-
-        console.log('Login success, response:', response)
-
-        if (response && response.token) {
-          // Guardamos token y usuario si fue exitoso
-          localStorage.setItem('token', response.token)
-
-          if (response.user) {
-            localStorage.setItem('user', JSON.stringify(response.user))
-          }
-
-          this.router.push({ name: 'home' })
-        } else {
-          this.error = this.t('auth.invalidCredentials')
-        }
-
-      } catch (error) {
-        console.error('Login error details:', error.response || error)
-
-        if (error.response?.status === 401) {
-          this.error = error.response.data?.message || this.t('auth.invalidCredentials')
-        } else if (error.response?.status === 500) {
-          this.error = this.t('auth.serverError') || 'Unexpected server error'
-        } else {
-          this.error = this.t('auth.loginFailed') || 'Login failed. Please try again.'
-        }
-      } finally {
-        this.loading = false
-      }
+    if (!this.email || !this.password) {
+      this.error = this.t('auth.fillAllFields')
+      return
     }
+
+    const response = await authService.login({
+      email: this.email.trim(),
+      password: this.password.trim()
+    })
+
+    if (response && response.token && response.user) {
+      localStorage.setItem('token', response.token)
+      localStorage.setItem('user', JSON.stringify(response.user))
+
+      const role = response.user.role
+
+      if (role === 'buyer') {
+        this.router.push({ name: 'buyerProfile' })
+      } else if (role === 'seller') {
+        this.router.push({ name: 'userProfile' })
+      } else {
+        this.router.push({ name: 'home' }) 
+      }
+    } else {
+      this.error = this.t('auth.invalidCredentials')
+    }
+  } catch (error) {
+    console.error('Login error details:', error.response || error)
+
+    if (error.response?.status === 401) {
+      this.error = error.response.data?.message || this.t('auth.invalidCredentials')
+    } else if (error.response?.status === 500) {
+      this.error = this.t('auth.serverError') || 'Unexpected server error'
+    } else {
+      this.error = this.t('auth.loginFailed') || 'Login failed. Please try again.'
+    }
+  } finally {
+    this.loading = false
+  }
+}
+
   }
 }
 </script>

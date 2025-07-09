@@ -3,12 +3,24 @@ import httpInstance from '../../shared/services/http.instance'
 const apiBase = '/api/Pull'
 
 export class PullService {
-  async getPullsBySeller(sellerId) {
-    return (await httpInstance.get(`${apiBase}?sellerId=${sellerId}`)).data
+  async getPullsByRoleSeller(userId) {
+    const response = await httpInstance.get(`${apiBase}/by-role`, {
+      params: {
+        role: 'seller',
+        userId
+      }
+    })
+    return response.data
   }
 
-  async getPullsByBuyer(buyerId) {
-    return (await httpInstance.get(`${apiBase}?buyerId=${buyerId}`)).data
+  async getPullsByRoleBuyer(userId) {
+    const response = await httpInstance.get(`${apiBase}/by-role`, {
+      params: {
+        role: 'buyer',
+        userId
+      }
+    })
+    return response.data
   }
 
   async getPullById(id) {
@@ -36,14 +48,6 @@ export class PullService {
 
   async deletePull(id) {
     return (await httpInstance.delete(`${apiBase}/${id}`)).data
-  }
-
-  async getPullsByRoleBuyer(userId) {
-    return (await httpInstance.get(`${apiBase}/by-role?role=buyer&userId=${userId}`)).data
-  }
-
-  async getPullsByRoleSeller(userId) {
-    return (await httpInstance.get(`${apiBase}/by-role?role=seller&userId=${userId}`)).data
   }
 }
 

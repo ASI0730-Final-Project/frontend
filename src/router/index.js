@@ -18,7 +18,7 @@ import NewPortfolioFormView from '../portfolio/components/NewPortfolioFormView.c
 
 const routes = [
   { path: '/:pathMatch(.*)*', component: PageNotFoundComponent, name: '404' },
-  { path: '/', redirect: '/home' },
+  { path: '/', redirect: '/login' },
   { path: '/home', component: HomeComponent, name: 'home' },
   { path: '/gigs', component: GigsComponent, name: 'gigs' },
   { path: '/gigs/create', component: CreateGigComponent, name: 'createGig' },

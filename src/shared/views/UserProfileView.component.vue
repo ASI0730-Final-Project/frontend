@@ -3,37 +3,24 @@ import { ref, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { authService } from '../services/auth.service'
+import { pullService } from '../../pull/services/pulls.service'
+import { portfolioService } from '../../portfolio/services/portfolio.service.js'
 import Portfolio from '../../portfolio/components/portfolio.component.vue'
 import ProjectModal from '../../portfolio/components/EditProjectModal.component.vue'
-import { portfolioService } from '../../portfolio/services/portfolio.service.js'
 
 const { t } = useI18n()
 const router = useRouter()
 const user = ref(null)
 const isEditing = ref(false)
 const editedUser = ref({})
-
 const sellerStats = ref({
   totalGigs: 0,
   completedOrders: 0
 })
-
-const showSocialForm = ref(false)
 const newSocial = ref({ type: '', url: '' })
-const availableSocials = [
-  { icon: 'pi pi-instagram', label: 'Instagram', value: 'instagram' },
-  { icon: 'pi pi-facebook', label: 'Facebook', value: 'facebook' },
-  { icon: 'pi pi-x', label: 'X', value: 'x' },
-  { icon: 'pi pi-linkedin', label: 'LinkedIn', value: 'linkedin' }
-]
-
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
 const gigsEndpoint = import.meta.env.VITE_GIGS_ENDPOINT_PATH
-const usersEndpoint = import.meta.env.VITE_USERS_ENDPOINT_PATH
-const pullsEndpoint = import.meta.env.VITE_PULLS_ENDPOINT_PATH
-
 const onlineStatus = ref(true)
-
 const currentMonth = computed(() => {
   const date = new Date()
   let locale = t('profile.locale')
@@ -64,6 +51,20 @@ function cancelEditing() {
 
 async function saveProfile() {
   try {
+    
+    if (
+      !editedUser.value.name?.trim() ||
+      !editedUser.value.lastName?.trim() ||
+      !editedUser.value.email?.trim()
+    ) {
+      showNotification('error', t('profile.missingFields') || 'Complete todos los campos obligatorios.')
+      return
+    }
+
+   
+    await authService.updateUser(user.value.id, editedUser.value)
+
+  
     user.value = { ...editedUser.value }
     isEditing.value = false
     showNotification('success', t('profile.saveSuccess'))
@@ -176,29 +177,20 @@ async function fetchSellerStats(sellerId) {
   try {
     const token = authService.getToken()
 
+   
     const gigsResponse = await fetch(`${apiBaseUrl}${gigsEndpoint}/seller/${sellerId}`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
     })
     const gigsData = await gigsResponse.json()
-    console.log('Gigs response:', gigsData)
     const gigs = Array.isArray(gigsData) ? gigsData : gigsData.data || gigsData.gigs || []
-
     sellerStats.value.totalGigs = gigs.length
 
-    let totalCompletedOrders = 0
-    for (const gig of gigs) {
-      const pullResponse = await fetch(`${apiBaseUrl}${pullsEndpoint}/${gig.id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      })
-      const orders = await pullResponse.json()
-      totalCompletedOrders += Array.isArray(orders) ? orders.length : 0
-    }
-
-    sellerStats.value.completedOrders = totalCompletedOrders
+   
+    const pulls = await pullService.getPullsByRoleSeller(sellerId)
+    const completed = pulls.filter(pull => pull.state === 'complete')
+    sellerStats.value.completedOrders = completed.length
   } catch (err) {
     console.error('Error cargando estadísticas del vendedor:', err)
   }
@@ -226,9 +218,6 @@ onMounted(async () => {
 })
 </script>
 
-
-
-
 <template>
   <div v-if="user && user.role === 'seller'" class="seller-profile-container">
     <div class="profile-header">
@@ -237,7 +226,7 @@ onMounted(async () => {
           <img :src="user.image" alt="Profile Image" />
         </div>
         <div v-else class="profile-avatar-placeholder">
-          {{ user.name?.charAt(0) }}{{ user.lastname?.charAt(0) }}
+          {{ user.name?.charAt(0) }}{{ user.lastName?.charAt(0) }}
         </div>
         <div class="profile-status">
           <div class="status-dot online"></div>
@@ -245,7 +234,7 @@ onMounted(async () => {
         </div>
       </div>
       <div class="profile-info">
-        <h1 class="profile-name">{{ user.name }} {{ user.lastname }}</h1>
+        <h1 class="profile-name">{{ user.name }} {{ user.lastName }}</h1>
         <p class="profile-role">{{ t('auth.role') }}: {{ t('auth.seller') }}</p>
         <p class="profile-email">{{ user.email }}</p>
         <div class="profile-actions">
@@ -304,7 +293,7 @@ onMounted(async () => {
         <div class="info-card">
           <label>{{ t('auth.lastname') }}</label>
           <div v-if="!isEditing" class="info-value">{{ user.lastName }}</div>
-          <input v-else v-model="editedUser.lastname" type="text" class="info-input" />
+          <input v-else v-model="editedUser.lastName" type="text" class="info-input" />
         </div>
 
         <div class="info-card">
@@ -347,7 +336,6 @@ onMounted(async () => {
     <p>Cargando...</p>
   </div>
 </template>
-
 
 <style scoped>
 .seller-profile-container {

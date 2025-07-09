@@ -12,7 +12,7 @@
   "footer": {
     "copyright": "© 2025 GigU",
     "developedBy": "Developed by",
-    "tagline": "Explore these freelance opportunities",
+    "tagline": "Explore freelance opportunities",
     "quickLinks": "Quick Links",
     "about": "About GigU",
     "description": "GigU is a platform that connects talented freelancers with clients worldwide. Discover amazing opportunities and showcase your skills.",
@@ -21,17 +21,17 @@
   "home": {
     "welcome": "Welcome to GigU",
     "explore": "Explore Freelance Opportunities",
-    "subtitle": "Explore these freelance opportunities",
+    "subtitle": "Explore freelance opportunities",
     "loading": "Loading opportunities...",
-    "loginPrompt": "Login to view gig details"
+    "loginPrompt": "Please log in to see details"
   },
   "auth": {
     "login": "Login",
     "register": "Register",
     "email": "Email",
     "password": "Password",
-    "name": "Name",
-    "lastname": "Lastname",
+    "name": "First Name",
+    "lastname": "Last Name",
     "role": "Role",
     "buyer": "Buyer",
     "seller": "Seller",
@@ -48,8 +48,15 @@
     "skip": "Skip",
     "loading": "Loading...",
     "invalidImageType": "Please select a valid image file",
-    "imageTooLarge": "Image file is too large. Maximum size is 5MB",
-    "imageLoadError": "Error loading image. Please try again"
+    "imageTooLarge": "Image file too large. Max size 5MB",
+    "imageLoadError": "Error loading image. Please try again",
+    "registerFailed": "Registration failed",
+    "registerLoginFailed": "Login after registration failed",
+    "loginSuccess": "Successfully logged in!",
+    "errorNameInvalid": "Name is required and cannot contain numbers.",
+    "errorLastnameInvalid": "Last Name is required and cannot contain numbers.",
+    "errorEmailInvalid": "Please enter a valid email containing '@'.",
+    "errorPasswordInvalid": "Password must be at least 6 characters long."
   },
   "gigs": {
     "create": "Create New Gig",
@@ -65,48 +72,47 @@
     "deliveryTime": "Delivery time",
     "revisions": "Revisions",
     "pages": "Pages",
-    "status": "Status",
     "tags": "Tags",
-    "orderSuccess": "Your order was placed successfully!",
-    "socialAddSuccess": "Social network added successfully.",
-    "socialAddError": "Error adding social network.",
-    "socialRemoveSuccess": "Social network removed successfully.",
-    "socialRemoveError": "Error removing social network.",
-    "noImage": "No image available",
-    "seller": "Seller"
+    "orderSuccess": "Your order was successful!",
+    "seller": "Seller",
+    "buyer": "Buyer",
+    "status": "Status",
+    "createdAt": "Created at",
+    "noImage": "No image available"
   },
   "profile": {
-    "edit": "Edit Profile",
+    "portfolio": "Portfolio",
+    "edit": "Edit profile",
     "save": "Save",
     "cancel": "Cancel",
     "loading": "Loading profile...",
-    "performance": "Performance Metrics",
+    "performance": "Performance metrics",
     "performanceMetrics": "Performance Metrics",
     "personalInfo": "Personal Information",
-    "orderResponseRate": "Order Response Rate",
-    "deliveredOnTime": "Delivered on Time",
-    "orderCompletion": "Order Completion",
+    "orderResponseRate": "Order response rate",
+    "deliveredOnTime": "Delivered on time",
+    "orderCompletion": "Orders completed",
     "earnedInMonth": "Earned in {month}",
-    "activeOrders": "Active Orders",
+    "activeOrders": "Active orders",
     "activeOrdersCount": "{count} (S/.{total})",
     "earnings": "Earnings",
-    "availableFunds": "Available Funds",
-    "earningsToDate": "Earnings to Date",
-    "expensesToDate": "Expenses to Date",
+    "availableFunds": "Available funds",
+    "earningsToDate": "Total earnings",
+    "expensesToDate": "Total expenses",
     "locale": "en-US",
-    "inboxResponseRate": "Inbox Response Rate",
-    "inboxResponseTime": "Inbox Response Time",
+    "inboxResponseRate": "Inbox response rate",
+    "inboxResponseTime": "Inbox response time",
     "chats": "Chats",
-    "viewAll": "View All",
-    "linkSocial": "Link Social Networks",
-    "onlineStatus": "Online Status",
+    "viewAll": "View all",
+    "linkSocial": "Link your social networks",
+    "onlineStatus": "Online status",
     "online": "Online",
-    "createGig": "Create New Gig",
+    "createGig": "Create a new gig",
     "earningsSinceJoining": "Your earnings since joining.",
     "expensesSinceJoining": "Expenses since joining.",
     "onlySeller": "This view is only available for Seller users.",
     "onlyBuyer": "This view is only available for Buyer users.",
-    "noSocialNetworksPrompt": "Would you like to add any social networks?",
+    "noSocialNetworksPrompt": "Would you like to add a social network?",
     "selectNetwork": "Select a social network",
     "linkPlaceholder": "Social network link",
     "add": "Add",
@@ -132,63 +138,97 @@
     "viewAnalytics": "View Analytics"
   },
   "negotiation": {
+    "buyer": "Buyer",
+    "seller": "Seller",
+    "price": "Negotiated price",
+    "state": "State",
+    "accept": "Accept price",
+    "finish": "Finish Pull",
     "states": {
       "pending": "Pending",
       "in_process": "In process",
-      "payed": "Payed",
-      "complete": "Complete"
+      "payed": "Paid",
+      "complete": "Completed"
     }
   },
   "pull": {
-    "offer": "Current Offer:",
-    "viewDetail": "View Details",
+    "offer": "Current offer:",
+    "viewDetail": "View Detail",
     "empty": "You have no pulls available.",
+    "states": {
+      "pending": "Pending",
+      "in_process": "In process",
+      "payed": "Paid",
+      "complete": "Completed"
+    },
     "buyer": {
-    "pending": "Offer sent. Waiting for seller's response. You can modify your offer or cancel the Pull while it is pending.",
-    "in_process": "The seller has accepted your Pull. Enter your card details to complete the payment.",
-    "payed": "Payment confirmed. Waiting for seller's delivery.",
-    "complete": "Pull completed. Thank you for using the platform!"
+      "pending": "Offer sent. Waiting for seller response. You can modify your offer or cancel the pull while the seller has not accepted it.",
+      "in_process": "Seller accepted your pull. Enter your card details to complete payment.",
+      "payed": "Payment confirmed. Waiting for delivery from the seller.",
+      "complete": "Pull completed. Thank you for using the platform!"
+    },
+    "initialPrice": "Initial Price",
+    "yourOffer": "Your current offer",
+    "makeOffer": "Make offer",
+    "notModifiable": "Not modifiable",
+    "chatWithSeller": "Chat with the seller",
+    "noLongerClosable": "This pull can no longer be closed",
+    "wantToClose": "Do you want to close this pull?",
+    "cancel": "Cancel Pull",
+    "paymentData": "Payment details",
+    "cardNumber": "Card Number (16 digits)",
+    "expiryDate": "MM/YY",
+    "cvc": "CVC",
+    "cardHolder": "Cardholder name",
+    "next": "Next",
+    "confirmDelivery": "Confirm Delivery",
+    "loading": "Loading offer...",
+    "actions": {
+      "cannotClose": "This pull can no longer be closed",
+      "wantToClose": "Do you want to close this pull?",
+      "accept": "Accept Pull",
+      "cancel": "Cancel Pull"
+    },
+    "chat": {
+      "buyer": "Chat with buyer"
+    },
+    "alert": {
+      "cancelled": "The other party disagreed with the terms and canceled the pull.",
+      "completedRedirect": "The buyer has completed the pull. You will be redirected to your active pulls."
+    }
   },
-  "initialPrice": "Initial Price",
-  "yourOffer": "Your Current Offer",
-  "makeOffer": "Make Offer",
-  "notModifiable": "Not modifiable",
-  "chatWithSeller": "Chat with the seller",
-  "noLongerClosable": "This Pull can no longer be closed",
-  "wantToClose": "Do you want to close this Pull?",
-  "cancel": "Cancel Pull",
-  "paymentData": "Payment Information",
-  "cardNumber": "Card Number (16 digits)",
-  "expiryDate": "MM/YY",
-  "cvc": "CVC",
-  "cardHolder": "Cardholder Name",
-  "next": "Next",
-  "confirmDelivery": "Confirm Delivery",
-  "loading": "Loading offer...",
-  "actions": {
-    "cannotClose": "This Pull can no longer be closed",
-    "wantToClose": "Do you want to close this Pull?",
-    "accept": "Accept Pull",
-    "cancel": "Cancel Pull"
+  "pullSeller": {
+    "stateBanner": {
+      "pending": "You have a new pending pull. Review the offer and accept if you agree.",
+      "in_process": "You have accepted the pull. Waiting for buyer to confirm delivery.",
+      "payed": "Buyer has made the payment. Waiting for delivery confirmation.",
+      "complete": "Pull completed. Thank you for using the platform!"
+    },
+    "price": {
+      "initial": "Initial Price",
+      "buyerOffer": "Buyer offer"
+    }
   },
-  "chat": {
-    "buyer": "Chat with the buyer"
-  },
-  "alert": {
-    "cancelled": "The other party did not agree with the terms and cancelled the pull.",
-    "completedRedirect": "The buyer has completed the pull. You will be redirected to your active pulls."
-  }
+  "portfolio": {
+  "noPortfolio": "You don't have a portfolio yet.",
+  "createPortfolio": "Create Portfolio"
 },
-"pullSeller": {
-  "stateBanner": {
-    "pending": "You have a new Pull pending. Review the offer and accept if you agree.",
-    "in_process": "You accepted the Pull. Waiting for the buyer to confirm the delivery.",
-    "payed": "The buyer has completed the payment. Waiting for delivery confirmation.",
-    "complete": "Pull completed. Thank you for using the platform!"
-  },
-  "price": {
-    "initial": "Initial Price",
-    "buyerOffer": "Buyer's Offer"
+"portfolioCreate": {
+    "title": "Crear Nuevo Portafolio",
+    "sellerId": "ID del vendedor",
+    "name": "Nombre",
+    "namePlaceholder": "Nombre del portafolio",
+    "description": "Descripción",
+    "descriptionPlaceholder": "Descripción del portafolio",
+    "projects": "Proyectos",
+    "projectTitle": "Título del proyecto",
+    "projectDescription": "Descripción del proyecto",
+    "projectPrice": "Precio",
+    "projectTime": "Tiempo",
+    "projectGigLink": "Enlace al Gig",
+    "removeProject": "Eliminar Proyecto",
+    "addProject": "Agregar Proyecto",
+    "save": "Guardar Portafolio",
+    "error": "Error al crear el portafolio. Revisa los campos."
   }
-}
 }

@@ -1,73 +1,62 @@
 <template>
-  <div v-if="portfolio">
+  <div v-if="portfolio" class="pv-container">
     <div class="pv-toolbar">
       <button
         v-for="proj in portfolio.projects"
         :key="proj.id"
         @click="selectProject(proj)"
         class="pv-button"
+        :class="{ active: selectedProject?.id === proj.id }"
       >
         {{ proj.title }}
       </button>
-
-      <!--
-      <template v-if="isOwner">
-        <button class="pv-button" @click="openEditModal(selectedProject)">Editar</button>
-        <button class="pv-button" @click="openNewProjectModal">Añadir Proyecto</button>
-      </template>
-      -->
     </div>
-  
+
     <div v-if="selectedProject" class="pv-project-details">
       <div class="pv-carousel">
         <img
           v-for="(img, idx) in selectedProject.images || []"
           :key="idx"
           :src="img"
-          alt="Imagen"
+          alt="Imagen del proyecto"
         />
       </div>
       <h3>{{ selectedProject.title }}</h3>
       <p>{{ selectedProject.description }}</p>
-      <p><strong>Precio:</strong> {{ selectedProject.price }}</p>
-      <p><strong>Tiempo:</strong> {{ selectedProject.time }}</p>
+      <p><strong>{{ t('portfolio.price') }}:</strong> {{ selectedProject.price }}</p>
+      <p><strong>{{ t('portfolio.time') }}:</strong> {{ selectedProject.time }}</p>
       <a
+        v-if="selectedProject.gig_link || selectedProject.gigLink"
         :href="selectedProject.gig_link || selectedProject.gigLink"
         target="_blank"
-        class="pv-button"
       >
-        Ver Gig
+        {{ t('portfolio.viewGig') }}
       </a>
     </div>
   </div>
 
-  <div v-else>
-    <p>No tienes portafolio aún.</p>
-    <router-link to="/portfolio/create" class="pv-button">Crear Portafolio</router-link>
+  <div v-else class="pv-container">
+    <div class="pv-empty">
+      <p>{{ t('portfolio.noPortfolio') }}</p>
+      <router-link to="/portfolio/create" class="pv-button">
+        {{ t('portfolio.createPortfolio') }}
+      </router-link>
+    </div>
   </div>
-
-  <EditProjectModal
-    v-if="showModal"
-    :project="editingProject"
-    :isNew="isNewProject"
-    @save="handleSaveProject"
-    @close="closeModal"
-  />
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { portfolioService } from '../services/portfolio.service'
 import { authService } from '../../shared/services/auth.service'
-import EditProjectModal from './EditProjectModal.component.vue'
+
+const { t } = useI18n()
 
 const portfolio = ref(null)
 const selectedProject = ref(null)
 const isOwner = ref(false)
 const currentUser = ref(null)
-const showModal = ref(false)
-const editingProject = ref({})
-const isNewProject = ref(false)
 
 async function loadPortfolio() {
   currentUser.value = await authService.getCurrentUser()
@@ -80,92 +69,148 @@ async function loadPortfolio() {
     isOwner.value = currentUser.value.id === fetchedPortfolio.seller_id
   }
 }
-
-onMounted(loadPortfolio)
-
+  
 function selectProject(project) {
   selectedProject.value = project
 }
 
-function openEditModal(project) {
-  editingProject.value = { ...project }
-  isNewProject.value = false
-  showModal.value = true
-}
-
-function openNewProjectModal() {
-  editingProject.value = {
-    id: crypto.randomUUID(),
-    title: '',
-    description: '',
-    price: '',
-    time: '',
-    gig_link: '',
-    images: []
-  }
-  isNewProject.value = true
-  showModal.value = true
-}
-
-async function handleSaveProject(project) {
-  if (!portfolio.value) return
-  const portfolioId = portfolio.value.id
-
-  try {
-    if (isNewProject.value) {
-      await portfolioService.addProject(portfolioId, project)
-      portfolio.value.projects.push(project)
-    } else {
-      await portfolioService.updateProject(portfolioId, project)
-      const idx = portfolio.value.projects.findIndex(p => p.id === project.id)
-      if (idx !== -1) portfolio.value.projects[idx] = project
-    }
-
-    selectedProject.value = project
-    closeModal()
-  } catch (err) {
-    console.error('Error guardando proyecto:', err)
-  }
-}
-
-function closeModal() {
-  showModal.value = false
-}
+onMounted(loadPortfolio)
 </script>
 
 <style scoped>
-.pv-button {
-  background-color: #222;
+.pv-container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background: #23242a;
+  border-radius: 16px;
   color: #fff;
-  padding: 8px 16px;
-  margin: 4px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
 .pv-toolbar {
-  margin-bottom: 12px;
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+  justify-content: center;
+}
+
+.pv-button {
+  background: #18191d;
+  border: 2px solid #35344a;
+  color: #fff;
+  padding: 0.5rem 1.25rem;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 120px;
+  text-align: center;
+  text-decoration: none;
+}
+
+.pv-button:hover,
+.pv-button:focus-visible {
+  background: #2e2f36;
+  border-color: #7b1fa2;
+}
+
+.pv-button.active {
+  background: #7b1fa2;
+  border-color: #b39ddb;
+  color: #fff;
+}
+
+.pv-project-details {
+  background: #18191d;
+  padding: 2rem;
+  border-radius: 16px;
+  border: 1px solid #35344a;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  text-align: center;
 }
 
 .pv-carousel {
   display: flex;
+  gap: 1rem;
   overflow-x: auto;
-  gap: 10px;
-  margin-bottom: 10px;
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
 }
 
 .pv-carousel img {
-  height: 180px;
-  border-radius: 8px;
+  max-height: 200px;
+  border-radius: 10px;
+  object-fit: cover;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-.pv-project-details {
-  padding: 10px;
-  border-top: 1px solid #ddd;
+.pv-project-details h3 {
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+  color: #fff;
+}
+
+.pv-project-details p {
+  font-size: 1rem;
+  color: #bdbdbd;
+  margin-bottom: 1rem;
+}
+
+.pv-project-details strong {
+  color: #b39ddb;
+}
+
+.pv-project-details a {
+  display: inline-block;
+  margin-top: 1rem;
+  background: #7b1fa2;
+  color: #fff;
+  padding: 0.6rem 1.25rem;
+  border-radius: 10px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.3s ease;
+}
+
+.pv-project-details a:hover {
+  background: #a259c4;
+}
+
+.pv-empty {
+  text-align: center;
+  color: #bdbdbd;
+  font-size: 1.2rem;
+  margin-top: 2rem;
+}
+
+.pv-empty .pv-button {
+  margin-top: 1rem;
+  background: #7b1fa2;
+  border: none;
+  color: #fff;
+}
+
+.pv-empty .pv-button:hover {
+  background: #a259c4;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .pv-toolbar {
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+  }
+
+  .pv-carousel {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .pv-carousel img {
+    max-height: 150px;
+  }
 }
 </style>
