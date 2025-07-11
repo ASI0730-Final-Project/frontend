@@ -1,71 +1,54 @@
-<script>
+<script setup>
+import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { authService } from '../../shared/services/auth.service'
 import { useRouter } from 'vue-router'
+import { authService } from '../../shared/services/auth.service'
 
-export default {
-  name: "login",
-  title: "Login",
-  data() {
-    return {
-      email: '',
-      password: '',
-      error: null,
-      loading: false
-    }
-  },
-  setup() {
-    const { t } = useI18n()
-    const router = useRouter()
-    return { t, router }
-  },
-  methods: {
-    async handleLogin() {
+const { t } = useI18n()
+const router = useRouter()
+
+const email = ref('')
+const password = ref('')
+const error = ref(null)
+const loading = ref(false)
+
+const handleLogin = async () => {
   try {
-    this.loading = true
-    this.error = null
+    loading.value = true
+    error.value = null
 
-    if (!this.email || !this.password) {
-      this.error = this.t('auth.fillAllFields')
+    if (!email.value || !password.value) {
+      error.value = t('auth.fillAllFields')
       return
     }
 
     const response = await authService.login({
-      email: this.email.trim(),
-      password: this.password.trim()
+      email: email.value.trim(),
+      password: password.value.trim(),
     })
 
-    if (response && response.token && response.user) {
+    if (response?.token && response?.user) {
       localStorage.setItem('token', response.token)
       localStorage.setItem('user', JSON.stringify(response.user))
 
       const role = response.user.role
-
-      if (role === 'buyer') {
-        this.router.push({ name: 'buyerProfile' })
-      } else if (role === 'seller') {
-        this.router.push({ name: 'userProfile' })
-      } else {
-        this.router.push({ name: 'home' }) 
-      }
+      if (role === 'buyer') router.push({ name: 'buyerProfile' })
+      else if (role === 'seller') router.push({ name: 'userProfile' })
+      else router.push({ name: 'home' })
     } else {
-      this.error = this.t('auth.invalidCredentials')
+      error.value = t('auth.invalidCredentials')
     }
-  } catch (error) {
-    console.error('Login error details:', error.response || error)
-
-    if (error.response?.status === 401) {
-      this.error = error.response.data?.message || this.t('auth.invalidCredentials')
-    } else if (error.response?.status === 500) {
-      this.error = this.t('auth.serverError') || 'Unexpected server error'
+  } catch (err) {
+    console.error('Login error:', err.response || err)
+    if (err.response?.status === 401) {
+      error.value = err.response.data?.message || t('auth.invalidCredentials')
+    } else if (err.response?.status === 500) {
+      error.value = t('auth.serverError') || 'Unexpected server error'
     } else {
-      this.error = this.t('auth.loginFailed') || 'Login failed. Please try again.'
+      error.value = t('auth.loginFailed')
     }
   } finally {
-    this.loading = false
-  }
-}
-
+    loading.value = false
   }
 }
 </script>
@@ -104,7 +87,7 @@ export default {
 .login-card {
   background: #23242a;
   border-radius: 16px;
-  box-shadow: 0 4px 24px rgba(80, 36, 143, 0.10);
+  box-shadow: 0 4px 24px rgba(80, 36, 143, 0.1);
   padding: 2.5rem 2rem;
   width: 100%;
   max-width: 420px;
